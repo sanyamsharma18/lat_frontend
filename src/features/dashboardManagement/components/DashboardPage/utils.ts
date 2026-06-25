@@ -33,6 +33,10 @@ const getSummarySource = (response: unknown) => {
         return {};
     }
 
+    if (isRecord(response.response) && isRecord(response.response.data)) {
+        return response.response.data;
+    }
+
     if (isRecord(response.data)) {
         return response.data;
     }
@@ -83,9 +87,8 @@ export const getDashboardSummary = async () => {
 
         return normalizeDashboardSummary(assertSuccessfulResponse(response));
     } catch (error) {
-        console.warn('Dashboard summary API failed. Falling back to mock data.', error);
-
-        return MOCK_DASHBOARD_SUMMARY;
+        console.error('Dashboard summary API failed.', error);
+        throw error;
     }
 };
 

@@ -59,7 +59,7 @@ export const getGradeGroups = async () =>
         url: API_ROUTES.gradeGroup,
     });
 
-export const getGradesByGradeGroup = async (gradeGroupId: string) =>
+export const getGrades = async () =>
     serverApi({
-        url: API_ROUTES.grades(gradeGroupId),
+        url: API_ROUTES.grades,
     });

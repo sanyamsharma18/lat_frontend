@@ -16,11 +16,7 @@ export const getDashboardSummary = async () => {
     });
 
     if (!result.ok) {
-        return {
-            data: MOCK_DASHBOARD_SUMMARY,
-            status: 200,
-            ok: true,
-        };
+        throw new Error(result.error || 'Failed to fetch dashboard summary');
     }
 
     return result;

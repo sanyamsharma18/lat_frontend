@@ -10,10 +10,10 @@ import Modal from '@/components/ui/Modal';
 import Text from '@/components/ui/Text';
 
 import { ButtonVariant, FontType } from '@/types/typographyCommon';
-import { RegionOption, SchoolOption, Teacher, TeacherFormValues, GradeOption, SubjectOption } from '@/types/teacher';
+import { Teacher, TeacherFormValues, GradeOption, SubjectOption } from '@/types/teacher';
 
 import { TEACHER_FORM_TEXT, TEACHER_VALIDATION } from '../../constant';
-import { regionQueryOptions, schoolQueryOptions, gradeGroupQueryOptions, gradeQueryOptions, subjectQueryOptions } from '../../utils';
+import { allGradesQueryOptions, subjectQueryOptions } from '../../utils';
 
 import styles from './styles.module.scss';
 
@@ -26,7 +26,7 @@ interface TeacherFormModalProps {
     onSubmit: (values: TeacherFormValues) => void;
 }
 
-type TeacherFormField = 'firstName' | 'lastName' | 'mobileNo' | 'email' | 'empCode' | 'gender' | 'address' | 'gradeId' | 'subjectId' | 'regionId' | 'schoolId' | 'udisecode';
+type TeacherFormField = 'firstName' | 'lastName' | 'mobileNo' | 'email' | 'empCode' | 'gender' | 'address' | 'gradeId' | 'subjectId' | 'udisecode';
 type TeacherFormErrors = Partial<Record<TeacherFormField, string>>;
 
 const EMPTY_FORM_VALUES: TeacherFormValues = {
@@ -40,13 +40,10 @@ const EMPTY_FORM_VALUES: TeacherFormValues = {
     address: '',
     gradeId: '',
     subjectId: '',
-    regionId: '',
-    schoolId: '',
-    schoolName: '',
 };
 
 const TEACHER_FORM_FIELDS: TeacherFormField[] = [
-    'firstName', 'mobileNo', 'email', 'empCode', 'gradeId', 'subjectId', 'regionId', 'schoolId', 'udisecode'
+    'firstName', 'mobileNo', 'email', 'empCode', 'gradeId', 'subjectId', 'udisecode'
 ];
 
 const GENDER_OPTIONS = [
@@ -83,17 +80,11 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
     const [formValues, setFormValues] = useState<TeacherFormValues>(EMPTY_FORM_VALUES);
     const [errorMessages, setErrorMessages] = useState<TeacherFormErrors>({});
     
-    const [selectedRegion, setSelectedRegion] = useState<RegionOption | null>(null);
-    const [selectedSchool, setSelectedSchool] = useState<SchoolOption | null>(null);
-    const [selectedGradeGroup, setSelectedGradeGroup] = useState<{ id: string, name: string } | null>(null);
     const [selectedGrade, setSelectedGrade] = useState<GradeOption | null>(null);
     const [selectedSubject, setSelectedSubject] = useState<SubjectOption | null>(null);
     const [selectedGender, setSelectedGender] = useState<{ id: string, name: string } | null>(null);
 
-    const regionListQuery = useQuery(queryOptions(regionQueryOptions()));
-    const schoolListQuery = useQuery(queryOptions(schoolQueryOptions(selectedRegion?.id ?? '')));
-    const gradeGroupListQuery = useQuery(queryOptions(gradeGroupQueryOptions()));
-    const gradeListQuery = useQuery(queryOptions(gradeQueryOptions(selectedGradeGroup?.id ?? '')));
+    const gradeListQuery = useQuery(queryOptions(allGradesQueryOptions()));
     const subjectListQuery = useQuery(queryOptions(subjectQueryOptions()));
 
     const isFormValid = useMemo(() =>
@@ -114,15 +105,10 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
             address: teacher.address || '',
             gradeId: teacher.gradeId || '',
             subjectId: teacher.subjectId || '',
-            regionId: teacher.regionId || '',
-            schoolId: teacher.schoolId || '',
-            schoolName: teacher.schoolName || '',
         } : EMPTY_FORM_VALUES);
 
-        setSelectedRegion(teacher?.regionId ? { id: teacher.regionId, name: teacher.regionName } : null);
-        setSelectedSchool(teacher?.schoolId ? { id: teacher.schoolId, name: teacher.schoolName, udiseCode: teacher.udisecode } : null);
-        setSelectedGrade(teacher?.gradeId ? { id: teacher.gradeId, name: 'Grade' } : null); // Simple mock mapping for edit
-        setSelectedSubject(teacher?.subjectId ? { id: teacher.subjectId, name: 'Subject' } : null); // Simple mock mapping for edit
+        setSelectedGrade(teacher?.gradeId ? { id: teacher.gradeId, name: 'Grade' } : null);
+        setSelectedSubject(teacher?.subjectId ? { id: teacher.subjectId, name: 'Subject' } : null);
         setSelectedGender(teacher?.gender ? { id: teacher.gender, name: teacher.gender } : null);
         setErrorMessages({});
     }, [open, teacher]);
@@ -134,35 +120,6 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
 
         setFormValues((prev) => ({ ...prev, [fieldName]: nextValue }));
         setErrorMessages((prev) => ({ ...prev, [fieldName]: validateField(fieldName, nextValue) }));
-    };
-
-    const handleRegionChange = (region: RegionOption) => {
-        setSelectedRegion(region);
-        setSelectedSchool(null);
-        setFormValues(prev => ({ ...prev, regionId: region.id, schoolId: '', schoolName: '', udisecode: '' }));
-        setErrorMessages(prev => ({
-            ...prev,
-            regionId: validateField('regionId', region.id),
-            schoolId: validateField('schoolId', ''),
-            udisecode: validateField('udisecode', '')
-        }));
-    };
-
-    const handleSchoolChange = (school: SchoolOption) => {
-        setSelectedSchool(school);
-        const code = school.udiseCode || '';
-        setFormValues(prev => ({ ...prev, schoolId: school.id, schoolName: school.name, udisecode: code }));
-        setErrorMessages(prev => ({
-            ...prev,
-            schoolId: validateField('schoolId', school.id),
-            udisecode: validateField('udisecode', code)
-        }));
-    };
-
-    const handleGradeGroupChange = (group: { id: string, name: string }) => {
-        setSelectedGradeGroup(group);
-        setSelectedGrade(null);
-        setFormValues(prev => ({ ...prev, gradeId: '' }));
     };
 
     const handleGradeChange = (grade: GradeOption) => {
@@ -200,9 +157,6 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
             address: formValues.address?.trim() || '',
             gradeId: formValues.gradeId,
             subjectId: formValues.subjectId,
-            regionId: formValues.regionId,
-            schoolId: formValues.schoolId,
-            schoolName: formValues.schoolName,
         });
     };
 
@@ -221,18 +175,12 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
                     <Input id='mobileNo' label={TEACHER_FORM_TEXT.mobileNo.label} name='mobileNo' type='text' value={formValues.mobileNo} placeholder={TEACHER_FORM_TEXT.mobileNo.placeholder} helperText={errorMessages.mobileNo || ''} error={!!errorMessages.mobileNo} onChange={handleChange} required />
                     <Input id='email' label={TEACHER_FORM_TEXT.email.label} name='email' type='email' value={formValues.email} placeholder={TEACHER_FORM_TEXT.email.placeholder} helperText={errorMessages.email || ''} error={!!errorMessages.email} onChange={handleChange} required />
                     <Input id='empCode' label={TEACHER_FORM_TEXT.empCode.label} name='empCode' type='text' value={formValues.empCode} placeholder={TEACHER_FORM_TEXT.empCode.placeholder} helperText={errorMessages.empCode || ''} error={!!errorMessages.empCode} onChange={handleChange} required />
+                    <Input id='udisecode' label={TEACHER_FORM_TEXT.udisecode.label} name='udisecode' type='text' value={formValues.udisecode} placeholder={TEACHER_FORM_TEXT.udisecode.placeholder} helperText={errorMessages.udisecode || ''} error={!!errorMessages.udisecode} onChange={handleChange} required />
                     <Input id='address' label={TEACHER_FORM_TEXT.address.label} name='address' type='text' value={formValues.address} placeholder={TEACHER_FORM_TEXT.address.placeholder} onChange={handleChange} />
                     
                     <Dropdown label={TEACHER_FORM_TEXT.gender.placeholder} dropDownTitle={TEACHER_FORM_TEXT.gender.label} options={GENDER_OPTIONS} selectValue='name' value={selectedGender} onChange={handleGenderChange} isSearchable={false} />
+                    <Dropdown label={TEACHER_FORM_TEXT.grade.placeholder} dropDownTitle={TEACHER_FORM_TEXT.grade.label} options={gradeListQuery.data ?? []} selectValue='name' value={selectedGrade} loading={gradeListQuery.isLoading} onChange={handleGradeChange} isSearchable={false} />
                     <Dropdown label={TEACHER_FORM_TEXT.subject.placeholder} dropDownTitle={TEACHER_FORM_TEXT.subject.label} options={subjectListQuery.data ?? []} selectValue='name' value={selectedSubject} loading={subjectListQuery.isLoading} onChange={handleSubjectChange} isSearchable={false} />
-                    
-                    <Dropdown label={TEACHER_FORM_TEXT.gradeGroup.placeholder} dropDownTitle={TEACHER_FORM_TEXT.gradeGroup.label} options={gradeGroupListQuery.data ?? []} selectValue='name' value={selectedGradeGroup} loading={gradeGroupListQuery.isLoading} onChange={handleGradeGroupChange} isSearchable={false} />
-                    <Dropdown label={selectedGradeGroup ? TEACHER_FORM_TEXT.grade.placeholder : TEACHER_FORM_TEXT.grade.disabledPlaceholder} dropDownTitle={TEACHER_FORM_TEXT.grade.label} options={gradeListQuery.data ?? []} selectValue='name' value={selectedGrade} loading={gradeListQuery.isLoading} onChange={handleGradeChange} isSearchable={false} disable={!selectedGradeGroup} />
-                    
-                    <Dropdown label={TEACHER_FORM_TEXT.region.placeholder} dropDownTitle={TEACHER_FORM_TEXT.region.label} options={regionListQuery.data ?? []} selectValue='name' value={selectedRegion} loading={regionListQuery.isLoading} onChange={handleRegionChange} isSearchable={false} />
-                    <Dropdown label={selectedRegion ? TEACHER_FORM_TEXT.schoolName.placeholder : TEACHER_FORM_TEXT.schoolName.disabledPlaceholder} dropDownTitle={TEACHER_FORM_TEXT.schoolName.label} options={schoolListQuery.data ?? []} selectValue='name' value={selectedSchool} loading={schoolListQuery.isLoading} onChange={handleSchoolChange} isSearchable={false} disable={!selectedRegion} />
-
-                    <Input id='udisecode' label={TEACHER_FORM_TEXT.udisecode.label} name='udisecode' type='text' value={formValues.udisecode} placeholder={TEACHER_FORM_TEXT.udisecode.placeholder} helperText={errorMessages.udisecode || ''} error={!!errorMessages.udisecode} onChange={handleChange} required disabled={!!selectedSchool} />
                 </div>
 
                 <div className={styles.actions}>

@@ -15,5 +15,6 @@ export enum ServerSideRoutes {
     STORE_USER_DETAIL_ROUTE = `${ServerSideRoutes.APP}/store-user-details`,
     SUBJECTS = `${ServerSideRoutes.APP}/subjects`,
     GRADE_GROUP = `${ServerSideRoutes.APP}/grade-group`,
+    GRADES = `${ServerSideRoutes.APP}/grades`,
     //
 }
