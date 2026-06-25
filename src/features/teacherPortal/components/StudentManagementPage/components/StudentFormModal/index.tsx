@@ -1,0 +1,305 @@
+'use client';
+
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
+
+import Button from '@/components/ui/Button';
+import Dropdown from '@/components/ui/Dropdown';
+import Input from '@/components/ui/Input/Input';
+import Modal from '@/components/ui/Modal';
+import Text from '@/components/ui/Text';
+
+import { Student, StudentFormValues, StudentOption } from '@/types/student';
+import { ButtonVariant, FontType } from '@/types/typographyCommon';
+
+import {
+    GENDER_OPTIONS,
+    GRADE_OPTIONS,
+    SECTION_OPTIONS,
+    STATUS_OPTIONS,
+    STUDENT_FORM_TEXT,
+    STUDENT_VALIDATION,
+} from '../../constant';
+
+import styles from './styles.module.scss';
+
+interface StudentFormModalProps {
+    open: boolean;
+    mode: 'add' | 'edit';
+    student: Student | null;
+    isSubmitting: boolean;
+    onClose: () => void;
+    onSubmit: (values: StudentFormValues) => void;
+}
+
+type StudentFormField = keyof StudentFormValues;
+type StudentFormErrors = Partial<Record<StudentFormField, string>>;
+
+const EMPTY_FORM_VALUES: StudentFormValues = {
+    studentName: '',
+    grade: '',
+    section: '',
+    fatherName: '',
+    motherName: '',
+    gender: '',
+    dateOfBirth: '',
+    status: 'Active',
+};
+
+const STUDENT_FORM_FIELDS: StudentFormField[] = [
+    'studentName',
+    'grade',
+    'section',
+    'fatherName',
+    'motherName',
+    'gender',
+    'dateOfBirth',
+    'status',
+];
+
+const validateField = (name: StudentFormField, value: string) => {
+    const rule = STUDENT_VALIDATION[name];
+    const trimmedValue = value.trim();
+
+    if (!trimmedValue) {
+        return rule.requiredMessage;
+    }
+
+    if (
+        'minLength' in rule &&
+        (trimmedValue.length < rule.minLength || trimmedValue.length > rule.maxLength)
+    ) {
+        return rule.invalidMessage;
+    }
+
+    return '';
+};
+
+const getOption = (options: StudentOption[], value?: string) =>
+    options.find((option) => option.id === value) ?? null;
+
+const StudentFormModal = ({
+    open,
+    mode,
+    student,
+    isSubmitting,
+    onClose,
+    onSubmit,
+}: StudentFormModalProps) => {
+    const [formValues, setFormValues] = useState<StudentFormValues>(EMPTY_FORM_VALUES);
+    const [errorMessages, setErrorMessages] = useState<StudentFormErrors>({});
+
+    const modalTitle = mode === 'edit' ? STUDENT_FORM_TEXT.editTitle : STUDENT_FORM_TEXT.addTitle;
+    const submitLabel =
+        mode === 'edit' ? STUDENT_FORM_TEXT.editSubmitButton : STUDENT_FORM_TEXT.addSubmitButton;
+
+    const isFormValid = useMemo(
+        () =>
+            STUDENT_FORM_FIELDS.every((field) => formValues[field]?.trim()) &&
+            Object.values(errorMessages).every((message) => !message),
+        [errorMessages, formValues],
+    );
+
+    useEffect(() => {
+        if (!open) {
+            return;
+        }
+
+        setFormValues(
+            student
+                ? {
+                      studentName: student.studentName,
+                      grade: student.grade,
+                      section: student.section,
+                      fatherName: student.fatherName,
+                      motherName: student.motherName,
+                      gender: student.gender,
+                      dateOfBirth: student.dateOfBirth,
+                      status: student.status,
+                  }
+                : EMPTY_FORM_VALUES,
+        );
+        setErrorMessages({});
+    }, [open, student]);
+
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        const fieldName = name as StudentFormField;
+        const nextValue = value.replace(/^\s+/, '');
+
+        setFormValues((prevValues) => ({ ...prevValues, [fieldName]: nextValue }));
+        setErrorMessages((prevMessages) => ({
+            ...prevMessages,
+            [fieldName]: validateField(fieldName, nextValue),
+        }));
+    };
+
+    const handleSelectChange = (fieldName: StudentFormField) => (option: StudentOption) => {
+        setFormValues((prevValues) => ({ ...prevValues, [fieldName]: option.id }));
+        setErrorMessages((prevMessages) => ({
+            ...prevMessages,
+            [fieldName]: validateField(fieldName, option.id),
+        }));
+    };
+
+    const validateForm = () =>
+        STUDENT_FORM_FIELDS.reduce<StudentFormErrors>((errors, key) => {
+            const errorMessage = validateField(key, formValues[key] ?? '');
+
+            return errorMessage ? { ...errors, [key]: errorMessage } : errors;
+        }, {});
+
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const validationErrors = validateForm();
+        setErrorMessages(validationErrors);
+
+        if (Object.values(validationErrors).some(Boolean)) {
+            return;
+        }
+
+        onSubmit({
+            studentName: formValues.studentName.trim(),
+            grade: formValues.grade,
+            section: formValues.section,
+            fatherName: formValues.fatherName.trim(),
+            motherName: formValues.motherName.trim(),
+            gender: formValues.gender,
+            dateOfBirth: formValues.dateOfBirth,
+            status: formValues.status,
+        });
+    };
+
+    const renderDropdown = (
+        fieldName: StudentFormField,
+        label: string,
+        placeholder: string,
+        options: StudentOption[],
+    ) => (
+        <div className={styles.fieldWithError}>
+            <Dropdown
+                label={placeholder}
+                dropDownTitle={label}
+                options={options}
+                selectValue='name'
+                value={getOption(options, formValues[fieldName])}
+                onChange={handleSelectChange(fieldName)}
+                isSearchable={false}
+            />
+            {errorMessages[fieldName] ? (
+                <Text
+                    className={styles.helperText}
+                    font={[FontType.text_xs_regular, FontType.text_xs_regular]}
+                    color='red-500'
+                >
+                    {errorMessages[fieldName]}
+                </Text>
+            ) : null}
+        </div>
+    );
+
+    return (
+        <Modal open={open} setOpen={onClose} sx={{ '& .MuiPaper-root': { borderRadius: '12px' } }}>
+            <form className={styles.form} onSubmit={handleSubmit} noValidate>
+                <Text
+                    tagType='h2'
+                    font={[FontType.text_xl_semibold, FontType.text_xl_semibold]}
+                    color='black'
+                >
+                    {modalTitle}
+                </Text>
+
+                <div className={styles.fields}>
+                    <Input
+                        id='studentName'
+                        label={STUDENT_FORM_TEXT.studentName.label}
+                        name='studentName'
+                        value={formValues.studentName}
+                        placeholder={STUDENT_FORM_TEXT.studentName.placeholder}
+                        helperText={errorMessages.studentName || ''}
+                        error={!!errorMessages.studentName}
+                        onChange={handleChange}
+                        required
+                    />
+                    {renderDropdown(
+                        'grade',
+                        STUDENT_FORM_TEXT.grade.label,
+                        STUDENT_FORM_TEXT.grade.placeholder,
+                        GRADE_OPTIONS,
+                    )}
+                    {renderDropdown(
+                        'section',
+                        STUDENT_FORM_TEXT.section.label,
+                        STUDENT_FORM_TEXT.section.placeholder,
+                        SECTION_OPTIONS,
+                    )}
+                    <Input
+                        id='fatherName'
+                        label={STUDENT_FORM_TEXT.fatherName.label}
+                        name='fatherName'
+                        value={formValues.fatherName}
+                        placeholder={STUDENT_FORM_TEXT.fatherName.placeholder}
+                        helperText={errorMessages.fatherName || ''}
+                        error={!!errorMessages.fatherName}
+                        onChange={handleChange}
+                        required
+                    />
+                    <Input
+                        id='motherName'
+                        label={STUDENT_FORM_TEXT.motherName.label}
+                        name='motherName'
+                        value={formValues.motherName}
+                        placeholder={STUDENT_FORM_TEXT.motherName.placeholder}
+                        helperText={errorMessages.motherName || ''}
+                        error={!!errorMessages.motherName}
+                        onChange={handleChange}
+                        required
+                    />
+                    {renderDropdown(
+                        'gender',
+                        STUDENT_FORM_TEXT.gender.label,
+                        STUDENT_FORM_TEXT.gender.placeholder,
+                        GENDER_OPTIONS,
+                    )}
+                    <Input
+                        id='dateOfBirth'
+                        label={STUDENT_FORM_TEXT.dateOfBirth.label}
+                        name='dateOfBirth'
+                        type='date'
+                        value={formValues.dateOfBirth}
+                        helperText={errorMessages.dateOfBirth || ''}
+                        error={!!errorMessages.dateOfBirth}
+                        onChange={handleChange}
+                        required
+                    />
+                    {renderDropdown(
+                        'status',
+                        STUDENT_FORM_TEXT.status.label,
+                        STUDENT_FORM_TEXT.status.placeholder,
+                        STATUS_OPTIONS,
+                    )}
+                </div>
+
+                <div className={styles.actions}>
+                    <Button
+                        type='button'
+                        label={STUDENT_FORM_TEXT.cancelButton}
+                        variant={ButtonVariant.OUTLINED}
+                        color='black'
+                        onClick={onClose}
+                        disabled={isSubmitting}
+                    />
+                    <Button
+                        type='submit'
+                        label={submitLabel}
+                        variant={ButtonVariant.SOLID}
+                        color='white'
+                        disabled={!isFormValid || isSubmitting}
+                        loader={isSubmitting}
+                    />
+                </div>
+            </form>
+        </Modal>
+    );
+};
+
+export default StudentFormModal;

@@ -1,0 +1,409 @@
+@use '@styles/theme' as *;
+
+.panel,
+.actionPanel,
+.statCard {
+    border: 1px solid $gray-200;
+    border-radius: 16px;
+    background: $white;
+    box-sizing: border-box;
+}
+
+.panel {
+    padding: 22px 24px;
+}
+
+.actionPanel {
+    padding: 22px 24px;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.06);
+    animation: cardFloatIn 0.5s ease both;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.actionPanel:hover {
+    border-color: $orange-200;
+    box-shadow: 0 22px 46px rgba(15, 23, 42, 0.09);
+    transform: translateY(-2px);
+}
+
+.panelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.statCard {
+    display: flex;
+    min-height: 90px;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px 18px;
+    background: linear-gradient(180deg, $white, rgba(243, 244, 246, 0.45));
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    animation: statRise 0.44s ease both;
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease,
+        background 0.18s ease;
+}
+
+.statCard:nth-child(2) {
+    animation-delay: 0.04s;
+}
+
+.statCard:nth-child(3) {
+    animation-delay: 0.08s;
+}
+
+.statCard:nth-child(4) {
+    animation-delay: 0.12s;
+}
+
+.statCard:nth-child(5) {
+    animation-delay: 0.16s;
+}
+
+.statCard:hover {
+    border-color: $blue-200;
+    background: linear-gradient(180deg, $white, rgba(239, 246, 255, 0.55));
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    transform: translateY(-2px);
+}
+
+.activeStat {
+    border-color: $yellow-300;
+    background: $amber-50;
+}
+
+.activeStat:hover {
+    border-color: $yellow-300;
+    background: linear-gradient(180deg, $amber-50, rgba(255, 251, 235, 0.76));
+}
+
+.statHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.statIcon {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+
+    &:empty::after {
+        content: '';
+        position: absolute;
+        inset: 9px;
+        border-radius: 999px;
+        background: currentColor;
+    }
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.statCard:hover .statIcon {
+    transform: translateY(-1px) scale(1.06);
+}
+
+.progressList,
+.actionGroups,
+.actionCards {
+    display: flex;
+    flex-direction: column;
+}
+
+.progressList {
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.progressRow {
+    display: grid;
+    grid-template-columns: 116px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+}
+
+.progressLabel {
+    white-space: nowrap;
+}
+
+.progressTrack {
+    height: 28px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: $gray-200;
+}
+
+.progressFill {
+    display: flex;
+    height: 100%;
+    min-width: 28px;
+    align-items: center;
+    padding-left: 10px;
+    border-radius: inherit;
+    box-sizing: border-box;
+    animation: progressGrow 0.72s ease both;
+    transform-origin: left center;
+}
+
+.amountSection {
+    margin-top: 22px;
+    border-top: 1px solid $gray-200;
+    padding-top: 18px;
+}
+
+.amountGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 10px;
+    gap: 16px;
+}
+
+.amountItem {
+    min-height: 58px;
+    padding: 12px 14px;
+    background: $gray-100;
+    border-radius: 12px;
+    box-sizing: border-box;
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease;
+}
+
+.amountItem:hover {
+    background: $grey-50;
+    transform: translateY(-1px);
+}
+
+.amountValue {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.badge {
+    border-radius: 999px;
+    background: $red-100;
+    // color: $red-500;
+    // font-size: 11px;
+    // font-weight: 600;
+    // line-height: 1;
+    padding: 7px 10px;
+}
+
+.actionGroups {
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.actionGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.groupTitle {
+    display: block;
+}
+
+.actionCards {
+    gap: 6px;
+}
+
+.actionCard {
+    display: flex;
+    width: 100%;
+    min-height: 50px;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid transparent;
+    padding: 10px 14px;
+    text-align: left;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-radius: 10px;
+    transition:
+        border-color 0.18s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+}
+
+.actionCard:hover {
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+    transform: translateX(3px);
+}
+
+.actionCard span:first-child {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.arrow {
+    flex-shrink: 0;
+    color: $orange-700;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.blue {
+    color: $blue-600;
+    // background: $blue-50;
+}
+
+.cyan {
+    color: $cyan-600;
+    // background: $cyan-50;
+}
+
+.green {
+    color: $green-600;
+    // background: $green-50;
+}
+
+.orange {
+    color: $orange-500;
+    // background: $orange-50;
+}
+
+.purple {
+    color: $purple-700;
+    background: $purple-50;
+}
+
+.yellow {
+    color: $amber-500;
+    background: $amber-50;
+}
+
+.fill-blue {
+    background: #60a5fa;
+}
+
+.fill-cyan {
+    background: #06b6d4;
+}
+
+.fill-green {
+    background: #10b981;
+}
+
+.fill-orange {
+    background: #ff8a00;
+}
+
+.fill-purple {
+    background: #a875ff;
+}
+
+.fill-yellow {
+    background: #ffb300;
+}
+
+.blueSurface {
+    border-color: $blue-200;
+    background: $blue-50;
+}
+
+.cyanSurface {
+    border-color: $cyan-200;
+    background: $cyan-50;
+}
+
+.orangeSurface {
+    border-color: $yellow-300;
+    background: $amber-50;
+}
+
+.purpleSurface {
+    border-color: $purple-200;
+    background: $purple-50;
+}
+
+.greenSurface,
+.yellowSurface {
+    border-color: $green-400;
+    background: $green-50;
+}
+
+@media (max-width: 767px) {
+    .panel,
+    .actionPanel {
+        padding: 16px;
+    }
+
+    .progressRow {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .amountGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .actionPanel,
+    .statCard,
+    .progressFill {
+        animation: none;
+    }
+
+    .actionPanel,
+    .statCard,
+    .statIcon,
+    .actionCard,
+    .amountItem {
+        transition: none;
+    }
+}
+
+@keyframes progressGrow {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes statRise {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardFloatIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

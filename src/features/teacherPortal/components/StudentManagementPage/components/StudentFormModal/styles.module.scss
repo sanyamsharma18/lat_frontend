@@ -1,0 +1,36 @@
+@use '@styles/theme' as *;
+
+.form {
+    width: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.fieldWithError {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.helperText {
+    padding-left: 16px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}

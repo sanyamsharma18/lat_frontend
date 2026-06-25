@@ -1,0 +1,69 @@
+@use './_base.scss';
+@use './_theme.scss' as *;
+
+.rdrDefinedRangesWrapper {
+    display: none;
+}
+
+.rdrDateDisplayWrapper {
+    display: none;
+}
+
+.rdrMonthName {
+    display: none;
+}
+
+.rdrMonthAndYearWrapper {
+    padding-top: 0px !important;
+}
+
+.rdrMonthAndYearWrapper {
+    padding-top: 0px !important;
+}
+
+.react-date-range__calendar .rdrDayToday {
+    text-decoration: none;
+}
+
+.rdrDayToday .rdrDayNumber span:after {
+    content: none !important;
+}
+
+.rdrDayNumber {
+    top: 0px !important;
+}
+
+.Toastify__toast-icon {
+    width: 33px !important;
+}
+
+.Toastify__toast-theme--light > svg {
+    margin-top: 8px;
+}
+
+.Toastify__progress-bar--bg {
+    background: white !important;
+    opacity: 1 !important;
+}
+
+.Toastify__toast--success {
+    background: $green-600 !important;
+    color: white !important;
+}
+
+.Toastify__toast--error {
+    background: $red-600 !important;
+    color: white !important;
+}
+
+.slick-initialized .slick-slide {
+    display: flex !important;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.slick-slider {
+    @include breakpoints('md') {
+        width: 50%;
+    }
+}

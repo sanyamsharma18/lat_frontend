@@ -1,0 +1,120 @@
+@use '@styles/theme' as *;
+
+.sidebarWrapper {
+    height: 100vh;
+    width: 240px;
+    background: $navy-900;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.titleContainer {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    border-bottom: 0.8px solid rgba(255, 255, 255, 0.06);
+}
+
+.sunLogo {
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    display: flex;
+    padding: 0 8px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.sidebarLoggedPosition {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebarOption {
+    padding: 16px 12px 0;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menuItem {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: rgba(254, 154, 0, 0.15);
+    }
+}
+
+.active {
+    background: rgba(254, 154, 0, 0.15);
+}
+
+.menuItem:hover .menuText,
+.active .menuText {
+    color: $white !important;
+}
+
+.menuItem:hover .icon,
+.active .icon {
+    filter: brightness(0) invert(1);
+}
+
+.footerWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 12px;
+    border-top: 0.8px solid rgba(255, 255, 255, 0.06);
+}
+
+.userDetail {
+    display: flex;
+    gap: 12px;
+    padding: 8px 12px;
+}
+
+.textLogo {
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.signOutContainer {
+    border: none;
+    width: 100%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 10px;
+
+    &:hover {
+        background: rgba(254, 154, 0, 0.15);
+
+        .menuText {
+            color: $white !important;
+        }
+
+        .icon {
+            filter: brightness(0) invert(1);
+        }
+    }
+}

@@ -1,0 +1,57 @@
+import AnalyticsIcon from '@/assets/svg/sidebar-icon/analytics-icon.svg';
+import DashboardIcon from '@/assets/svg/sidebar-icon/dashboard-icon.svg';
+
+export type UserRole = 'ADMIN' | 'TEACHER' | 'STUDENT';
+
+export interface MenuItem {
+    menuId: number;
+    menuName: string;
+    path: string;
+    icon?: React.ReactNode;
+}
+
+export const ADMIN_MENU: MenuItem[] = [
+    {
+        menuId: 1,
+        menuName: 'Dashboard',
+        path: '/admin/dashboard',
+        icon: <DashboardIcon />,
+    },
+    {
+        menuId: 3,
+        menuName: 'Teacher Management',
+        path: '/admin/teachers',
+        icon: <AnalyticsIcon />,
+    },
+];
+
+export const TEACHER_MENU: MenuItem[] = [
+    {
+        menuId: 1,
+        menuName: 'Dashboard',
+        path: '/teacher/dashboard',
+        icon: <DashboardIcon />,
+    },
+    {
+        menuId: 2,
+        menuName: 'Student Management',
+        path: '/teacher/students',
+        icon: <AnalyticsIcon />,
+    },
+];
+
+export const getSidebarMenuByRole = (userRole?: UserRole | '') => {
+    switch (userRole) {
+        case 'ADMIN':
+            return ADMIN_MENU;
+        case 'TEACHER':
+            return TEACHER_MENU;
+        default:
+            return [];
+    }
+};
+
+export const SIDEBAR_CONTENT = {
+    companyName: 'Lat Portal',
+    signOutText: 'Sign out',
+};

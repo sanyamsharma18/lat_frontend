@@ -1,0 +1,88 @@
+@use "sass:map";
+@use "sass:meta";
+
+// Mobile-first approach (min-width).
+// You can extend/override this map by using `@use` with `with (...)`.
+$breakpoints: (
+    xxs: (min-width: 280px),
+    xs: (min-width: 425px),
+    sm: (min-width: 640px),
+    md: (min-width: 768px),
+    lg: (min-width: 1024px),
+    xl: (min-width: 1280px),
+    "2xl": (min-width: 1440px),
+    "3xl": (min-width: 1620px),
+) !default;
+
+@function _min-width($breakpoint) {
+    @if meta.type-of($breakpoints) != "map" {
+        @error "$breakpoints must be a Sass map.";
+    }
+
+    @if not map.has-key($breakpoints, $breakpoint) and not map.has-key($breakpoints, meta.inspect($breakpoint)) {
+        @warn "No breakpoint found for `#{$breakpoint}`. Available: #{map.keys($breakpoints)}.";
+        @return null;
+    }
+
+    $key: $breakpoint;
+
+    @if not map.has-key($breakpoints, $key) {
+        $key: meta.inspect($breakpoint);
+    }
+
+    $value: map.get($breakpoints, $key);
+
+    @if meta.type-of($value) == "map" and map.has-key($value, min-width) {
+        @return map.get($value, min-width);
+    }
+
+    // Fallback: allow maps where the value is a direct length.
+    @if meta.type-of($value) == "number" or meta.type-of($value) == "string" {
+        @return $value;
+    }
+
+    @warn "Breakpoint `#{$breakpoint}` exists but has no `min-width`.";
+    @return null;
+}
+
+// Base mixin: injects a media query for the given breakpoint.
+@mixin breakpoint-up($breakpoint) {
+    $min: _min-width($breakpoint);
+    @if $min != null {
+        @media (min-width: $min) {
+            @content;
+        }
+    }
+}
+
+// Max-width variant, commonly used for "hide on md and above".
+@mixin breakpoint-down($breakpoint) {
+    $min: _min-width($breakpoint);
+    @if $min != null {
+        // Convert `min-width: 768px` to `max-width: 767px`.
+        @media (max-width: calc(#{$min} - 1px)) {
+            @content;
+        }
+    }
+}
+
+// Between two breakpoints (inclusive). Useful for constrained layouts.
+@mixin breakpoint-between($lower, $upper) {
+    $minLower: _min-width($lower);
+    $minUpper: _min-width($upper);
+
+    @if $minLower != null and $minUpper != null {
+        @media (min-width: $minLower) and (max-width: calc(#{$minUpper} - 1px)) {
+            @content;
+        }
+    }
+}
+
+// Backwards-compatible alias for your theme.scss snippet.
+// Allows: `@include breakpoints('xl') { ... }`
+@mixin breakpoints($breakpoint) {
+    @include breakpoint-up($breakpoint) {
+        @content;
+    }
+}
+

@@ -1,0 +1,17 @@
+# Ignore build output
+.next
+
+# Ignore dependency directories
+node_modules
+
+# Ignore environment variable files
+.env
+.env.*
+
+# Ignore public/static assets
+public
+static
+
+# Ignore compiled files (for Typescript or scss)
+*.log
+*.tsbuildinfo

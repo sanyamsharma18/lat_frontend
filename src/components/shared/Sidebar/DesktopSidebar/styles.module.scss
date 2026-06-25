@@ -1,0 +1,132 @@
+@use '@styles/theme' as *;
+
+.sidebar-wrapper {
+    height: 100vh;
+    width: 240px;
+    background: $navy-900;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .title-container {
+        display: flex;
+        gap: 12px;
+        padding: 20px;
+        border-bottom: 0.8px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .sun-logo {
+        border-radius: 9999px;
+        background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        display: flex;
+        padding: 0 8px;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .sidebar-logged-position {
+        display: flex;
+        flex-direction: column;
+        word-break: break-all;
+    }
+
+    .sidebar-option {
+        padding: 16px 12px 0px;
+    }
+
+    .menuItem {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        transition: background 0.2s ease;
+        cursor: pointer;
+
+        &:hover {
+            padding: 12px;
+            background: rgba(254, 154, 0, 0.15);
+        }
+
+        &.active {
+            background: rgba(254, 154, 0, 0.15);
+
+            .icon {
+                filter: brightness(0) saturate(100%) invert(73%) sepia(94%) saturate(1117%)
+                    hue-rotate(359deg) brightness(103%) contrast(104%);
+            }
+
+            .menu-text {
+                color: $white !important;
+            }
+        }
+    }
+
+    .menuItem:hover .menuText {
+        color: $white;
+    }
+
+    .menuItem:hover .icon {
+        filter: brightness(0) invert(1);
+    }
+
+    .menu-text {
+        transition: color 0.2s ease;
+    }
+
+    .panel {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .footer-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 16px 12px;
+        border-top: 0.8px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .user-detail {
+        display: flex;
+        gap: 12px;
+        padding: 8px 12px;
+    }
+
+    .text-logo {
+        border-radius: 26843500px;
+        background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        width: 28px;
+        height: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .signOut-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        cursor: pointer;
+
+        &:hover {
+            border-radius: 10px;
+            background: rgba(254, 154, 0, 0.15);
+
+            .menuText {
+                color: $white !important;
+            }
+
+            .icon {
+                filter: brightness(0) invert(1);
+            }
+        }
+    }
+}

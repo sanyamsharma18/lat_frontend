@@ -1,0 +1,16 @@
+@use '../../../styles/_theme.scss' as *;
+
+.loader {
+    width: 32px;
+    height: 32px;
+    border: 4px solid transparent;
+    border-radius: 50%;
+    border-top-color: $orange-600;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,79 @@
+@use '@styles/theme' as *;
+
+.tableShell {
+    width: 100%;
+}
+
+.desktopTable {
+    overflow-x: auto;
+    background: $white;
+}
+
+.table {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: collapse;
+}
+
+.table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: $gray-100;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid $gray-200;
+}
+
+.table td {
+    border-top: 1px solid $gray-200;
+    padding: 13px 16px;
+    vertical-align: middle;
+}
+
+.table tbody tr {
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease;
+}
+
+.table tbody tr:hover {
+    background: $amber-50;
+}
+
+.mobileCards {
+    display: none;
+}
+
+.mobileCard {
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    padding: 14px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.emptyState {
+    display: flex;
+    justify-content: center;
+    border: 1px solid $gray-200;
+    border-top: 0;
+    padding: 28px;
+}
+
+.emptyWithCards {
+    border-radius: 14px;
+    border-top: 1px solid $gray-200;
+}
+
+@media (max-width: 767px) {
+    .desktopTable {
+        display: none;
+    }
+
+    .mobileCards {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+}

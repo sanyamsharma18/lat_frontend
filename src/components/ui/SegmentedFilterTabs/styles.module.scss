@@ -1,0 +1,82 @@
+@use '@styles/theme' as *;
+
+.tabs {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    gap: 6px;
+    overflow-x: auto;
+    border: 1px solid $gray-200;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(243, 244, 246, 0.92));
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.8) inset,
+        0 10px 26px rgba(15, 23, 42, 0.05);
+    padding: 5px;
+}
+
+.tabButton {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: $navy-900;
+    cursor: pointer;
+    padding: 0 18px;
+    white-space: nowrap;
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.72);
+        transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $blue-200;
+        outline-offset: 2px;
+    }
+}
+
+.activeTab {
+    background: $white;
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.8) inset,
+        0 9px 20px rgba(15, 23, 42, 0.1);
+}
+
+.tabCount {
+    display: inline-flex;
+    min-width: 24px;
+    min-height: 24px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: $blue-50;
+    color: $blue-600;
+    padding: 0 7px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tabButton {
+        transition: none;
+    }
+}
+
+@include breakpoint-down(sm) {
+    .tabs {
+        width: 100%;
+    }
+
+    .tabButton {
+        flex: 1 0 auto;
+        padding: 0 14px;
+    }
+}

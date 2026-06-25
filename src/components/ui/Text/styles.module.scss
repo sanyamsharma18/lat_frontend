@@ -1,0 +1,205 @@
+@use 'sass:list';
+@use '../../../styles/_theme.scss' as *;
+
+/* In the font variable function will sequentially follow the below order
+1. Font family
+2. Font size
+3. Font weight
+4. Line Height
+*/
+
+$fonts: (
+    // ===== DISPLAY =====
+    // ===== 2XL =====
+    'display_Desktop_2xl_regular': ('Inter, sans-serif', 72, 400, 88),
+    'display_Dektop_2xl_medium': ('Inter, sans-serif', 72, 500, 88),
+    'display_Desktop_2xl_semibold': ('Inter, sans-serif', 72, 600, 88),
+    'display_Desktop_2xl_bold': ('Inter, sans-serif', 72, 700, 88),
+    // ==== XL ====
+    'display_Desktop_xl_regular': ('Inter, sans-serif', 60, 400, 72),
+    'display_Desktop_xl_medium': ('Inter, sans-serif', 60, 500, 72),
+    'display_Desktop_xl_semibold': ('Inter, sans-serif', 60, 600, 72),
+    'display_Desktop_xl_bold': ('Inter, sans-serif', 60, 700, 72),
+    // === XLG ===
+    'display_Desktop_xlg_regular': ('Inter, sans-serif', 54, 400, 64),
+    'display_Desktop_xlg_medium': ('Inter, sans-serif', 54, 500, 64),
+    'display_Desktop_xlg_semibold': ('Inter, sans-serif', 54, 600, 64),
+    'display_Desktop_xlg_bold': ('Inter, sans-serif', 54, 700, 64),
+    // ==== LG ====
+    'display_Desktop_lg_regular': ('Inter, sans-serif', 48, 400, 60),
+    'display_Desktop_lg_medium': ('Inter, sans-serif', 48, 500, 60),
+    'display_Desktop_lg_semibold': ('Inter, sans-serif', 48, 600, 60),
+    'display_Desktop_lg_bold': ('Inter, sans-serif', 48, 700, 60),
+    // === XMD ===
+    'display_Desktop_xmd_regular': ('Inter, sans-serif', 40, 400, 48),
+    'display_Desktop_xmd_medium': ('Inter, sans-serif', 40, 500, 48),
+    'display_Desktop_xmd_semibold': ('Inter, sans-serif', 40, 600, 48),
+    'display_Desktop_xmd_bold': ('Inter, sans-serif', 40, 700, 48),
+    // ==== MD ====
+    'display_Desktop_md_regular': ('Inter, sans-serif', 36, 400, 44),
+    'display_Desktop_md_medium': ('Inter, sans-serif', 36, 500, 44),
+    'display_Desktop_md_semibold': ('Inter, sans-serif', 36, 600, 44),
+    'display_Desktop_md_bold': ('Inter, sans-serif', 36, 700, 44),
+    // ==== SM ====
+    'display_Desktop_sm_regular': ('Inter, sans-serif', 30, 400, 38),
+    'display_Desktop_sm_medium': ('Inter, sans-serif', 30, 500, 38),
+    'display_Desktop_sm_semibold': ('Inter, sans-serif', 30, 600, 38),
+    'display_Desktop_sm_bold': ('Inter, sans-serif', 30, 700, 38),
+    // ===== TEXT =====
+    // ==== XXL ====
+    'text_xxl_regular': ('Inter, sans-serif', 24, 400, 30),
+    'text_xxl_medium': ('Inter, sans-serif', 24, 500, 30),
+    'text_xxl_semibold': ('Inter, sans-serif', 24, 600, 30),
+    'text_xxl_bold': ('Inter, sans-serif', 24, 700, 30),
+    // ==== XL ====
+    'text_xl_regular': ('Inter, sans-serif', 20, 400, 32),
+    'text_xl_medium': ('Inter, sans-serif', 20, 500, 32),
+    'text_xl_semibold': ('Inter, sans-serif', 20, 600, 32),
+    'text_xl_bold': ('Inter, sans-serif', 20, 700, 32),
+    // ==== LG ====
+    'text_lg_regular': ('Inter, sans-serif', 18, 400, 28),
+    'text_lg_medium': ('Inter, sans-serif', 18, 500, 28),
+    'text_lg_semibold': ('Inter, sans-serif', 18, 600, 28),
+    'text_lg_bold': ('Inter, sans-serif', 18, 700, 28),
+    // ==== MD ====
+    'text_md_regular': ('Inter, sans-serif', 16, 400, 24),
+    'text_md_medium': ('Inter, sans-serif', 16, 500, 24),
+    'text_md_semibold': ('Inter, sans-serif', 16, 600, 24),
+    'text_md_bold': ('Inter, sans-serif', 16, 700, 24),
+    // ==== SM ====
+    'text_sm_regular': ('Inter, sans-serif', 14, 400, 20),
+    'text_sm_medium': ('Inter, sans-serif', 14, 500, 20),
+    'text_sm_semibold': ('Inter, sans-serif', 14, 600, 20),
+    'text_sm_bold': ('Inter, sans-serif', 14, 700, 20),
+    // ==== XS ====
+    'text_xs_regular': ('Inter, sans-serif', 12, 400, 18),
+    'text_xs_medium': ('Inter, sans-serif', 12, 500, 18),
+    'text_xs_semibold': ('Inter, sans-serif', 12, 600, 18),
+    'text_xs_bold': ('Inter, sans-serif', 12, 700, 18),
+    // ===== XXS =====
+    'text_xxs_regular': ('Inter, sans-serif', 10, 400, 14),
+    'text_xxs_medium': ('Inter, sans-serif', 10, 500, 14),
+    'text_xxs_semibold': ('Inter, sans-serif', 10, 600, 14),
+    'text_xxs_bold': ('Inter, sans-serif', 10, 700, 14)
+);
+
+$colors: (
+    // ===== BASE =====
+    white: #ffffff,
+    black: #000000,
+
+    // ===== TEXT =====
+    text-light: #717182,
+
+    // ===== GRAY =====
+    grey-50: #f3f3f5,
+    gray-100: #f3f4f6,
+    gray-150: #ececf0,
+    gray-200: #e5e7eb,
+    gray-500: #717182,
+
+    // ===== SLATE =====
+    slate-400: #90a1b9,
+    slate-500: #62748e,
+    slate-600: #4a5565,
+
+    // ===== AMBER =====
+    amber-50: #fffbeb,
+    amber-500: #ffb900,
+    amber-700: #a65f00,
+
+    // ===== ORANGE =====
+    orange-50: #fff7ed,
+    orange-200: #ffd6a8,
+    orange-500: #f59e0b,
+    orange-600: #d97706,
+    orange-700: #e17100,
+    orange-800: #ca3500,
+
+    // ===== YELLOW =====
+    yellow-50: #fefce8,
+    yellow-300: #fee685,
+    yellow-400: #fff085,
+    solar-yellow: #fbbf24,
+
+    // ===== NAVY =====
+    navy-900: #0f172a,
+
+    // ===== VIOLET =====
+    violet-50: #f5f3ff,
+    violet-400: #a684ff,
+
+    // ===== BLUE =====
+    blue-50: #eff6ff,
+    blue-200: #bedbff,
+    blue-600: #155dfc,
+    blue-900: #1e3a5f,
+
+    // ===== GREEN =====
+    green-50: #f0fdf4,
+    green-400: #32d583,
+    green-600: #009966,
+    green-700: #497d00,
+
+    // ===== RED =====
+    red-0: #fef3f2,
+    red-100: #ffe2e2,
+    red-200: #fecdca,
+    red-300: #fda29b,
+    red-400: #f97066,
+    red-500: #f04438,
+    red-600: #e7000b,
+    red-700: #b42318,
+    red-800: #912018,
+    red-900: #7a271a,
+
+    // ===== CYAN =====
+    cyan-50: #ecfeff,
+    cyan-200: #a2f4fd,
+    cyan-600: #0092b8,
+    cyan-700: #007595,
+
+    // ===== LIME =====
+    lime-50: #f7fee7,
+    lime-200: #d8f999,
+
+    // ===== TEAL =====
+    teal-50: #f0fdfa,
+    teal-200: #96f7e4,
+    teal-700: #00786f,
+
+    // ===== PURPLE =====
+    purple-50: #faf5ff,
+    purple-200: #e9d4ff,
+    purple-700: #8200db,
+
+    primary-navy: #1e4d6b,
+
+    burnt-orange: #bb4d00,
+);
+
+@each $name, $color in $colors {
+    .color--#{'' + $name} {
+        color: $color;
+    }
+}
+
+@each $fontName, $font in $fonts {
+    .text__#{$fontName} {
+        font-family: #{list.nth($font, 1)};
+        font-size: #{list.nth($font, 2)}px;
+        font-weight: #{list.nth($font, 3)};
+        line-height: #{list.nth($font, -1)}px;
+    }
+}
+
+@each $fontName, $font in $fonts {
+    .text__desktop_#{$fontName} {
+        @include breakpoints('xl') {
+            font-family: #{list.nth($font, 1)};
+            font-size: #{list.nth($font, 2)}px;
+            font-weight: #{list.nth($font, 3)};
+            line-height: #{list.nth($font, -1)}px;
+        }
+    }
+}

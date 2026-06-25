@@ -1,0 +1,47 @@
+@use '../../../styles/_theme.scss' as *;
+
+.primary-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    position: relative;
+    width: 100%;
+    max-width: fit-content;
+
+    @include breakpoints('lg') {
+        gap: 12px;
+    }
+
+    .checkbox-input {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1px solid $gray-200;
+        border-radius: 4px;
+        background-color: $white;
+        cursor: pointer;
+
+        &:focus {
+            outline: none;
+        }
+
+        &:checked {
+            border: 1px solid $orange-500;
+        }
+
+        &:disabled {
+            border-color: $gray-200;
+            background-color: $gray-200;
+        }
+    }
+
+    .check-icon {
+        position: absolute;
+        cursor: pointer;
+        left: 2px;
+
+        .checkbox-input:checked + & {
+            display: block;
+        }
+    }
+}

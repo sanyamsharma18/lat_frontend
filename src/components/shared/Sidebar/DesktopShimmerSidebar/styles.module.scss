@@ -1,0 +1,146 @@
+@use '@styles/theme' as *;
+
+.sidebarWrapperShimmer {
+    height: 100vh;
+    width: 240px;
+    background: $navy-900;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.shimmer {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        animation: shimmer 1.4s infinite;
+    }
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* HEADER */
+
+.titleContainerShimmer {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    border-bottom: 0.8px solid rgba(255, 255, 255, 0.06);
+}
+
+.logoShimmer {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    flex-shrink: 0;
+}
+
+.companyDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.companyNameShimmer {
+    width: 120px;
+    height: 16px;
+}
+
+.roleShimmer {
+    width: 80px;
+    height: 12px;
+    margin-top: 4px;
+}
+
+/* MENU */
+
+.menuWrapperShimmer {
+    padding: 16px 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menuItemShimmer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+}
+
+.menuIconShimmer {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.menuTextShimmer {
+    width: 120px;
+    height: 14px;
+}
+
+/* FOOTER */
+
+.footerWrapperShimmer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 12px;
+    border-top: 0.8px solid rgba(255, 255, 255, 0.06);
+}
+
+.userDetailShimmer {
+    display: flex;
+    gap: 12px;
+    padding: 8px 12px;
+}
+
+.avatarShimmer {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    flex-shrink: 0;
+}
+
+.userInfoShimmer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.userNameShimmer {
+    width: 110px;
+    height: 14px;
+}
+
+.emailShimmer {
+    width: 150px;
+    height: 12px;
+}
+
+.signOutShimmer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+}
+
+.signOutTextShimmer {
+    width: 70px;
+    height: 14px;
+}

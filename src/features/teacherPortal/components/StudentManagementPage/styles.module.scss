@@ -1,0 +1,191 @@
+@use '@styles/theme' as *;
+
+.page {
+    min-height: 100vh;
+    padding: 20px;
+    background-color: $gray-100;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    @include breakpoints('lg') {
+        padding: 24px;
+    }
+}
+
+.header,
+.titleGroup {
+    display: flex;
+}
+
+.header {
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-direction: column;
+
+    @include breakpoints('md') {
+        align-items: center;
+        flex-direction: row;
+    }
+}
+
+.titleGroup {
+    flex-direction: column;
+    gap: 4px;
+}
+
+.toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: end;
+    padding: 14px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background-color: $white;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+    @include breakpoints('xl') {
+        grid-template-columns:
+            minmax(180px, 1.1fr) minmax(120px, 0.8fr) minmax(110px, 0.7fr) minmax(118px, 0.75fr)
+            88px 80px 122px 148px;
+    }
+}
+
+.filterControl,
+.searchInput {
+    width: 100%;
+}
+
+.compactDropdown,
+.compactInput {
+    height: 40px;
+    padding: 8px 12px !important;
+}
+
+.compactDropdown {
+    margin: 0 !important;
+}
+
+.compactButton {
+    height: 40px;
+    justify-content: center;
+    align-self: end;
+    padding: 8px 14px !important;
+    white-space: nowrap;
+}
+
+.searchButton,
+.clearButton,
+.addButton,
+.uploadButton {
+    width: 100%;
+}
+
+.filterOptions {
+    min-height: 0 !important;
+    max-height: 220px !important;
+    padding: 8px !important;
+}
+
+.warningAlert {
+    padding: 10px 14px;
+    border: 1px solid $yellow-300;
+    border-radius: 8px;
+    background-color: $yellow-50;
+}
+
+.tableSection {
+    background-color: $white;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.rowActions,
+.statusCell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.actionButton,
+.deleteButton {
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 18px;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 6px 10px;
+
+    &:focus-visible {
+        outline: 2px solid $orange-500;
+        outline-offset: 2px;
+    }
+}
+
+.actionButton {
+    color: $blue-600;
+    background-color: $blue-50;
+}
+
+.deleteButton {
+    color: $red-600;
+    background-color: $red-100;
+}
+
+.statusBadge {
+    border-radius: 999px;
+    padding: 4px 8px;
+    background-color: $green-50;
+}
+
+.inactiveBadge {
+    background-color: $red-100;
+}
+
+.mobileCardContent {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+}
+
+.shimmerRow {
+    height: 44px;
+    border-radius: 8px;
+}
+
+.errorState,
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    text-align: center;
+}
+
+.emptyState {
+    min-height: 240px;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+}

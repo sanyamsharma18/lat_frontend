@@ -1,0 +1,290 @@
+@use '@styles/theme' as *;
+
+.card {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    padding: 16px 18px;
+
+    border: 1px solid #dbdbdd;
+    border-radius: 14px;
+
+    background: #f3f3f5;
+
+    box-sizing: border-box;
+}
+
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+.iconWrapper {
+    flex-shrink: 0;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    min-width: 0;
+}
+
+.actionContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.uploadWrapper {
+    position: relative;
+}
+
+.uploadButton {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 10px 18px;
+    border: 1px dotted #dbdbdd;
+    border-radius: 10px;
+    background: #fff;
+    color: #6b7280;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+
+    flex-shrink: 0;
+
+    &:hover {
+        background: #f9fafb;
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+
+    &:focus-visible {
+        outline: 2px solid #111827;
+        outline-offset: 2px;
+    }
+}
+
+.viewButton {
+    color: #111827;
+}
+
+.changeButton {
+    border-style: solid;
+}
+
+.removeButton {
+    border-style: solid;
+
+    color: #dc2626;
+}
+
+.hiddenInput {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    padding: 0;
+    margin: -1px;
+
+    overflow: hidden;
+
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+
+    border: 0;
+
+    white-space: nowrap;
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgb(0 0 0 / 60%);
+
+    z-index: 9999;
+
+    overflow-y: auto;
+}
+
+.modal {
+    position: relative;
+
+    width: min(700px, 100%);
+    max-height: calc(100vh - 40px);
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    border-radius: 20px;
+
+    background: #fff;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    margin-bottom: 16px;
+}
+
+.modalTitle {
+    margin: 0;
+
+    // font-size: 18px;
+    // font-weight: 600;
+    // line-height: 1.4;
+
+    // color: #111827;
+}
+
+.closeButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #f3f4f6;
+
+    font-size: 16px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+
+    &:hover {
+        background: #e5e7eb;
+    }
+
+    &:active {
+        transform: scale(0.96);
+    }
+
+    &:focus-visible {
+        outline: 2px solid #111827;
+        outline-offset: 2px;
+    }
+}
+
+.previewContainer {
+    position: relative;
+
+    width: 100%;
+    height: 500px;
+
+    overflow: hidden;
+
+    border-radius: 16px;
+
+    background: #f9fafb;
+}
+
+.previewImage {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+}
+
+.filePreview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 24px;
+
+    text-align: center;
+
+    word-break: break-word;
+}
+
+@media (width <= 768px) {
+    .card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .leftSection {
+        width: 100%;
+    }
+
+    .actionContainer {
+        width: 100%;
+    }
+
+    .uploadButton {
+        flex: 1;
+    }
+
+    .modal {
+        padding: 16px;
+
+        border-radius: 16px;
+    }
+
+    .previewContainer {
+        height: 320px;
+    }
+}

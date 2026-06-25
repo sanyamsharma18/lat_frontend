@@ -1,0 +1,36 @@
+@use '@styles/theme' as *;
+
+.shell {
+    min-height: 100vh;
+    display: flex;
+    background-color: $gray-100;
+}
+
+.desktopSidebar {
+    display: none;
+    flex: 0 0 240px;
+
+    @include breakpoints('lg') {
+        display: block;
+    }
+}
+
+.contentWrapper {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobileHeader {
+    display: block;
+
+    @include breakpoints('lg') {
+        display: none;
+    }
+}
+
+.content {
+    min-width: 0;
+    flex: 1;
+}

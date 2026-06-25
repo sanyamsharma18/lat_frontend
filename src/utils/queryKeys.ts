@@ -1,0 +1,12 @@
+export enum QueryKeys {
+    ALL_LEAD = 'allLead',
+    MARKETING_LEAD_TIMELINE = 'marketingLeadTimeline',
+    MARKETING_IMAGE_PREVIEW = 'marketingImgPreview',
+    TEACHERS = 'teachers',
+    REGIONS = 'regions',
+    SCHOOLS = 'schools',
+    DASHBOARD_SUMMARY = 'dashboard-summary',
+    TEACHER_DASHBOARD = 'teacher-dashboard',
+    STUDENTS = 'students',
+    STUDENT = 'student',
+}

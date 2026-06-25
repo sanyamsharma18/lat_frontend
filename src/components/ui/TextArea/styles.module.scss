@@ -1,0 +1,106 @@
+@use '../../../styles/_theme.scss' as *;
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .helper-text {
+        padding-left: 16px;
+    }
+
+    .container-wrapper {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 11px 16px;
+        gap: 12px;
+        border: 1px solid $gray-200;
+        border-radius: 8px;
+        background-color: $white;
+
+        &[data-display='true'] {
+            border: 1px solid $red-500;
+
+            &:hover {
+                border: 1px solid $red-600;
+            }
+        }
+
+        &[data-display='false'] {
+            border: 1px solid $gray-200;
+        }
+
+        .input-container {
+            width: 100%;
+            outline: none;
+            color: $black;
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 24px;
+            font-size: 14px;
+
+            &:disabled {
+                background-color: $gray-200;
+                color: $black;
+            }
+
+            &::placeholder {
+                color: $gray-500;
+
+                /* body/large/regular */
+                font-family: Inter;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 160%; /* 25.6px */
+            }
+        }
+
+        &:hover {
+            border: 1px solid $orange-500;
+            box-shadow:
+                0px 1px 2px 0px rgba(16, 24, 40, 0.05),
+                0px 0px 0px 1px $orange-500;
+        }
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+}
+
+.disabled {
+    background-color: $gray-200 !important;
+
+    &:hover {
+        border: 1px solid $gray-200 !important;
+    }
+}
+
+.textarea-container {
+    width: 100%;
+    resize: vertical;
+    outline: none;
+    border: none;
+    background: transparent;
+    color: $black;
+
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+
+    &:disabled {
+        background-color: $gray-200;
+        color: $black;
+    }
+
+    &::placeholder {
+        color: $gray-500;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 160%;
+    }
+}

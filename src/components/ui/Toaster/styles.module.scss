@@ -1,0 +1,11 @@
+@use '../../../styles/_theme.scss' as *;
+
+.fancy-progress-bar-error {
+    background: $red-400;
+    opacity: 1;
+}
+
+.fancy-progress-bar-success {
+    background-color: $green-400 !important;
+    opacity: 1;
+}

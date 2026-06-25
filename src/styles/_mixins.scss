@@ -1,0 +1,107 @@
+// @use './_breakpoints.scss' as *;
+/**
+ * _mixins.scss
+ *
+ * SCSS mixins for common styling patterns.
+ */
+
+/// Apply ellipsis to an element.
+///
+
+/// @param {string} $width - Width of the container.
+@mixin ellipsis($width: fit-content) {
+    width: $width;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/// Apply line clamping to an element.
+///
+/// @param {number} $noOfLines - Number of lines to show in the element.
+@mixin line-clamp($noOfLines: 2) {
+    display: -webkit-box;
+    -webkit-line-clamp: $noOfLines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/// Apply fonts styling to an element.
+///
+/// @param {string} $fontFamily - This will take the font-family.
+/// @param {string} $fontStyle - Which style should be used like italic or something.
+/// @param {string} $fontWeight - This will take the weight like bold ,500 ,600 etc.
+/// @param {string} $fontSize - What will be the size of the font.
+/// @param {sting} $lineHeight - Height of the line.
+@mixin poppinsFontStyle($fontFamily, $fontStyle, $fontWeight, $fontSize, $lineHeight) {
+    font-family: $fontFamily, sans-serif;
+    font-style: $fontStyle;
+    font-weight: $fontWeight;
+    font-size: $fontSize;
+    line-height: $lineHeight;
+}
+
+@mixin flexabsolute() {
+    display: flex;
+    position: absolute;
+    z-index: 2;
+    column-gap: 10px;
+    max-height: 24px;
+}
+
+@mixin pyramidCircle($color) {
+    height: 20px;
+    width: 20px;
+    background-color: $color;
+    border-radius: 50%;
+}
+
+@mixin pyramidLine($width, $color) {
+    height: 2px;
+    background-color: $color;
+    align-self: center;
+    width: $width;
+}
+
+@mixin button-base($topBottomPadding, $leftRigthPadding, $borderRadius) {
+    padding: $topBottomPadding $leftRigthPadding;
+    border-radius: $borderRadius;
+}
+
+@mixin custom-scrollbar($gray-100: #ccc, $height: 6px) {
+    scrollbar-width: thin;
+    scrollbar-color: $gray-100 transparent;
+
+    &::-webkit-scrollbar {
+        height: $height;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: $gray-100;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+/**
+ *For dynamic height of the table
+ * With Pagination estimated you can height: calc(100vh - 344px);
+ *
+ * Without Pagination estimated you can height: calc(100vh - 272px)
+ */
+
+@mixin dynamic-table-height($height) {
+    height: $height;
+    overflow-y: scroll;
+}
+
+@mixin flex-center($direction: row, $justify-content: normal, $align-items: normal, $gap: 0) {
+    display: flex;
+    justify-content: $justify-content;
+    align-items: $align-items;
+    flex-direction: $direction;
+    gap: $gap;
+}

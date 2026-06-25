@@ -1,0 +1,22 @@
+@use '../../../styles/_theme.scss' as *;
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    align-items: center;
+    // justify-content: center;
+
+    .radio {
+        height: 14px;
+        width: 14px;
+        appearance: none;
+        border-radius: 50%;
+        border: 1px solid $gray-200;
+        cursor: pointer;
+
+        &:checked {
+            border: 5px solid $orange-500;
+        }
+    }
+}
