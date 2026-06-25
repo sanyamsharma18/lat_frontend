@@ -259,3 +259,238 @@ Reusable Image Option Question
 * Add backend-provided image metadata such as dimensions and alt text.
 * Add support for multi-image prompts and diagram-based questions.
 * Add result review screens for all submitted answers.
+
+## Student Examination Guardrails
+
+### Feature Name
+
+Examination Session Protection
+
+### What Was Changed
+
+* Hid the student profile/logout menu on `/student/examination`.
+* Added an examination-in-progress status in the student header during the exam.
+* Persisted examination progress in browser storage during an active attempt.
+* Restored attempted answers, visited questions, current question, and remaining timer after refresh.
+* Added a browser refresh warning for active examination attempts.
+* Added an in-app toast after refresh to notify the student that refreshing is not allowed and progress was restored.
+* Cleared stored examination progress after successful submission.
+
+### Why It Was Changed
+
+* Students should not be able to logout from the examination screen before submitting.
+* A refresh should not erase attempted answer state during an active examination.
+* Students need a clear warning that refreshing during the exam is not allowed.
+
+### Files Modified
+
+* `src/components/shared/StudentShell/index.tsx`
+* `src/components/shared/StudentShell/styles.module.scss`
+* `src/features/studentPortal/hooks/useStudentExamination.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student shell header
+* Student examination page state hook
+
+### APIs Affected
+
+* None.
+
+### Breaking Changes
+
+* None. Routes and API contracts are unchanged.
+
+### Testing Considerations
+
+* Verify the logout menu is visible on `/student/dashboard`.
+* Verify the logout menu is hidden on `/student/examination`.
+* Answer a few questions, refresh, and confirm answers and palette states are restored.
+* Confirm a browser refresh warning appears during an active exam.
+* Confirm an in-app toast appears after the page reloads.
+* Submit the exam and confirm stored progress is cleared.
+
+## Student Exam Submit Redirect
+
+### Feature Name
+
+Submit and Return to Dashboard
+
+### What Was Changed
+
+* Redirected students to `/student/dashboard` immediately after the submit exam API succeeds.
+* Cleared persisted exam progress before dashboard redirection.
+* Removed student-facing post-submit answer review behavior from the active examination page.
+
+### Why It Was Changed
+
+* Students should only submit the exam and return to the dashboard.
+* Answer checking/review is reserved for the teacher flow, not the student submission screen.
+
+### Files Modified
+
+* `src/features/studentPortal/hooks/useStudentExamination.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### APIs Affected
+
+* `/api/student/exam/submit` is still called before redirecting.
+
+### Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Submit an exam and confirm the submit API succeeds before redirect.
+* Confirm the student lands on `/student/dashboard`.
+* Confirm no correct/incorrect answer review is shown to the student after submission.
+
+## Student Exam Timer Restore Fix
+
+### Feature Name
+
+Timer Persistence Guard
+
+### What Was Changed
+
+* Prevented exam progress from being stored before the timer has a valid value.
+* Ignored and cleared invalid stored progress where `remainingSeconds` is missing, null, or not positive.
+* Ensured the exam timer falls back to the mock exam duration when stored timer progress is invalid.
+
+### Why It Was Changed
+
+* A refresh could restore `remainingSeconds: null`, which caused the countdown effect to stop and display `00:00:00`.
+
+### Files Modified
+
+* `src/features/studentPortal/hooks/useStudentExamination.ts`
+* `docs/CHANGE_LOG.md`
+
+### Testing Considerations
+
+* Open `/student/examination` and confirm the timer starts from the exam duration.
+* Refresh the exam page and confirm the timer continues from the stored value.
+* Clear or corrupt stored exam progress and confirm the timer starts normally from the exam duration.
+
+## Student Shell Repair
+
+### Feature Name
+
+Student Header Markup Fix
+
+### What Was Changed
+
+* Repaired malformed JSX in the student shell header.
+* Removed stray text and duplicated closing tags.
+* Kept the dashboard profile/logout menu behavior.
+* Kept logout hidden during `/student/examination`.
+
+### Why It Was Changed
+
+* The student shell file had invalid JSX that could break compilation.
+
+### Files Modified
+
+* `src/components/shared/StudentShell/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Testing Considerations
+
+* Confirm `/student/dashboard` shows the profile menu.
+* Confirm `/student/examination` shows the examination-in-progress status instead of logout.
+
+## Student Dashboard Rules Modal Access
+
+### Feature Name
+
+Examination Rules Visibility
+
+### What Was Changed
+
+* Added a `View Examination Rules` button on the student dashboard.
+* Kept the first-time instructions modal mandatory until the student accepts it.
+* Allowed the modal to be reopened after acceptance for review.
+
+### Why It Was Changed
+
+* The modal is hidden after acceptance because the accepted state is stored in browser local storage.
+* Students still need a clear way to review the rules again from the dashboard.
+
+### Files Modified
+
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/index.tsx`
+* `src/features/studentPortal/components/StudentDashboardPage/constant.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/components/ExamInstructionsModal/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Testing Considerations
+
+* Clear `lat_exam_instructions_accepted` in local storage and confirm the modal opens automatically.
+* Accept the rules and confirm Start Examination becomes enabled.
+* Click `View Examination Rules` and confirm the modal opens again.
+
+## Student Dashboard Rules Auto Open
+
+### Feature Name
+
+Rules Modal After Login
+
+### What Was Changed
+
+* The examination rules modal now auto-opens the first time a student reaches the dashboard in a browser session.
+* The `View Examination Rules` button remains available on the dashboard.
+* Students who have not accepted the rules still cannot dismiss the modal without accepting.
+* Students who already accepted can review or close the auto-opened modal.
+
+### Why It Was Changed
+
+* The student should see the rules immediately after login, while still being able to reopen them manually later.
+
+### Files Modified
+
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/constant.ts`
+* `docs/CHANGE_LOG.md`
+
+### Testing Considerations
+
+* Start a fresh browser session and open `/student/dashboard`; the modal should open automatically.
+* Accept the modal; the Start Examination button should remain enabled.
+* Return to the dashboard in the same session; the modal should not keep reopening automatically.
+* Click `View Examination Rules`; the modal should open manually.
+
+## Logout Session Cleanup
+
+### Feature Name
+
+Full Logout Data Cleanup
+
+### What Was Changed
+
+* Updated the logout API to expire all server-visible cookies, including existing auth cookies.
+* Updated the client logout flow to clear all client-visible cookies.
+* Added browser storage cleanup for `localStorage` and `sessionStorage`.
+* Replaced the logout modal cleanup call with a single client session cleanup helper.
+
+### Why It Was Changed
+
+* Logout should remove all server and client session data so the next user does not inherit stale auth, exam, or dashboard state.
+
+### Files Modified
+
+* `src/app/api/logout/route.ts`
+* `src/assets/Modals/LogoutModal/index.tsx`
+* `src/utils/cookieManager.ts`
+* `docs/CHANGE_LOG.md`
+
+### Testing Considerations
+
+* Login, accept rules, start an exam, then logout from an allowed page.
+* Confirm auth cookies are cleared.
+* Confirm client cookies are cleared.
+* Confirm `localStorage` and `sessionStorage` are cleared.
+* Confirm the user is redirected to `/`.

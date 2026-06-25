@@ -9,6 +9,7 @@ export const STUDENT_DASHBOARD_TEXT = {
     statusLabel: 'Status',
     statusValue: 'Ready For Examination',
     startButton: 'Start Examination',
+    rulesButton: 'View Examination Rules',
     loadingText: 'Loading student profile',
     errorTitle: 'Unable to load student dashboard',
     retryButton: 'Retry',
@@ -20,3 +21,5 @@ export const EXAM_INSTRUCTIONS_TEXT = {
 };
 
 export const EXAM_INSTRUCTIONS_ACCEPTED_KEY = 'lat_exam_instructions_accepted';
+
+export const EXAM_INSTRUCTIONS_AUTO_SHOWN_KEY = 'lat_exam_instructions_auto_shown';

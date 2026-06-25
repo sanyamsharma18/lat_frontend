@@ -19,6 +19,7 @@ const StudentDashboardPage = () => {
         canStartExam,
         examInstructionsQuery,
         handleAcceptInstructions,
+        handleOpenInstructions,
         handleStartExamination,
         isError,
         isInstructionsModalOpen,
@@ -154,6 +155,15 @@ const StudentDashboardPage = () => {
                     disabled={!canStartExam}
                     onClick={handleStartExamination}
                 />
+
+                <Button
+                    type='button'
+                    label={STUDENT_DASHBOARD_TEXT.rulesButton}
+                    variant={ButtonVariant.OUTLINED}
+                    color='black'
+                    className={styles.startButton}
+                    onClick={handleOpenInstructions}
+                />
             </section>
         );
     };
@@ -180,6 +190,7 @@ const StudentDashboardPage = () => {
                 instructions={examInstructionsQuery.data}
                 onAccept={handleAcceptInstructions}
                 onCancel={() => setIsInstructionsModalOpen(false)}
+                showCancel={canStartExam}
             />
 
             <Toaster />

@@ -16,7 +16,7 @@ import { HTTP_METHOD } from '@/types/common';
 
 import FeaturedIcon from '@/assets/svg/featured-logout-icon.svg';
 
-import { clearAllCookies } from '@/utils/cookieManager';
+import { clearClientSessionData } from '@/utils/cookieManager';
 
 import { LOGOUT_TEXT as text } from './constant';
 
@@ -56,7 +56,7 @@ const LogoutModal = (props: LogoutModalProps) => {
                 throw new Error('Unable to logout. Please try again.');
             }
 
-            clearAllCookies();
+            clearClientSessionData();
             setOpen(false);
             router.replace('/');
             router.refresh();

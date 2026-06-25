@@ -13,11 +13,31 @@ export const USER_EMAIL = 'x-m';
 const clearJwtToken = () => Cookies.remove(JWT_TOKEN);
 const clearUserDetail = () => Cookies.remove(USER_DETAIL);
 const clearClientUserDetail = () => Cookies.remove(CLIENT_USER_DETAIL);
+const clearUserMenuList = () => Cookies.remove(USER_MENU_LIST);
+
+const clearClientSideCookies = () => {
+    Object.keys(Cookies.get()).forEach((cookieName) => {
+        Cookies.remove(cookieName);
+        Cookies.remove(cookieName, { path: '/' });
+    });
+};
+
+const clearBrowserStorage = () => {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+};
 
 const clearAllCookies = () => {
     clearJwtToken();
     clearUserDetail();
     clearClientUserDetail();
+    clearUserMenuList();
+    clearClientSideCookies();
+};
+
+const clearClientSessionData = () => {
+    clearAllCookies();
+    clearBrowserStorage();
 };
 
 const setClientSideUserDetail = (contentValue: unknown) => {
@@ -50,4 +70,11 @@ const getClientUserDetails = () => {
     return null;
 };
 
-export { clearAllCookies, clearJwtToken, setClientSideUserDetail, getClientUserDetails };
+export {
+    clearAllCookies,
+    clearBrowserStorage,
+    clearClientSessionData,
+    clearJwtToken,
+    setClientSideUserDetail,
+    getClientUserDetails,
+};
