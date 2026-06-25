@@ -120,7 +120,11 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
         } : EMPTY_FORM_VALUES);
 
         setSelectedRegion(teacher?.regionId ? { id: teacher.regionId, name: teacher.regionName } : null);
-        setSelectedSchool(teacher?.schoolId ? { id: teacher.schoolId, name: teacher.schoolName, udiseCode: teacher.udisecode } : null);
+        setSelectedSchool(
+            teacher?.schoolId
+                ? { id: teacher.schoolId, name: teacher.schoolName, udiseCode: teacher.udisecode }
+                : null,
+        );
         setSelectedGrade(teacher?.gradeId ? { id: teacher.gradeId, name: 'Grade' } : null); // Simple mock mapping for edit
         setSelectedSubject(teacher?.subjectId ? { id: teacher.subjectId, name: 'Subject' } : null); // Simple mock mapping for edit
         setSelectedGender(teacher?.gender ? { id: teacher.gender, name: teacher.gender } : null);

@@ -31,10 +31,7 @@ export const gradeGroupQueryKey = () => ['GRADE_GROUP'] as const;
 export const gradeQueryKey = (groupId?: string) => groupId ? ['GRADES', groupId] as const : ['GRADES'] as const;
 export const subjectQueryKey = () => ['SUBJECTS'] as const;
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-    typeof value === 'object' && value !== null && !Array.isArray(value);
-
-const assertSuccessfulResponse = <T>(response: any) => {
+const assertSuccessfulResponse = (response: any) => {
     if (response?.status === false || response?.success === false) {
         throw new Error(response.message || response?.error || 'Request failed');
     }

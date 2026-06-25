@@ -10,7 +10,7 @@ type ServerApiAuth = 'cookie' | 'none';
 interface ServerApiArgs {
     url: string;
     method?: METHOD;
-    body?: BodyInit | Record<string, unknown> | null;
+    body?: BodyInit | object | null;
     headers?: HeadersInit;
     searchParams?: URLSearchParams;
     auth?: ServerApiAuth;

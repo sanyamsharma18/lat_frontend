@@ -1,0 +1,190 @@
+'use client';
+
+import Button from '@/components/ui/Button';
+import ShimmerUiContainer from '@/components/ui/ShimmerUiContainer';
+import Text from '@/components/ui/Text';
+import Toaster from '@/components/ui/Toaster';
+
+import { ButtonVariant, FontType } from '@/types/typographyCommon';
+
+import { useStudentDashboard } from '../../hooks/useStudentDashboard';
+
+import ExamInstructionsModal from './components/ExamInstructionsModal';
+import { STUDENT_DASHBOARD_TEXT } from './constant';
+
+import styles from './styles.module.scss';
+
+const StudentDashboardPage = () => {
+    const {
+        canStartExam,
+        examInstructionsQuery,
+        handleAcceptInstructions,
+        handleStartExamination,
+        isError,
+        isInstructionsModalOpen,
+        isLoading,
+        setIsInstructionsModalOpen,
+        studentProfileQuery,
+    } = useStudentDashboard();
+
+    const profile = studentProfileQuery.data;
+
+    const renderContent = () => {
+        if (isLoading) {
+            return (
+                <div className={styles.card} role='status' aria-live='polite'>
+                    <ShimmerUiContainer className={styles.shimmerTitle} />
+                    <ShimmerUiContainer className={styles.shimmerLine} />
+                    <ShimmerUiContainer className={styles.shimmerLine} />
+                    <ShimmerUiContainer className={styles.shimmerButton} />
+                </div>
+            );
+        }
+
+        if (isError || !profile) {
+            return (
+                <div className={styles.card} role='alert'>
+                    <Text
+                        tagType='h2'
+                        font={[FontType.text_lg_semibold, FontType.text_lg_semibold]}
+                        color='red-600'
+                    >
+                        {STUDENT_DASHBOARD_TEXT.errorTitle}
+                    </Text>
+                    <Button
+                        type='button'
+                        label={STUDENT_DASHBOARD_TEXT.retryButton}
+                        variant={ButtonVariant.OUTLINED}
+                        color='black'
+                        onClick={() => {
+                            studentProfileQuery.refetch();
+                            examInstructionsQuery.refetch();
+                        }}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <section className={styles.card} aria-label={STUDENT_DASHBOARD_TEXT.informationTitle}>
+                <div className={styles.cardHeader}>
+                    <Text
+                        tagType='h2'
+                        font={[FontType.text_xl_semibold, FontType.text_xl_semibold]}
+                        color='black'
+                    >
+                        {STUDENT_DASHBOARD_TEXT.informationTitle}
+                    </Text>
+                    <span className={styles.statusBadge}>
+                        <Text
+                            font={[FontType.text_xs_semibold, FontType.text_xs_semibold]}
+                            color='green-600'
+                        >
+                            {STUDENT_DASHBOARD_TEXT.statusValue}
+                        </Text>
+                    </span>
+                </div>
+
+                <dl className={styles.infoGrid}>
+                    <div>
+                        <Text
+                            font={[FontType.text_md_medium, FontType.text_md_medium]}
+                            color='black'
+                        >
+                            {STUDENT_DASHBOARD_TEXT.nameLabel}
+                        </Text>
+                        <Text
+                            font={[FontType.text_md_regular, FontType.text_md_regular]}
+                            color='black'
+                        >
+                            {profile.fullName}
+                        </Text>
+                    </div>
+                    <div>
+                        <Text
+                            font={[FontType.text_md_medium, FontType.text_md_medium]}
+                            color='black'
+                        >
+                            {STUDENT_DASHBOARD_TEXT.gradeLabel}
+                        </Text>
+                        <Text
+                            font={[FontType.text_md_regular, FontType.text_md_regular]}
+                            color='black'
+                        >
+                            {profile.grade}
+                        </Text>
+                    </div>
+                    <div>
+                        <Text
+                            font={[FontType.text_md_medium, FontType.text_md_medium]}
+                            color='black'
+                        >
+                            {STUDENT_DASHBOARD_TEXT.sectionLabel}
+                        </Text>
+                        <Text
+                            font={[FontType.text_md_regular, FontType.text_md_regular]}
+                            color='black'
+                        >
+                            {profile.section}
+                        </Text>
+                    </div>
+                    <div>
+                        <Text
+                            font={[FontType.text_md_medium, FontType.text_md_medium]}
+                            color='black'
+                        >
+                            {STUDENT_DASHBOARD_TEXT.rollNumberLabel}
+                        </Text>
+                        <Text
+                            font={[FontType.text_md_regular, FontType.text_md_regular]}
+                            color='black'
+                        >
+                            {profile.rollNumber}
+                        </Text>
+                    </div>
+                </dl>
+
+                <Button
+                    type='button'
+                    label={STUDENT_DASHBOARD_TEXT.startButton}
+                    variant={ButtonVariant.SOLID}
+                    color='white'
+                    size='large'
+                    className={styles.startButton}
+                    disabled={!canStartExam}
+                    onClick={handleStartExamination}
+                />
+            </section>
+        );
+    };
+
+    return (
+        <main className={styles.page}>
+            <section className={styles.header}>
+                <Text
+                    tagType='h1'
+                    font={[FontType.text_xxl_semibold, FontType.text_xxl_semibold]}
+                    color='black'
+                >
+                    {STUDENT_DASHBOARD_TEXT.title}
+                </Text>
+                <Text font={[FontType.text_sm_regular, FontType.text_sm_regular]} color='gray-500'>
+                    {STUDENT_DASHBOARD_TEXT.subtitle}
+                </Text>
+            </section>
+
+            <div className={styles.content}>{renderContent()}</div>
+
+            <ExamInstructionsModal
+                open={isInstructionsModalOpen}
+                instructions={examInstructionsQuery.data}
+                onAccept={handleAcceptInstructions}
+                onCancel={() => setIsInstructionsModalOpen(false)}
+            />
+
+            <Toaster />
+        </main>
+    );
+};
+
+export default StudentDashboardPage;

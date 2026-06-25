@@ -1,0 +1,342 @@
+@use '@styles/theme' as *;
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.mobileTimer {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 132px;
+    padding: 10px 12px;
+    border: 1px solid $orange-200;
+    border-radius: 8px;
+    background: $orange-50;
+
+    @include breakpoints('lg') {
+        display: none;
+    }
+}
+
+.examGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+
+    @include breakpoints('lg') {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        align-items: flex-start;
+    }
+}
+
+.questionPanel,
+.sidePanel,
+.errorState {
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.07);
+}
+
+.questionPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    min-height: 620px;
+    padding: 24px;
+
+    @include breakpoints('md') {
+        padding: 28px;
+    }
+}
+
+.questionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid $gray-200;
+}
+
+.questionMeta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.questionPill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: $blue-50;
+    color: $blue-600;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.optionCard {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 64px;
+    padding: 14px 18px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+
+    &:hover {
+        border-color: $orange-500;
+        background: $orange-50;
+    }
+
+    &:focus-visible {
+        outline: 3px solid $orange-200;
+        outline-offset: 2px;
+    }
+}
+
+.selectedOption {
+    border-color: $orange-600;
+    background: $orange-50;
+    box-shadow: inset 4px 0 0 $orange-600;
+}
+
+.correctOption {
+    border-color: $green-600;
+    background: $green-50;
+    box-shadow: inset 4px 0 0 $green-600;
+}
+
+.incorrectOption {
+    border-color: $red-600;
+    background: $red-0;
+    box-shadow: inset 4px 0 0 $red-600;
+}
+
+.submittedOption {
+    cursor: default;
+
+    &:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.optionIndex {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: $gray-100;
+    color: $slate-600;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.answerFeedback {
+    margin-left: auto;
+}
+
+.bottomNavigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    flex-wrap: wrap;
+}
+
+.sidePanel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px;
+
+    @include breakpoints('md') {
+        position: sticky;
+        top: 96px;
+    }
+}
+
+.timerCard,
+.paletteCard {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $gray-100;
+}
+
+.timerCard {
+    display: none;
+    background: $orange-50;
+    border-color: $orange-200;
+
+    @include breakpoints('lg') {
+        display: flex;
+    }
+}
+
+.progressBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.progressHeader,
+.paletteHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.progressTrack {
+    width: 100%;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: $orange-200;
+}
+
+.progressFill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: $orange-600;
+}
+
+.paletteGrid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 2px;
+
+    @include breakpoints('md') {
+        max-height: 360px;
+    }
+}
+
+.paletteButton {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    color: $black;
+    cursor: pointer;
+    font-weight: 700;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(15, 23, 42, 0.08);
+    }
+}
+
+.notVisited {
+    background: $white;
+    border-color: $gray-200;
+}
+
+.visited {
+    background: $amber-50;
+    border-color: $amber-500;
+}
+
+.answered {
+    background: $green-50;
+    border-color: $green-600;
+    color: $green-700;
+}
+
+.current {
+    background: $orange-600;
+    border-color: $orange-600;
+    color: $white;
+}
+
+.legend {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legendDot {
+    width: 12px;
+    height: 12px;
+    border: 1px solid $gray-200;
+    border-radius: 4px;
+}
+
+.submitButton {
+    justify-content: center;
+    width: 100%;
+}
+
+.errorState {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+}
+
+.shimmerTitle {
+    width: 180px;
+    height: 24px;
+}
+
+.shimmerQuestion {
+    width: 100%;
+    height: 120px;
+}
+
+.shimmerOption {
+    width: 100%;
+    height: 58px;
+}

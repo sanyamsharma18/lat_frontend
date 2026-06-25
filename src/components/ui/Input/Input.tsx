@@ -199,7 +199,7 @@ const InputBase = (
 
                     {multiline ? (
                         <textarea
-                            {...nativeProps}
+                            {...(nativeProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
                             id={id}
                             ref={ref as React.ForwardedRef<HTMLTextAreaElement>}
                             rows={rows ?? 4}
@@ -214,7 +214,7 @@ const InputBase = (
                         />
                     ) : (
                         <input
-                            {...nativeProps}
+                            {...(nativeProps as React.InputHTMLAttributes<HTMLInputElement>)}
                             id={id}
                             ref={ref as React.ForwardedRef<HTMLInputElement>}
                             disabled={isDisabled}
