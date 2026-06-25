@@ -190,9 +190,9 @@ export const getGradeGroups = async () => {
     }));
 };
 
-export const getGradesByGradeGroup = async (groupId: string) => {
+export const getAllGrades = async () => {
     const response = await callApi<ApiResponse<any>>({
-        url: `${ServerSideRoutes.GRADE_GROUP}/${groupId}/grades`,
+        url: ServerSideRoutes.GRADES,
         method: HTTP_METHOD.GET,
     });
     assertSuccessfulResponse(response);
@@ -236,10 +236,11 @@ export const gradeGroupQueryOptions = () => ({
     gcTime: StaleAndCacheTime.CACHE_TIME,
 });
 
-export const gradeQueryOptions = (groupId: string) => ({
-    queryKey: gradeQueryKey(groupId),
-    queryFn: () => getGradesByGradeGroup(groupId),
-    enabled: Boolean(groupId),
+
+
+export const allGradesQueryOptions = () => ({
+    queryKey: ['ALL_GRADES'] as const,
+    queryFn: getAllGrades,
     staleTime: StaleAndCacheTime.STALE_TIME,
     gcTime: StaleAndCacheTime.CACHE_TIME,
 });

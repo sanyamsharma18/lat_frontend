@@ -27,9 +27,6 @@ export interface TeacherFormValues {
     address?: string;
     gradeId: string;
     subjectId: string;
-    regionId?: string;
-    schoolId?: string;
-    schoolName?: string;
 }
 
 export interface UploadTeachersPayload {
