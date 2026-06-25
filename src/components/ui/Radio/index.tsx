@@ -46,6 +46,7 @@ const Radio = (props: RadioProps) => {
         checked,
         color = 'gray-500',
         disabled = false,
+        ...restProps
     } = props;
 
     const inputId = `radio-${name}-${value}`;
@@ -62,6 +63,7 @@ const Radio = (props: RadioProps) => {
                 checked={checked}
                 id={inputId}
                 disabled={disabled}
+                {...restProps}
             />
             <label htmlFor={inputId} aria-hidden style={{ cursor: 'pointer' }}>
                 <Text tagType='span' color={color} font={font}>

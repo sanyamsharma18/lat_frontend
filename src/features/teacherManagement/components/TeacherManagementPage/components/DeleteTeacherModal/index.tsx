@@ -47,7 +47,8 @@ const DeleteTeacherModal = ({
                         font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
                         color='black'
                     >
-                        {teacher.teacherName} - {teacher.schoolName}
+                        {`${teacher.firstName || ''} ${teacher.lastName || ''}`.trim()} -{' '}
+                        {teacher.schoolName}
                     </Text>
                 ) : null}
             </div>

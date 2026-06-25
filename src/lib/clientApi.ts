@@ -1,5 +1,3 @@
-import { Dayjs } from 'dayjs';
-
 import { ApiResponse } from '@/types/api';
 
 export type METHOD = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -8,27 +6,7 @@ export interface QueryParamType {
     [key: string]: string | null;
 }
 
-interface ApiBodyRecord {
-    [key: string]: string | number | boolean;
-}
-
-interface ApiBodyObject {
-    [key: string]:
-        | null
-        | string
-        | number
-        | boolean
-        | number[]
-        | string[]
-        | undefined
-        | FileList
-        | FileList[]
-        | Dayjs
-        | ApiBodyRecord[]
-        | ApiBodyRecord;
-}
-
-type ApiBody = ApiBodyObject | FormData;
+type ApiBody = object | FormData;
 
 
 interface ClientApiArgs {

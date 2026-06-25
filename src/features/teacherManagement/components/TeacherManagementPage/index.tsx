@@ -115,33 +115,37 @@ const getTeacherColumns = ({
 const getRenderMobileCard =
     ({ onEdit, onDelete }: TeacherActionHandlers) =>
     (teacher: Teacher) => {
-        const { id, firstName, lastName, gradeId, subjectId, regionId, schoolId, schoolName, regionName } = teacher;
+        const { firstName, lastName, schoolName, regionName } = teacher;
         const fullName = `${firstName || ''} ${lastName || ''}`.trim() || '-';
-        return (
-        <div className={styles.mobileCardContent}>
-            <div>
-                <Text
-                    tagType='strong'
-                    font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
-                    color='black'
-                >
-                    {fullName}
-                </Text>
-                <Text font={[FontType.text_xs_regular, FontType.text_xs_regular]} color='gray-500'>
-                    {schoolName || '-'}
-                </Text>
-                <Text font={[FontType.text_xs_regular, FontType.text_xs_regular]} color='gray-500'>
-                    {regionName || '-'}
-                </Text>
-            </div>
 
-            <TeacherActions
-                teacher={teacher}
-                onEdit={onEdit}
-                onDelete={onDelete}
-            />
-        </div>
-    )};
+        return (
+            <div className={styles.mobileCardContent}>
+                <div>
+                    <Text
+                        tagType='strong'
+                        font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
+                        color='black'
+                    >
+                        {fullName}
+                    </Text>
+                    <Text
+                        font={[FontType.text_xs_regular, FontType.text_xs_regular]}
+                        color='gray-500'
+                    >
+                        {schoolName || '-'}
+                    </Text>
+                    <Text
+                        font={[FontType.text_xs_regular, FontType.text_xs_regular]}
+                        color='gray-500'
+                    >
+                        {regionName || '-'}
+                    </Text>
+                </div>
+
+                <TeacherActions teacher={teacher} onEdit={onEdit} onDelete={onDelete} />
+            </div>
+        );
+    };
 
 const TeacherManagementPage = () => {
     const {

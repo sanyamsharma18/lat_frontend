@@ -14,6 +14,10 @@ import { EMAIL_OR_PHONE_REGEX, PASSWORD_PATTERN } from '@/utils/regex';
 
 interface LoginUserDetail {
     fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    mobileNo?: string;
+    roleName?: string;
     email?: string;
     role?: {
         name?: string;

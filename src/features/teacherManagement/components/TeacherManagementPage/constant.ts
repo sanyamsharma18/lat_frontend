@@ -1,5 +1,3 @@
-import { FIFTY_MAX_LENGTH, THREE_MIN_LENGTH } from '@/constants/appConstants';
-
 export const TEACHER_MANAGEMENT_TEXT = {
     title: 'Teacher Management',
     subtitle: 'View, add, edit, and remove teachers assigned to schools.',

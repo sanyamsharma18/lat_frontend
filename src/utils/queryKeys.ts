@@ -9,4 +9,7 @@ export enum QueryKeys {
     TEACHER_DASHBOARD = 'teacher-dashboard',
     STUDENTS = 'students',
     STUDENT = 'student',
+    STUDENT_PROFILE = 'student-profile',
+    EXAM_INSTRUCTIONS = 'exam-instructions',
+    EXAM_QUESTIONS = 'exam-questions',
 }

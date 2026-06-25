@@ -1,0 +1,105 @@
+@use '@styles/theme' as *;
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    min-height: calc(100vh - 120px);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 620px;
+    padding: 28px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: $green-50;
+    white-space: nowrap;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 0;
+
+    @include breakpoints('sm') {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 14px;
+        border: 1px solid $gray-200;
+        border-radius: 8px;
+        background: $gray-100;
+    }
+
+    dt {
+        color: $slate-500;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    dd {
+        margin: 0;
+        color: $black;
+        font-size: 15px;
+        font-weight: 600;
+    }
+}
+
+.startButton {
+    justify-content: center;
+    width: 100%;
+}
+
+.shimmerTitle {
+    width: 60%;
+    height: 28px;
+}
+
+.shimmerLine {
+    width: 100%;
+    height: 54px;
+}
+
+.shimmerButton {
+    width: 100%;
+    height: 52px;
+}
