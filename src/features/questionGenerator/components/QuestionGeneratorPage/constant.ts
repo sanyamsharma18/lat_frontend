@@ -36,6 +36,8 @@ export const QUESTION_GENERATOR_TEXT = {
     nextButton: 'Next',
     paginationLabel: 'Question pagination',
     noImageText: 'No Image',
+    addImageText: 'Add',
+    changeImageText: 'Change',
     viewAction: 'View question',
     editAction: 'Edit question',
     deleteAction: 'Delete question',
@@ -48,6 +50,14 @@ export const QUESTION_FORM_TEXT = {
     questionText: {
         label: 'Question Text',
         placeholder: 'Enter question text',
+    },
+    instruction: {
+        label: 'Instruction',
+        placeholder: 'Enter instruction for this question',
+    },
+    relationKey: {
+        label: 'Relation Key',
+        placeholder: 'Enter relation key',
     },
     imageUrl: {
         label: 'Image URL',

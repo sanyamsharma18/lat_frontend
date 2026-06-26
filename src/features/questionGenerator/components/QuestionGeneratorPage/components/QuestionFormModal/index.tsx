@@ -54,13 +54,18 @@ const EMPTY_FORM_VALUES: QuestionFormValues = {
     grade: '',
     subject: '',
     competency: '',
+    instruction: '',
     questionText: '',
     status: DEFAULT_QUESTION_STATUS,
     imageUrl: '',
     optionA: '',
+    optionARelationKey: '',
     optionB: '',
+    optionBRelationKey: '',
     optionC: '',
+    optionCRelationKey: '',
     optionD: '',
+    optionDRelationKey: '',
     correctOptionId: '',
     answerExplanation: '',
 };
@@ -70,12 +75,17 @@ const REQUIRED_FIELDS: QuestionFormField[] = [
     'grade',
     'subject',
     'competency',
+    'instruction',
     'questionText',
     'status',
     'optionA',
+    'optionARelationKey',
     'optionB',
+    'optionBRelationKey',
     'optionC',
+    'optionCRelationKey',
     'optionD',
+    'optionDRelationKey',
     'correctOptionId',
 ];
 
@@ -92,13 +102,18 @@ const getInitialFormValues = (question: QuestionRecord | null): QuestionFormValu
         grade: question.grade,
         subject: question.subject,
         competency: question.competency,
+        instruction: question.instruction,
         questionText: question.questionText,
         status: question.status,
         imageUrl: question.imageUrl ?? '',
         optionA: question.options.find((option) => option.id === 'A')?.text ?? '',
+        optionARelationKey: question.options.find((option) => option.id === 'A')?.relationKey ?? '',
         optionB: question.options.find((option) => option.id === 'B')?.text ?? '',
+        optionBRelationKey: question.options.find((option) => option.id === 'B')?.relationKey ?? '',
         optionC: question.options.find((option) => option.id === 'C')?.text ?? '',
+        optionCRelationKey: question.options.find((option) => option.id === 'C')?.relationKey ?? '',
         optionD: question.options.find((option) => option.id === 'D')?.text ?? '',
+        optionDRelationKey: question.options.find((option) => option.id === 'D')?.relationKey ?? '',
         correctOptionId: question.options.find((option) => option.isCorrect)?.id ?? '',
         answerExplanation: question.answerExplanation ?? '',
     };
@@ -181,11 +196,16 @@ const QuestionFormModal = ({
         onSubmit({
             ...formValues,
             questionText: formValues.questionText.trim(),
+            instruction: formValues.instruction.trim(),
             imageUrl: formValues.imageUrl.trim(),
             optionA: formValues.optionA.trim(),
+            optionARelationKey: formValues.optionARelationKey.trim(),
             optionB: formValues.optionB.trim(),
+            optionBRelationKey: formValues.optionBRelationKey.trim(),
             optionC: formValues.optionC.trim(),
+            optionCRelationKey: formValues.optionCRelationKey.trim(),
             optionD: formValues.optionD.trim(),
+            optionDRelationKey: formValues.optionDRelationKey.trim(),
             answerExplanation: formValues.answerExplanation.trim(),
         });
     };
@@ -263,6 +283,19 @@ const QuestionFormModal = ({
                         isSearchable={false}
                     />
                     <Input
+                        id='instruction'
+                        name='instruction'
+                        label={QUESTION_FORM_TEXT.instruction.label}
+                        value={formValues.instruction}
+                        placeholder={QUESTION_FORM_TEXT.instruction.placeholder}
+                        onChange={handleInputChange}
+                        helperText={errorMessages.instruction || ''}
+                        error={!!errorMessages.instruction}
+                        multiline
+                        rows={2}
+                        required
+                    />
+                    <Input
                         id='questionText'
                         name='questionText'
                         label={QUESTION_FORM_TEXT.questionText.label}
@@ -290,21 +323,42 @@ const QuestionFormModal = ({
                     {(['A', 'B', 'C', 'D'] as const).map((optionId) => {
                         const fieldName =
                             `option${optionId}` as Extract<QuestionFormField, 'optionA' | 'optionB' | 'optionC' | 'optionD'>;
+                        const relationKeyField =
+                            `option${optionId}RelationKey` as Extract<
+                                QuestionFormField,
+                                | 'optionARelationKey'
+                                | 'optionBRelationKey'
+                                | 'optionCRelationKey'
+                                | 'optionDRelationKey'
+                            >;
 
                         return (
-                            <Input
-                                key={optionId}
-                                id={fieldName}
-                                name={fieldName}
-                                label={`${QUESTION_FORM_TEXT.optionLabel} ${optionId}`}
-                                type='text'
-                                value={formValues[fieldName]}
-                                placeholder={`Enter option ${optionId}`}
-                                onChange={handleInputChange}
-                                helperText={errorMessages[fieldName] || ''}
-                                error={!!errorMessages[fieldName]}
-                                required
-                            />
+                            <div className={styles.optionPair} key={optionId}>
+                                <Input
+                                    id={fieldName}
+                                    name={fieldName}
+                                    label={`${QUESTION_FORM_TEXT.optionLabel} ${optionId}`}
+                                    type='text'
+                                    value={formValues[fieldName]}
+                                    placeholder={`Enter option ${optionId}`}
+                                    onChange={handleInputChange}
+                                    helperText={errorMessages[fieldName] || ''}
+                                    error={!!errorMessages[fieldName]}
+                                    required
+                                />
+                                <Input
+                                    id={relationKeyField}
+                                    name={relationKeyField}
+                                    label={`${QUESTION_FORM_TEXT.relationKey.label} ${optionId}`}
+                                    type='text'
+                                    value={formValues[relationKeyField]}
+                                    placeholder={QUESTION_FORM_TEXT.relationKey.placeholder}
+                                    onChange={handleInputChange}
+                                    helperText={errorMessages[relationKeyField] || ''}
+                                    error={!!errorMessages[relationKeyField]}
+                                    required
+                                />
+                            </div>
                         );
                     })}
                 </div>

@@ -17,14 +17,15 @@ let mockQuestions: QuestionRecord[] = [
         grade: 'Grade V',
         subject: 'English',
         competency: 'Reading Comprehension',
-        questionText: 'What is the synonym of "Happy"?',
+        instruction: 'Read the sentence and select the best answer.',
+        questionText: '<p>What is the synonym of <strong>"Happy"</strong>?</p>',
         status: 'Active',
         imageUrl: '/images/shapes/cone.png',
         options: [
-            { id: 'A', text: 'Joyful', isCorrect: true },
-            { id: 'B', text: 'Angry', isCorrect: false },
-            { id: 'C', text: 'Tired', isCorrect: false },
-            { id: 'D', text: 'Silent', isCorrect: false },
+            { id: 'A', relationKey: 'happy_synonym_a', text: 'Joyful', isCorrect: true },
+            { id: 'B', relationKey: 'happy_synonym_b', text: 'Angry', isCorrect: false },
+            { id: 'C', relationKey: 'happy_synonym_c', text: 'Tired', isCorrect: false },
+            { id: 'D', relationKey: 'happy_synonym_d', text: 'Silent', isCorrect: false },
         ],
         answerExplanation: 'Joyful means feeling or expressing happiness.',
         createdAt: now(),
@@ -37,13 +38,14 @@ let mockQuestions: QuestionRecord[] = [
         grade: 'Grade V',
         subject: 'Mathematics',
         competency: 'Addition',
-        questionText: '25 + 35 = ?',
+        instruction: 'Solve the following arithmetic problem.',
+        questionText: '<p><strong>25 + 35</strong> = ?</p>',
         status: 'Draft',
         options: [
-            { id: 'A', text: '50', isCorrect: false },
-            { id: 'B', text: '60', isCorrect: true },
-            { id: 'C', text: '70', isCorrect: false },
-            { id: 'D', text: '80', isCorrect: false },
+            { id: 'A', relationKey: 'addition_25_35_a', text: '50', isCorrect: false },
+            { id: 'B', relationKey: 'addition_25_35_b', text: '60', isCorrect: true },
+            { id: 'C', relationKey: 'addition_25_35_c', text: '70', isCorrect: false },
+            { id: 'D', relationKey: 'addition_25_35_d', text: '80', isCorrect: false },
         ],
         answerExplanation: '25 plus 35 equals 60.',
         createdAt: now(),
@@ -56,14 +58,15 @@ let mockQuestions: QuestionRecord[] = [
         grade: 'Grade VI',
         subject: 'Science',
         competency: 'Plants',
-        questionText: 'Which part of the plant prepares food?',
+        instruction: 'Observe the plant concept and choose the correct option.',
+        questionText: '<p>Which part of the plant <em>prepares food</em>?</p>',
         status: 'Active',
         imageUrl: '/images/shapes/rectangle.png',
         options: [
-            { id: 'A', text: 'Root', isCorrect: false },
-            { id: 'B', text: 'Stem', isCorrect: false },
-            { id: 'C', text: 'Leaf', isCorrect: true },
-            { id: 'D', text: 'Flower', isCorrect: false },
+            { id: 'A', relationKey: 'plant_food_a', text: 'Root', isCorrect: false },
+            { id: 'B', relationKey: 'plant_food_b', text: 'Stem', isCorrect: false },
+            { id: 'C', relationKey: 'plant_food_c', text: 'Leaf', isCorrect: true },
+            { id: 'D', relationKey: 'plant_food_d', text: 'Flower', isCorrect: false },
         ],
         answerExplanation: 'Leaves prepare food through photosynthesis.',
         createdAt: now(),
@@ -76,13 +79,14 @@ let mockQuestions: QuestionRecord[] = [
         grade: 'Grade VI',
         subject: 'English',
         competency: 'Grammar',
-        questionText: 'Identify the noun in the sentence: The boy is playing.',
+        instruction: 'Identify the part of speech asked in the question.',
+        questionText: '<p>Identify the noun in the sentence: <strong>The boy is playing.</strong></p>',
         status: 'Inactive',
         options: [
-            { id: 'A', text: 'The', isCorrect: false },
-            { id: 'B', text: 'boy', isCorrect: true },
-            { id: 'C', text: 'is', isCorrect: false },
-            { id: 'D', text: 'playing', isCorrect: false },
+            { id: 'A', relationKey: 'noun_sentence_a', text: 'The', isCorrect: false },
+            { id: 'B', relationKey: 'noun_sentence_b', text: 'boy', isCorrect: true },
+            { id: 'C', relationKey: 'noun_sentence_c', text: 'is', isCorrect: false },
+            { id: 'D', relationKey: 'noun_sentence_d', text: 'playing', isCorrect: false },
         ],
         answerExplanation: 'Boy is the naming word in the sentence.',
         createdAt: now(),
@@ -95,14 +99,15 @@ let mockQuestions: QuestionRecord[] = [
         grade: 'Grade VII',
         subject: 'Mathematics',
         competency: 'Subtraction',
-        questionText: '72 - 18 = ?',
+        instruction: 'Solve the subtraction problem.',
+        questionText: '<p><strong>72 - 18</strong> = ?</p>',
         status: 'Active',
         imageUrl: '/images/shapes/cube.png',
         options: [
-            { id: 'A', text: '44', isCorrect: false },
-            { id: 'B', text: '54', isCorrect: true },
-            { id: 'C', text: '64', isCorrect: false },
-            { id: 'D', text: '90', isCorrect: false },
+            { id: 'A', relationKey: 'subtraction_72_18_a', text: '44', isCorrect: false },
+            { id: 'B', relationKey: 'subtraction_72_18_b', text: '54', isCorrect: true },
+            { id: 'C', relationKey: 'subtraction_72_18_c', text: '64', isCorrect: false },
+            { id: 'D', relationKey: 'subtraction_72_18_d', text: '90', isCorrect: false },
         ],
         answerExplanation: '72 minus 18 equals 54.',
         createdAt: now(),
@@ -145,14 +150,35 @@ const mapFormValuesToQuestion = (
         grade: values.grade,
         subject: values.subject,
         competency: values.competency,
+        instruction: values.instruction.trim(),
         questionText: values.questionText.trim(),
         status: values.status,
         imageUrl: values.imageUrl.trim() || undefined,
         options: [
-            { id: 'A', text: values.optionA.trim(), isCorrect: values.correctOptionId === 'A' },
-            { id: 'B', text: values.optionB.trim(), isCorrect: values.correctOptionId === 'B' },
-            { id: 'C', text: values.optionC.trim(), isCorrect: values.correctOptionId === 'C' },
-            { id: 'D', text: values.optionD.trim(), isCorrect: values.correctOptionId === 'D' },
+            {
+                id: 'A',
+                relationKey: values.optionARelationKey.trim(),
+                text: values.optionA.trim(),
+                isCorrect: values.correctOptionId === 'A',
+            },
+            {
+                id: 'B',
+                relationKey: values.optionBRelationKey.trim(),
+                text: values.optionB.trim(),
+                isCorrect: values.correctOptionId === 'B',
+            },
+            {
+                id: 'C',
+                relationKey: values.optionCRelationKey.trim(),
+                text: values.optionC.trim(),
+                isCorrect: values.correctOptionId === 'C',
+            },
+            {
+                id: 'D',
+                relationKey: values.optionDRelationKey.trim(),
+                text: values.optionD.trim(),
+                isCorrect: values.correctOptionId === 'D',
+            },
         ],
         answerExplanation: values.answerExplanation.trim(),
         createdAt: existingQuestion?.createdAt ?? timestamp,
@@ -160,7 +186,11 @@ const mapFormValuesToQuestion = (
     };
 };
 
-const generateQuestion = (payload: GenerateQuestionsPayload, index: number): QuestionRecord => {
+const generateQuestion = (
+    payload: GenerateQuestionsPayload,
+    competency: string,
+    index: number,
+): QuestionRecord => {
     const questionTemplates: Record<string, string[]> = {
         Mathematics: [
             'Solve the expression: 18 + 24 = ?',
@@ -179,9 +209,9 @@ const generateQuestion = (payload: GenerateQuestionsPayload, index: number): Que
         ],
     };
     const templates = questionTemplates[payload.subject] ?? [
-        `Sample ${payload.subject} question for ${payload.competency}.`,
+        `Sample ${payload.subject} question for ${competency}.`,
     ];
-    const questionText = templates[index % templates.length];
+    const questionText = `<p>${templates[index % templates.length]}</p>`;
 
     return {
         id: `${Date.now()}-${index}`,
@@ -189,14 +219,15 @@ const generateQuestion = (payload: GenerateQuestionsPayload, index: number): Que
         gradeGroup: payload.gradeGroup,
         grade: payload.grade,
         subject: payload.subject,
-        competency: payload.competency,
+        competency,
+        instruction: 'Review the generated instruction and update it before publishing.',
         questionText,
         status: 'Draft',
         options: [
-            { id: 'A', text: 'Option A', isCorrect: true },
-            { id: 'B', text: 'Option B', isCorrect: false },
-            { id: 'C', text: 'Option C', isCorrect: false },
-            { id: 'D', text: 'Option D', isCorrect: false },
+            { id: 'A', relationKey: `${competency}_a`, text: 'Option A', isCorrect: true },
+            { id: 'B', relationKey: `${competency}_b`, text: 'Option B', isCorrect: false },
+            { id: 'C', relationKey: `${competency}_c`, text: 'Option C', isCorrect: false },
+            { id: 'D', relationKey: `${competency}_d`, text: 'Option D', isCorrect: false },
         ],
         answerExplanation: 'Review and update this generated question before publishing.',
         createdAt: now(),
@@ -276,8 +307,9 @@ export const deleteQuestion = async (questionId: string) => {
 };
 
 export const generateQuestions = async (payload: GenerateQuestionsPayload) => {
+    const competencies = payload.competencyIds.length ? payload.competencyIds : ['General'];
     const generatedQuestions = Array.from({ length: payload.count }).map((_, index) =>
-        generateQuestion(payload, index),
+        generateQuestion(payload, competencies[index % competencies.length], index),
     );
 
     mockQuestions = [...generatedQuestions, ...mockQuestions];

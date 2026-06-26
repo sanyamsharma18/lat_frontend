@@ -2,6 +2,7 @@ export type QuestionStatus = 'Active' | 'Draft' | 'Inactive';
 
 export interface QuestionOption {
     id: string;
+    relationKey: string;
     text: string;
     isCorrect: boolean;
 }
@@ -13,6 +14,7 @@ export interface QuestionRecord {
     grade: string;
     subject: string;
     competency: string;
+    instruction: string;
     questionText: string;
     status: QuestionStatus;
     imageUrl?: string;
@@ -44,13 +46,18 @@ export interface QuestionFormValues {
     grade: string;
     subject: string;
     competency: string;
+    instruction: string;
     questionText: string;
     status: QuestionStatus;
     imageUrl: string;
     optionA: string;
+    optionARelationKey: string;
     optionB: string;
+    optionBRelationKey: string;
     optionC: string;
+    optionCRelationKey: string;
     optionD: string;
+    optionDRelationKey: string;
     correctOptionId: string;
     answerExplanation: string;
 }
@@ -59,7 +66,7 @@ export interface GenerateQuestionsPayload {
     gradeGroup: string;
     grade: string;
     subject: string;
-    competency: string;
+    competencyIds: string[];
     count: number;
 }
 

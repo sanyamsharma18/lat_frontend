@@ -44,7 +44,7 @@ export const useQuestionGenerator = () => {
         gradeGroup: '',
         grade: '',
         subject: '',
-        competency: '',
+        competencyIds: [],
         count: 10,
     });
     const [modalMode, setModalMode] = useState<QuestionModalMode>('add');
@@ -153,7 +153,7 @@ export const useQuestionGenerator = () => {
 
     const handleGenerateValueChange = (
         key: keyof GenerateQuestionsPayload,
-        value: string | number,
+        value: string | number | string[],
     ) => {
         setGenerateValues((previous) => ({
             ...previous,
@@ -166,7 +166,7 @@ export const useQuestionGenerator = () => {
             !generateValues.gradeGroup ||
             !generateValues.grade ||
             !generateValues.subject ||
-            !generateValues.competency ||
+            !generateValues.competencyIds.length ||
             generateValues.count < 1
         ) {
             showToast({ message: 'Please complete all generate fields', type: 'error' });
@@ -216,6 +216,15 @@ export const useQuestionGenerator = () => {
         createQuestionMutation.mutate(payload);
     };
 
+    const handleSaveQuestionEditor = (payload: QuestionFormValues) => {
+        if (!selectedQuestion) {
+            return;
+        }
+
+        updateQuestionMutation.mutate({ questionId: selectedQuestion.id, payload });
+        setIsPreviewModalOpen(false);
+    };
+
     const handleDeleteQuestion = () => {
         if (selectedQuestion) {
             deleteQuestionMutation.mutate(selectedQuestion.id);
@@ -244,6 +253,7 @@ export const useQuestionGenerator = () => {
         handleOpenPreviewModal,
         handleResetFilters,
         handleSearchChange,
+        handleSaveQuestionEditor,
         handleSubmitQuestion,
         hasActiveFilters,
         isDeleteModalOpen,

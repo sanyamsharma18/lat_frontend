@@ -926,3 +926,79 @@ Question Generator Admin Module
 * Replace mock API services with backend question-bank APIs when available.
 * Add bulk import/export when backend question templates are finalized.
 * Add image upload support instead of manual image URL entry.
+
+## Admin Question Generator Refinements
+
+### Feature Name
+
+Question Generator Review and HTML Editing Enhancements
+
+### What Was Changed
+
+* Replaced the single competency selector in the generate panel with a searchable multi-select checklist.
+* Added Select All support for the competency list.
+* Removed Add Question buttons from the Question Generator screen.
+* Updated question text rendering so stored HTML displays as formatted content in the table and mobile cards.
+* Added a small sanitizer before rendering table HTML.
+* Changed the image column action to show `Change` when an image exists and `Add` when no image exists.
+* Updated the View flow to open an editor-style review modal.
+* The review modal shows competency in read-only mode.
+* The review modal allows editing instruction, question HTML, all four options, option relation keys, and image URL.
+* Extended question mock data and types to include instruction and option relation keys.
+* Updated generated mock questions to support multiple selected competencies.
+
+### Why It Was Changed
+
+* Admins need to generate questions for multiple competencies in one action.
+* Backend question text can contain HTML, so the list must render it correctly instead of showing raw tags.
+* Reviewers need to edit the full question payload from the View flow before publishing or saving changes.
+
+### Files Modified
+
+* `src/types/questionGenerator.ts`
+* `src/services/questionGenerator/questionGenerator.service.ts`
+* `src/features/questionGenerator/hooks/useQuestionGenerator.ts`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/styles.module.scss`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/constant.ts`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/CompetencyMultiSelect/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/CompetencyMultiSelect/styles.module.scss`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/QuestionFormModal/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/QuestionFormModal/styles.module.scss`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/QuestionPreviewModal/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/QuestionPreviewModal/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Question generation panel.
+* Question list table.
+* Question mobile cards.
+* View/review editor modal.
+* Add/edit question modal.
+
+### APIs Affected
+
+* Mock question create/update/generate payloads now include `instruction` and option `relationKey` values.
+* Generate payload now supports multiple competency IDs.
+
+### Any Breaking Changes
+
+* Manual Add Question buttons were removed from the screen as requested.
+* Existing mock question payload shape changed to include instruction and option relation keys.
+
+### Testing Considerations
+
+* Open `/admin/questions`.
+* Search competencies in the generate panel.
+* Select individual competencies and Select All.
+* Generate questions and verify competencies rotate through generated records.
+* Verify HTML question text renders formatted in the table.
+* Verify image column shows `Change` when an image exists and `Add` when it does not.
+* Click View and edit instruction, question text, options, relation keys, and image URL.
+* Save from the review modal and confirm the table updates.
+
+### Future Improvements
+
+* Replace the lightweight content-editable editor with the approved rich text editor package when dependencies are finalized.
+* Add backend-provided competency IDs and option relation IDs when the real question API is available.

@@ -2,7 +2,7 @@
 
 .preview {
     width: 100%;
-    max-width: 720px;
+    max-width: 880px;
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -11,7 +11,8 @@
 
 .header,
 .content,
-.explanation {
+.explanation,
+.editorGroup {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -42,32 +43,47 @@
     background: $gray-100;
 }
 
-.optionList {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-}
-
-.option,
-.correctOption {
-    padding: 12px;
-    border: 1px solid $gray-200;
-    border-radius: 8px;
-}
-
-.correctOption {
-    border-color: $green-600;
-    background: $green-50;
-}
-
-.explanation {
-    padding: 12px;
-    border: 1px solid $orange-200;
-    border-radius: 8px;
-    background: $orange-50;
-}
-
 .actions {
     display: flex;
     justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.richEditor {
+    min-height: 96px;
+    padding: 12px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    color: $black;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    outline: none;
+
+    &:focus {
+        border-color: $orange-500;
+        box-shadow: 0 0 0 1px $orange-500;
+    }
+}
+
+.optionList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.optionEditor {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $gray-100;
 }

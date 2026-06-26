@@ -1,10 +1,13 @@
 'use client';
 
+import { ChangeEvent, useEffect, useState } from 'react';
+
 import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input/Input';
 import Modal from '@/components/ui/Modal';
 import Text from '@/components/ui/Text';
 
-import { QuestionRecord } from '@/types/questionGenerator';
+import { QuestionFormValues, QuestionRecord } from '@/types/questionGenerator';
 import { ButtonVariant, FontType } from '@/types/typographyCommon';
 
 import { QUESTION_FORM_TEXT } from '../../constant';
@@ -14,100 +17,234 @@ import styles from './styles.module.scss';
 interface QuestionPreviewModalProps {
     open: boolean;
     question: QuestionRecord | null;
+    isSubmitting: boolean;
     onClose: () => void;
+    onSave: (values: QuestionFormValues) => void;
 }
 
-const QuestionPreviewModal = ({ open, question, onClose }: QuestionPreviewModalProps) => (
-    <Modal
-        open={open}
-        setOpen={onClose}
-        sx={{ '& .MuiPaper-root': { borderRadius: '12px', minWidth: '640px' } }}
-    >
-        <div className={styles.preview}>
-            <div className={styles.header}>
-                <Text
-                    tagType='h2'
-                    font={[FontType.text_xl_semibold, FontType.text_xl_semibold]}
-                    color='black'
-                >
-                    {QUESTION_FORM_TEXT.viewTitle}
-                </Text>
-                <Text font={[FontType.text_sm_regular, FontType.text_sm_regular]} color='gray-500'>
-                    {question?.questionId ?? '-'}
-                </Text>
-            </div>
+const getOptionText = (question: QuestionRecord, optionId: string) =>
+    question.options.find((option) => option.id === optionId)?.text ?? '';
 
-            {question ? (
-                <div className={styles.content}>
-                    <div className={styles.metaGrid}>
-                        <span>{question.grade}</span>
-                        <span>{question.subject}</span>
-                        <span>{question.competency}</span>
-                        <span>{question.status}</span>
-                    </div>
+const getRelationKey = (question: QuestionRecord, optionId: string) =>
+    question.options.find((option) => option.id === optionId)?.relationKey ?? '';
 
-                    {question.imageUrl ? (
-                        <img
-                            className={styles.previewImage}
-                            src={question.imageUrl}
-                            alt={`Visual for ${question.questionId}`}
-                        />
-                    ) : null}
+const buildFormValues = (question: QuestionRecord): QuestionFormValues => ({
+    gradeGroup: question.gradeGroup,
+    grade: question.grade,
+    subject: question.subject,
+    competency: question.competency,
+    instruction: question.instruction,
+    questionText: question.questionText,
+    status: question.status,
+    imageUrl: question.imageUrl ?? '',
+    optionA: getOptionText(question, 'A'),
+    optionARelationKey: getRelationKey(question, 'A'),
+    optionB: getOptionText(question, 'B'),
+    optionBRelationKey: getRelationKey(question, 'B'),
+    optionC: getOptionText(question, 'C'),
+    optionCRelationKey: getRelationKey(question, 'C'),
+    optionD: getOptionText(question, 'D'),
+    optionDRelationKey: getRelationKey(question, 'D'),
+    correctOptionId: question.options.find((option) => option.isCorrect)?.id ?? 'A',
+    answerExplanation: question.answerExplanation ?? '',
+});
 
+const QuestionPreviewModal = ({
+    open,
+    question,
+    isSubmitting,
+    onClose,
+    onSave,
+}: QuestionPreviewModalProps) => {
+    const [formValues, setFormValues] = useState<QuestionFormValues | null>(null);
+
+    useEffect(() => {
+        if (open && question) {
+            setFormValues(buildFormValues(question));
+        }
+    }, [open, question]);
+
+    const updateField = (field: keyof QuestionFormValues, value: string) => {
+        setFormValues((previous) => (previous ? { ...previous, [field]: value } : previous));
+    };
+
+    const handleInputChange = (
+        event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
+    ) => {
+        const { name, value } = event.target;
+
+        updateField(name as keyof QuestionFormValues, value);
+    };
+
+    const handleSave = () => {
+        if (formValues) {
+            onSave(formValues);
+        }
+    };
+
+    return (
+        <Modal
+            open={open}
+            setOpen={onClose}
+            sx={{ '& .MuiPaper-root': { borderRadius: '12px', minWidth: '820px' } }}
+        >
+            <div className={styles.preview}>
+                <div className={styles.header}>
                     <Text
-                        tagType='h3'
-                        font={[FontType.text_lg_semibold, FontType.text_lg_semibold]}
+                        tagType='h2'
+                        font={[FontType.text_xl_semibold, FontType.text_xl_semibold]}
                         color='black'
                     >
-                        {question.questionText}
+                        {QUESTION_FORM_TEXT.viewTitle}
                     </Text>
+                    <Text
+                        font={[FontType.text_sm_regular, FontType.text_sm_regular]}
+                        color='gray-500'
+                    >
+                        {question?.questionId ?? '-'}
+                    </Text>
+                </div>
 
-                    <div className={styles.optionList}>
-                        {question.options.map((option) => (
-                            <div
-                                key={option.id}
-                                className={option.isCorrect ? styles.correctOption : styles.option}
-                            >
-                                <Text
-                                    font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
-                                    color={option.isCorrect ? 'green-600' : 'black'}
-                                >
-                                    {option.id}. {option.text}
-                                </Text>
-                            </div>
-                        ))}
-                    </div>
+                {question && formValues ? (
+                    <div className={styles.content}>
+                        <div className={styles.metaGrid}>
+                            <span>{question.grade}</span>
+                            <span>{question.subject}</span>
+                            <span>{question.status}</span>
+                            <span>Competency: {question.competency}</span>
+                        </div>
 
-                    {question.answerExplanation ? (
-                        <div className={styles.explanation}>
+                        <Input
+                            id='previewImageUrl'
+                            name='imageUrl'
+                            type='text'
+                            label={QUESTION_FORM_TEXT.imageUrl.label}
+                            value={formValues.imageUrl}
+                            placeholder={QUESTION_FORM_TEXT.imageUrl.placeholder}
+                            onChange={handleInputChange}
+                        />
+
+                        {formValues.imageUrl ? (
+                            <img
+                                className={styles.previewImage}
+                                src={formValues.imageUrl}
+                                alt={`Visual for ${question.questionId}`}
+                            />
+                        ) : null}
+
+                        <div className={styles.editorGroup}>
                             <Text
                                 font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
                                 color='black'
                             >
-                                Explanation
+                                {QUESTION_FORM_TEXT.instruction.label}
                             </Text>
-                            <Text
-                                font={[FontType.text_sm_regular, FontType.text_sm_regular]}
-                                color='gray-500'
-                            >
-                                {question.answerExplanation}
-                            </Text>
+                            <div
+                                className={styles.richEditor}
+                                contentEditable
+                                suppressContentEditableWarning
+                                onInput={(event) =>
+                                    updateField(
+                                        'instruction',
+                                        event.currentTarget.innerHTML,
+                                    )
+                                }
+                                // eslint-disable-next-line react/no-danger
+                                dangerouslySetInnerHTML={{ __html: formValues.instruction }}
+                            />
                         </div>
-                    ) : null}
-                </div>
-            ) : null}
 
-            <div className={styles.actions}>
-                <Button
-                    type='button'
-                    label='Close'
-                    variant={ButtonVariant.SOLID}
-                    color='white'
-                    onClick={onClose}
-                />
+                        <div className={styles.editorGroup}>
+                            <Text
+                                font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
+                                color='black'
+                            >
+                                {QUESTION_FORM_TEXT.questionText.label}
+                            </Text>
+                            <div
+                                className={styles.richEditor}
+                                contentEditable
+                                suppressContentEditableWarning
+                                onInput={(event) =>
+                                    updateField(
+                                        'questionText',
+                                        event.currentTarget.innerHTML,
+                                    )
+                                }
+                                // eslint-disable-next-line react/no-danger
+                                dangerouslySetInnerHTML={{ __html: formValues.questionText }}
+                            />
+                        </div>
+
+                        <div className={styles.optionList}>
+                            {(['A', 'B', 'C', 'D'] as const).map((optionId) => {
+                                const optionField = `option${optionId}` as keyof QuestionFormValues;
+                                const relationKeyField =
+                                    `option${optionId}RelationKey` as keyof QuestionFormValues;
+
+                                return (
+                                    <div className={styles.optionEditor} key={optionId}>
+                                        <Text
+                                            font={[
+                                                FontType.text_sm_semibold,
+                                                FontType.text_sm_semibold,
+                                            ]}
+                                            color='black'
+                                        >
+                                            Option {optionId}
+                                        </Text>
+                                        <Input
+                                            id={`relation-${optionId}`}
+                                            name={relationKeyField}
+                                            type='text'
+                                            label={QUESTION_FORM_TEXT.relationKey.label}
+                                            value={String(formValues[relationKeyField])}
+                                            onChange={handleInputChange}
+                                        />
+                                        <div
+                                            className={styles.richEditor}
+                                            contentEditable
+                                            suppressContentEditableWarning
+                                            onInput={(event) =>
+                                                updateField(
+                                                    optionField,
+                                                    event.currentTarget.innerHTML,
+                                                )
+                                            }
+                                            // eslint-disable-next-line react/no-danger
+                                            dangerouslySetInnerHTML={{
+                                                __html: String(formValues[optionField]),
+                                            }}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ) : null}
+
+                <div className={styles.actions}>
+                    <Button
+                        type='button'
+                        label='Close'
+                        variant={ButtonVariant.OUTLINED}
+                        color='black'
+                        onClick={onClose}
+                        disabled={isSubmitting}
+                    />
+                    <Button
+                        type='button'
+                        label='Save Changes'
+                        variant={ButtonVariant.SOLID}
+                        color='white'
+                        onClick={handleSave}
+                        loader={isSubmitting}
+                        disabled={!formValues}
+                    />
+                </div>
             </div>
-        </div>
-    </Modal>
-);
+        </Modal>
+    );
+};
 
 export default QuestionPreviewModal;

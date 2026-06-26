@@ -5,8 +5,6 @@ import Image from 'next/image';
 
 import cx from 'classnames';
 
-import AddIcon from '@/assets/svg/buttonIcon/add-icon.svg';
-
 import Button from '@/components/ui/Button';
 import DataTable, { DataTableColumn } from '@/components/ui/DataTable';
 import Dropdown from '@/components/ui/Dropdown';
@@ -20,6 +18,7 @@ import { ButtonVariant, FontType } from '@/types/typographyCommon';
 
 import { useQuestionGenerator } from '../../hooks/useQuestionGenerator';
 
+import CompetencyMultiSelect from './components/CompetencyMultiSelect';
 import DeleteQuestionModal from './components/DeleteQuestionModal';
 import QuestionFormModal from './components/QuestionFormModal';
 import QuestionPreviewModal from './components/QuestionPreviewModal';
@@ -45,6 +44,20 @@ interface QuestionActionHandlers {
 
 const getOption = (options: QuestionOptionItem[], id?: string) =>
     options.find((option) => option.id === id) ?? null;
+
+const sanitizeHtml = (value: string) =>
+    value
+        .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+        .replace(/\son\w+="[^"]*"/gi, '')
+        .replace(/\son\w+='[^']*'/gi, '');
+
+const HtmlQuestionText = ({ value }: { value: string }) => (
+    <div
+        className={styles.htmlQuestionText}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }}
+    />
+);
 
 const StatusBadge = ({ status }: { status: QuestionRecord['status'] }) => (
     <span
@@ -134,11 +147,7 @@ const getQuestionColumns = (handlers: QuestionActionHandlers): DataTableColumn<Q
         id: 'questionText',
         header: QUESTION_GENERATOR_TEXT.questionTextColumn,
         className: styles.questionTextColumn,
-        cell: (question) => (
-            <Text font={[FontType.text_sm_regular, FontType.text_sm_regular]} color='black'>
-                {question.questionText}
-            </Text>
-        ),
+        cell: (question) => <HtmlQuestionText value={question.questionText} />,
     },
     {
         id: 'status',
@@ -148,20 +157,30 @@ const getQuestionColumns = (handlers: QuestionActionHandlers): DataTableColumn<Q
     {
         id: 'image',
         header: QUESTION_GENERATOR_TEXT.imageColumn,
+        className: styles.imageColumn,
         cell: (question) =>
-            question.imageUrl ? (
-                <div className={styles.thumbnail}>
-                    <Image
-                        src={question.imageUrl}
-                        alt={`Preview for ${question.questionId}`}
-                        width={72}
-                        height={44}
-                    />
+            (
+                <div className={styles.imageCell}>
+                    {question.imageUrl ? (
+                        <div className={styles.thumbnail}>
+                            <Image
+                                src={question.imageUrl}
+                                alt={`Preview for ${question.questionId}`}
+                                width={72}
+                                height={44}
+                            />
+                        </div>
+                    ) : null}
+                    <button
+                        type='button'
+                        className={styles.imageAction}
+                        onClick={() => handlers.onEdit(question)}
+                    >
+                        {question.imageUrl
+                            ? QUESTION_GENERATOR_TEXT.changeImageText
+                            : QUESTION_GENERATOR_TEXT.addImageText}
+                    </button>
                 </div>
-            ) : (
-                <Text font={[FontType.text_xs_regular, FontType.text_xs_regular]} color='gray-500'>
-                    {QUESTION_GENERATOR_TEXT.noImageText}
-                </Text>
             ),
     },
     {
@@ -185,12 +204,7 @@ const getRenderMobileCard =
                     >
                         {questionId}
                     </Text>
-                    <Text
-                        font={[FontType.text_sm_regular, FontType.text_sm_regular]}
-                        color='black'
-                    >
-                        {questionText}
-                    </Text>
+                    <HtmlQuestionText value={questionText} />
                     <Text
                         font={[FontType.text_xs_regular, FontType.text_xs_regular]}
                         color='gray-500'
@@ -210,12 +224,12 @@ const QuestionGeneratorPage = () => {
         handleDeleteQuestion,
         handleGenerateQuestions,
         handleGenerateValueChange,
-        handleOpenAddModal,
         handleOpenDeleteModal,
         handleOpenEditModal,
         handleOpenPreviewModal,
         handleResetFilters,
         handleSearchChange,
+        handleSaveQuestionEditor,
         handleSubmitQuestion,
         hasActiveFilters,
         isDeleteModalOpen,
@@ -247,7 +261,6 @@ const QuestionGeneratorPage = () => {
     const selectedGenerateGradeGroup = getOption(GRADE_GROUP_OPTIONS, generateValues.gradeGroup);
     const selectedGenerateGrade = getOption(GRADE_OPTIONS, generateValues.grade);
     const selectedGenerateSubject = getOption(SUBJECT_OPTIONS, generateValues.subject);
-    const selectedGenerateCompetency = getOption(COMPETENCY_OPTIONS, generateValues.competency);
 
     const columns = useMemo(
         () =>
@@ -322,13 +335,6 @@ const QuestionGeneratorPage = () => {
                     >
                         {QUESTION_GENERATOR_TEXT.emptyText}
                     </Text>
-                    <Button
-                        type='button'
-                        label={QUESTION_GENERATOR_TEXT.addButton}
-                        variant={ButtonVariant.SOLID}
-                        color='white'
-                        onClick={handleOpenAddModal}
-                    />
                 </div>
             );
         }
@@ -362,14 +368,6 @@ const QuestionGeneratorPage = () => {
                         {QUESTION_GENERATOR_TEXT.subtitle}
                     </Text>
                 </div>
-                <Button
-                    type='button'
-                    label={QUESTION_GENERATOR_TEXT.addButton}
-                    variant={ButtonVariant.SOLID}
-                    color='white'
-                    onClick={handleOpenAddModal}
-                    StartIcon={<AddIcon />}
-                />
             </section>
 
             <section className={styles.panel}>
@@ -410,14 +408,12 @@ const QuestionGeneratorPage = () => {
                         onChange={(option) => handleGenerateValueChange('subject', option.id)}
                         isSearchable={false}
                     />
-                    <Dropdown
-                        label='Select Competency'
-                        dropDownTitle={QUESTION_GENERATOR_TEXT.competencyLabel}
+                    <CompetencyMultiSelect
+                        label={QUESTION_GENERATOR_TEXT.competencyLabel}
+                        placeholder='Select Competency'
                         options={COMPETENCY_OPTIONS}
-                        selectValue='name'
-                        value={selectedGenerateCompetency}
-                        onChange={(option) => handleGenerateValueChange('competency', option.id)}
-                        isSearchable={false}
+                        value={generateValues.competencyIds}
+                        onChange={(value) => handleGenerateValueChange('competencyIds', value)}
                     />
                     <Input
                         id='questionCount'
@@ -520,14 +516,6 @@ const QuestionGeneratorPage = () => {
                     >
                         {QUESTION_GENERATOR_TEXT.listTitle}
                     </Text>
-                    <Button
-                        type='button'
-                        label={QUESTION_GENERATOR_TEXT.addButton}
-                        variant={ButtonVariant.SOLID}
-                        color='white'
-                        onClick={handleOpenAddModal}
-                        StartIcon={<AddIcon />}
-                    />
                 </div>
                 {renderTableContent()}
                 <div className={styles.tableFooter}>
@@ -570,6 +558,8 @@ const QuestionGeneratorPage = () => {
                 open={isPreviewModalOpen}
                 question={selectedQuestion}
                 onClose={() => setIsPreviewModalOpen(false)}
+                onSave={handleSaveQuestionEditor}
+                isSubmitting={isSubmitting}
             />
             <DeleteQuestionModal
                 open={isDeleteModalOpen}

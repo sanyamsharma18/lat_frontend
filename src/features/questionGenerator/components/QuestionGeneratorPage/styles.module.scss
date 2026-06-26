@@ -95,6 +95,28 @@
     min-width: 220px;
 }
 
+.htmlQuestionText {
+    color: $black;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+
+    p {
+        margin: 0;
+    }
+}
+
+.imageColumn {
+    min-width: 96px;
+}
+
+.imageCell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
 .thumbnail {
     width: 78px;
     height: 48px;
@@ -108,6 +130,23 @@
 
     img {
         object-fit: contain;
+    }
+}
+
+.imageAction {
+    color: $blue-600;
+    background: $blue-50;
+    border: 1px solid $blue-200;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid $orange-500;
+        outline-offset: 2px;
     }
 }
 
