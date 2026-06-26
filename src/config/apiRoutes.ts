@@ -24,12 +24,11 @@ export const API_ROUTES = {
     dashboardSummary: `${API_URL}/admin/dashboard/summary`,
     teacherDashboard: `${API_URL}/teacher/dashboard`,
     teacherStudents: `${API_URL}/teacher/students`,
-    studentExamCheck: `${API_URL}/students/exam/check`,
     regions: `${API_URL}/regions`,
     schools: (regionId: string) => `${API_URL}/regions/${regionId}/schools`,
     subjects: `${API_URL}/subjects`,
+    studentExamCheck: `${API_URL}/students/exam/check`,
     gradeGroup: `${API_URL}/grade-group`,
     grades: `${API_URL}/grades`,
     login: `${API_URL}/login`,
-    addNewLead: `${MARKETING_EXECUTIVE}/leads`,
 };

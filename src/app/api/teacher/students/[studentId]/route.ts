@@ -1,17 +1,21 @@
 import { NextRequest } from 'next/server';
-import { updateStudent, deleteStudent } from '@/services/student/student.service';
+import { updateStudent, deleteStudent, updateStudentStatus } from '@/services/student/student.service';
 import { serverApiResponse } from '@/lib/serverApi';
 import { StudentFormValues } from '@/types/student';
 
-export async function PATCH(
-    request: NextRequest,
-    { params }: { params: { studentId: string } }
-) {
+interface StudentRouteContext {
+    params: Promise<{
+        studentId: string;
+    }>;
+}
+
+export async function PATCH(request: NextRequest, context: StudentRouteContext) {
+    const { studentId } = await context.params;
     const payload = (await request.json()) as StudentFormValues;
-    
+
     const [firstName, ...rest] = payload.studentName.split(' ');
     const lastName = rest.join(' ');
-    
+
     const mappedPayload = {
         firstName,
         lastName,
@@ -25,20 +29,21 @@ export async function PATCH(
         email: payload.email,
         rollNo: payload.rollNo,
         udisecode: payload.udisecode,
-        address: payload.address
+        address: payload.address,
     };
 
+    const statusValue = String(payload.status);
+
     const [response] = await Promise.all([
-        updateStudent(params.studentId, mappedPayload as any),
-        updateStudentStatus(params.studentId, payload.status === 'Active' || payload.status === '1' ? 1 : 0)
+        updateStudent(studentId, mappedPayload as any),
+        updateStudentStatus(studentId, statusValue === 'Active' || statusValue === '1' ? 1 : 0),
     ]);
     return serverApiResponse(response);
 }
 
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { studentId: string } }
-) {
-    const response = await deleteStudent(params.studentId);
+export async function DELETE(_request: NextRequest, context: StudentRouteContext) {
+    const { studentId } = await context.params;
+    const response = await deleteStudent(studentId);
+
     return serverApiResponse(response);
 }

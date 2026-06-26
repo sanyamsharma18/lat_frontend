@@ -1,16 +1,34 @@
+import { cookies } from 'next/headers';
+
+import { API_ROUTES } from '@/config/apiRoutes';
+import { serverApi } from '@/lib/serverApi';
+
 import {
     ExamInstructionsResponse,
     ExamQuestionsResponse,
     SaveAnswerPayload,
     StudentExamCheckPayload,
-    StudentExamCheckResponse,
     StudentProfile,
     SubmitExamPayload,
 } from '@/types/studentPortal';
-import { ApiResponse } from '@/types/api';
-import { API_ROUTES } from '@/config/apiRoutes';
-import { HTTP_METHOD } from '@/types/common';
-import { serverApi } from '@/lib/serverApi';
+
+import { USER_DETAIL } from '@/utils/cookieManager';
+
+const EMPTY_PROFILE_VALUE = '_';
+
+interface StudentCookieDetail {
+    id?: string | number;
+    username?: string;
+    firstName?: string;
+    lastName?: string;
+    fullName?: string;
+    grade?: string;
+    gradeName?: string;
+    gradeId?: string | number;
+    section?: string;
+    rollNumber?: string;
+    rollNo?: string;
+}
 
 const MOCK_STUDENT_PROFILE: StudentProfile = {
     id: 'student-001',
@@ -19,6 +37,53 @@ const MOCK_STUDENT_PROFILE: StudentProfile = {
     grade: 'Grade 8',
     section: 'A',
     rollNumber: 'LAT-8A-001',
+};
+
+const getDisplayValue = (value?: string | number | null) => {
+    const normalizedValue = String(value ?? '').trim();
+
+    return normalizedValue || EMPTY_PROFILE_VALUE;
+};
+
+const getFullName = (userDetail: StudentCookieDetail) => {
+    const fullName =
+        userDetail.fullName ||
+        `${userDetail.firstName || ''} ${userDetail.lastName || ''}`.trim();
+
+    return getDisplayValue(fullName);
+};
+
+const getGrade = (userDetail: StudentCookieDetail) =>
+    getDisplayValue(userDetail.grade || userDetail.gradeName || userDetail.gradeId);
+
+const getRollNumber = (userDetail: StudentCookieDetail) =>
+    getDisplayValue(userDetail.rollNumber || userDetail.rollNo);
+
+const getStudentDetailFromCookie = async (): Promise<StudentCookieDetail> => {
+    const userDetailCookie = (await cookies()).get(USER_DETAIL)?.value;
+
+    if (!userDetailCookie) {
+        return {};
+    }
+
+    try {
+        return JSON.parse(decodeURIComponent(userDetailCookie)) as StudentCookieDetail;
+    } catch {
+        return {};
+    }
+};
+
+const buildStudentProfileFromCookie = async (): Promise<StudentProfile> => {
+    const userDetail = await getStudentDetailFromCookie();
+
+    return {
+        id: getDisplayValue(userDetail.id),
+        fullName: getFullName(userDetail),
+        username: getDisplayValue(userDetail.username),
+        grade: getGrade(userDetail),
+        section: getDisplayValue(userDetail.section),
+        rollNumber: getRollNumber(userDetail),
+    };
 };
 
 const MOCK_EXAM_INSTRUCTIONS: ExamInstructionsResponse = {
@@ -372,19 +437,21 @@ export const studentLogin = async () =>
         },
     });
 
-export const getStudentProfile = async () => buildMockResult(MOCK_STUDENT_PROFILE);
+export const getStudentProfile = async () => buildMockResult(await buildStudentProfileFromCookie());
 
 export const getExamInstructions = async () => buildMockResult(MOCK_EXAM_INSTRUCTIONS);
 
-export const checkStudentExamStatus = async (payload: StudentExamCheckPayload, bearerToken: string) =>
-    serverApi<ApiResponse<StudentExamCheckResponse>>({
-        url: API_ROUTES.studentExamCheck,
-        method: HTTP_METHOD.POST,
-        body: payload,
-        bearerToken,
-    });
-
 export const getExamQuestions = async () => buildMockResult(MOCK_EXAM_QUESTIONS);
+
+export const checkStudentExamStatus = async (payload: StudentExamCheckPayload) =>
+    serverApi({
+        url: API_ROUTES.studentExamCheck,
+        method: 'POST',
+        headers: {
+            accept: 'application/json',
+        },
+        body: payload,
+    });
 
 export const saveExamAnswer = async (payload: SaveAnswerPayload) =>
     buildMockResult(payload, 'Answer saved successfully');
