@@ -1,3 +1,5 @@
+import { API_ROUTES } from '@/config/apiRoutes';
+import { serverApi } from '@/lib/serverApi';
 import {
     GenerateQuestionsPayload,
     QuestionFormValues,
@@ -237,37 +239,54 @@ const generateQuestion = (
 
 export const getQuestions = async (
     filters: QuestionListFilters,
-): Promise<ReturnType<typeof buildApiResult<QuestionListResponse>>> => {
-    const searchValue = normalize(filters.search);
-    const filteredQuestions = mockQuestions.filter((question) => {
-        const matchesSearch = searchValue
-            ? normalize(`${question.questionId} ${question.questionText}`).includes(searchValue)
-            : true;
-        const matchesGrade = filters.grade ? question.grade === filters.grade : true;
-        const matchesSubject = filters.subject ? question.subject === filters.subject : true;
-        const matchesCompetency = filters.competency
-            ? question.competency === filters.competency
-            : true;
-        const matchesStatus = filters.status ? question.status === filters.status : true;
+) => {
+    const searchParams = new URLSearchParams();
+    if (filters.search) searchParams.set('search', filters.search);
+    if (filters.grade) searchParams.set('grade', filters.grade);
+    if (filters.subject) searchParams.set('subject', filters.subject);
+    if (filters.competency) searchParams.set('competency', filters.competency);
+    if (filters.status) searchParams.set('status', filters.status);
+    searchParams.set('page', String(filters.page));
+    searchParams.set('limit', String(filters.limit));
 
-        return (
-            matchesSearch &&
-            matchesGrade &&
-            matchesSubject &&
-            matchesCompetency &&
-            matchesStatus
-        );
+    const result = await serverApi<any>({
+        url: API_ROUTES.adminQuestions,
+        method: 'GET',
+        searchParams,
     });
 
-    const startIndex = (filters.page - 1) * filters.limit;
-    const response: QuestionListResponse = {
-        questions: filteredQuestions.slice(startIndex, startIndex + filters.limit),
-        total: filteredQuestions.length,
-        page: filters.page,
-        limit: filters.limit,
-    };
+    if (result.ok && result.data?.response) {
+        const backendResponse = result.data.response;
+        if (Array.isArray(backendResponse.questions)) {
+            backendResponse.questions = backendResponse.questions.map((q: any) => ({
+                id: String(q.id),
+                questionId: String(q.questionId || q.id),
+                gradeGroup: q.gradeGroup || '',
+                grade: q.grade || '',
+                subject: q.subject || '',
+                competency: q.competency || '',
+                instruction: q.instruction || '',
+                stimulus: q.stimulus || '',
+                questionText: q.questionText || '',
+                status: q.status || 'Active',
+                imageUrl: q.imageUrl || undefined,
+                options: (q.options || []).map((o: any) => ({
+                    id: String(o.id),
+                    optionId: o.optionId,
+                    relationKey: o.relationKey || '',
+                    text: o.text || '',
+                    isCorrect: !!o.isCorrect,
+                    imageUrl: o.imageUrl || null,
+                    rationale: o.rationale || '',
+                })),
+                answerExplanation: q.answerExplanation || '',
+                createdAt: q.createdAt || '',
+                updatedAt: q.updatedAt || '',
+            }));
+        }
+    }
 
-    return buildApiResult(response);
+    return result;
 };
 
 export const createQuestion = async (values: QuestionFormValues) => {
@@ -307,14 +326,19 @@ export const deleteQuestion = async (questionId: string) => {
 };
 
 export const generateQuestions = async (payload: GenerateQuestionsPayload) => {
-    const competencies = payload.competencyIds.length ? payload.competencyIds : ['General'];
-    const generatedQuestions = Array.from({ length: payload.count }).map((_, index) =>
-        generateQuestion(payload, competencies[index % competencies.length], index),
-    );
+    const backendPayload = {
+        displayGradeId: Number(payload.grade),
+        subjectId: Number(payload.subject),
+        term: payload.term,
+        competencyIds: payload.competencyIds.map(Number),
+        count: Number(payload.count),
+    };
 
-    mockQuestions = [...generatedQuestions, ...mockQuestions];
-
-    return buildApiResult(generatedQuestions, 'Questions generated successfully');
+    return serverApi<any>({
+        url: API_ROUTES.generateQuestions,
+        method: 'POST',
+        body: backendPayload,
+    });
 };
 
 export const QUESTION_STATUS_OPTIONS: QuestionStatus[] = ['Active', 'Draft', 'Inactive'];

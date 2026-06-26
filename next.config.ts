@@ -24,6 +24,18 @@ const stylesPath = path.join(process.cwd(), 'src/styles');
 const nextConfig: NextConfig = {
     reactStrictMode: true,
     allowedDevOrigins: ['192.168.0.233'],
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '**',
+            },
+            {
+                protocol: 'http',
+                hostname: '**',
+            },
+        ],
+    },
     sassOptions: {
         includePaths: [stylesPath],
         loadPaths: [stylesPath],

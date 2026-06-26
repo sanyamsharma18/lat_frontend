@@ -21,6 +21,7 @@ interface CompetencyMultiSelectProps {
     options: QuestionOptionItem[];
     value: string[];
     onChange: (value: string[]) => void;
+    disable?: boolean;
 }
 
 const CompetencyMultiSelect = ({
@@ -29,6 +30,7 @@ const CompetencyMultiSelect = ({
     options,
     value,
     onChange,
+    disable = false,
 }: CompetencyMultiSelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchValue, setSearchValue] = useState('');
@@ -71,9 +73,10 @@ const CompetencyMultiSelect = ({
             <button
                 type='button'
                 className={cx(styles.trigger, isOpen && styles.triggerOpen)}
-                onClick={() => setIsOpen((previous) => !previous)}
+                onClick={() => { if (!disable) setIsOpen((previous) => !previous); }}
                 aria-haspopup='listbox'
                 aria-expanded={isOpen}
+                disabled={disable}
             >
                 <span>{displayValue}</span>
                 <span aria-hidden='true'>⌄</span>

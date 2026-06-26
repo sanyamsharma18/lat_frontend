@@ -5,6 +5,9 @@ export interface QuestionOption {
     relationKey: string;
     text: string;
     isCorrect: boolean;
+    optionId?: number;
+    imageUrl?: string | null;
+    rationale?: string;
 }
 
 export interface QuestionRecord {
@@ -15,6 +18,7 @@ export interface QuestionRecord {
     subject: string;
     competency: string;
     instruction: string;
+    stimulus?: string;
     questionText: string;
     status: QuestionStatus;
     imageUrl?: string;
@@ -23,6 +27,7 @@ export interface QuestionRecord {
     createdAt: string;
     updatedAt: string;
 }
+
 
 export interface QuestionListFilters {
     search: string;
@@ -66,6 +71,7 @@ export interface GenerateQuestionsPayload {
     gradeGroup: string;
     grade: string;
     subject: string;
+    term: string;
     competencyIds: string[];
     count: number;
 }
