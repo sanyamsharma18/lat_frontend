@@ -90,14 +90,65 @@ const getFallbackStudentList = (filters: StudentListFilters): StudentListRespons
 };
 
 const normalizeStudentListResponse = (
-    response: StudentListResponse | ApiResponse<unknown>,
+    response: any,
     filters: StudentListFilters,
 ): StudentListResponse => {
-    if ('students' in response && Array.isArray(response.students)) {
-        return response;
+    let data = [];
+    let total = 0;
+
+    if (response?.response?.data && Array.isArray(response.response.data)) {
+        data = response.response.data;
+        total = response.response.total || data.length;
+    } else if (response?.data && Array.isArray(response.data)) {
+        data = response.data;
+        total = response.total || data.length;
+    } else if (response?.response && Array.isArray(response.response)) {
+        data = response.response;
+        total = response.total || data.length;
+    } else if (Array.isArray(response)) {
+        data = response;
+        total = data.length;
+    } else if (response && 'students' in response && Array.isArray(response.students)) {
+        return response; // Already formatted (fallback/mock)
+    } else {
+        return getFallbackStudentList(filters);
     }
 
-    return getFallbackStudentList(filters);
+    const formatDateStr = (dateStr: string) => {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return dateStr;
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        return `${yyyy}-${mm}-${dd}`;
+    };
+
+    const students: Student[] = data.map((item: any) => ({
+        id: String(item.userId || Math.random()),
+        studentId: item.rollNo || `STU-${item.userId}`,
+        studentName: `${item.firstName || ''} ${item.lastName || ''}`.trim(),
+        grade: String(item.gradeId || ''),
+        section: item.section || '',
+        fatherName: item.fatherName || '',
+        motherName: item.motherName || '',
+        gender: item.gender || 'Other',
+        dateOfBirth: formatDateStr(item.dob),
+        status: item.status === 1 ? 'Active' : 'Inactive',
+        createdDate: item.createdAt || '',
+        parentMobile: item.parentMobile || '',
+        email: item.email || '',
+        rollNo: item.rollNo || '',
+        udisecode: item.udiseCode || item.udisecode || '',
+        address: item.address || '',
+    }));
+
+    return {
+        students,
+        total,
+        page: filters.page,
+        limit: filters.limit,
+    };
 };
 
 const buildFallbackStudent = (payload: StudentFormValues): Student => {
@@ -120,8 +171,8 @@ const buildFallbackStudent = (payload: StudentFormValues): Student => {
 
 export const getStudentList = async (filters: StudentListFilters) => {
     const queryParams: QueryParamType = {
-        name: filters.name || null,
-        grade: filters.grade || null,
+        search: filters.name || null,
+        gradeId: filters.grade || null,
         section: filters.section || null,
         status: filters.status || null,
         page: String(filters.page),
@@ -160,7 +211,7 @@ export const createStudent = async (payload: StudentFormValues) =>
 export const updateStudent = async (studentId: string, payload: StudentFormValues) =>
     callApi<ApiResponse<unknown>>({
         url: `${ServerSideRoutes.TEACHER_STUDENTS}/${studentId}`,
-        method: HTTP_METHOD.PUT,
+        method: HTTP_METHOD.PATCH,
         body: { ...payload },
     })
         .then(assertSuccessfulResponse)
@@ -196,9 +247,9 @@ export const updateStudentStatus = async ({
     status: StudentStatus;
 }) =>
     callApi<ApiResponse<unknown>>({
-        url: `${ServerSideRoutes.TEACHER_STUDENTS}/${studentId}/status`,
-        method: HTTP_METHOD.PATCH,
-        body: { status },
+        url: `${ServerSideRoutes.TEACHER_STUDENTS}/status`,
+        method: HTTP_METHOD.POST,
+        body: { status, studentId },
     })
         .then(assertSuccessfulResponse)
         .catch((error) => {

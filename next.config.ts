@@ -23,6 +23,7 @@ const stylesPath = path.join(process.cwd(), 'src/styles');
 
 const nextConfig: NextConfig = {
     reactStrictMode: true,
+    allowedDevOrigins: ['192.168.0.233'],
     sassOptions: {
         includePaths: [stylesPath],
         loadPaths: [stylesPath],

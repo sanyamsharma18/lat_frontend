@@ -1,95 +1,38 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
-import { Student, StudentFormValues } from '@/types/student';
-
-let mockStudents: Student[] = [
-    {
-        id: '1',
-        studentId: 'STU-001',
-        studentName: 'John Doe',
-        grade: 'Grade 5',
-        section: 'A',
-        fatherName: 'Robert Doe',
-        motherName: 'Jane Doe',
-        gender: 'Male',
-        dateOfBirth: '2015-05-12',
-        status: 'Active',
-        createdDate: '2026-01-15',
-    },
-    {
-        id: '2',
-        studentId: 'STU-002',
-        studentName: 'Anita Sharma',
-        grade: 'Grade 6',
-        section: 'B',
-        fatherName: 'Raj Sharma',
-        motherName: 'Meera Sharma',
-        gender: 'Female',
-        dateOfBirth: '2014-09-21',
-        status: 'Inactive',
-        createdDate: '2026-02-03',
-    },
-];
-
-const getNextStudentId = () =>
-    String(
-        mockStudents.reduce((highestId, student) => Math.max(highestId, Number(student.id)), 0) + 1,
-    );
-
-const buildStudent = (payload: StudentFormValues): Student => {
-    const id = getNextStudentId();
-
-    return {
-        id,
-        studentId: `STU-${id.padStart(3, '0')}`,
-        studentName: payload.studentName,
-        grade: payload.grade,
-        section: payload.section,
-        fatherName: payload.fatherName,
-        motherName: payload.motherName,
-        gender: payload.gender || 'Other',
-        dateOfBirth: payload.dateOfBirth,
-        status: payload.status,
-        createdDate: new Date().toISOString().slice(0, 10),
-    };
-};
+import { serverApiResponse } from '@/lib/serverApi';
+import { getStudents, createStudent } from '@/services/student/student.service';
+import { StudentFormValues } from '@/types/student';
 
 export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
-    const name = (searchParams.get('name') ?? '').toLowerCase();
-    const grade = searchParams.get('grade') ?? '';
-    const section = searchParams.get('section') ?? '';
-    const status = searchParams.get('status') ?? '';
-    const page = Number(searchParams.get('page') ?? '1');
-    const limit = Number(searchParams.get('limit') ?? '10');
-
-    const filteredStudents = mockStudents.filter((student) => {
-        const matchesName = name ? student.studentName.toLowerCase().includes(name) : true;
-        const matchesGrade = grade ? student.grade === grade : true;
-        const matchesSection = section ? student.section === section : true;
-        const matchesStatus = status ? student.status === status : true;
-
-        return matchesName && matchesGrade && matchesSection && matchesStatus;
-    });
-    const startIndex = (page - 1) * limit;
-
-    return NextResponse.json({
-        students: filteredStudents.slice(startIndex, startIndex + limit),
-        total: filteredStudents.length,
-        page,
-        limit,
-        isMock: true,
-    });
+    const response = await getStudents(searchParams);
+    return serverApiResponse(response);
 }
 
 export async function POST(request: NextRequest) {
     const payload = (await request.json()) as StudentFormValues;
-    const student = buildStudent(payload);
-    mockStudents = [student, ...mockStudents];
+    
+    const [firstName, ...rest] = payload.studentName.split(' ');
+    const lastName = rest.join(' ');
 
-    return NextResponse.json({
-        status: true,
-        message: 'Student created successfully',
-        data: student,
-    });
+    const mappedPayload = {
+        firstName,
+        lastName,
+        gradeId: Number(String(payload.grade).replace('Grade ', '')),
+        section: payload.section,
+        fatherName: payload.fatherName,
+        motherName: payload.motherName,
+        gender: payload.gender,
+        dob: payload.dateOfBirth,
+        parentMobile: payload.parentMobile,
+        email: payload.email,
+        rollNo: payload.rollNo,
+        udisecode: payload.udisecode,
+        address: payload.address
+    };
+
+    // Note: status is set sequentially if needed, but usually default is Active on creation
+    const response = await createStudent(mappedPayload as any);
+    return serverApiResponse(response);
 }

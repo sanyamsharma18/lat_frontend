@@ -23,7 +23,7 @@ export const createStudent = async (payload: StudentFormValues) =>
 export const updateStudent = async (studentId: string, payload: StudentFormValues) =>
     serverApi({
         url: `${API_ROUTES.teacherStudents}/${studentId}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: { ...payload },
     });
 
@@ -33,11 +33,11 @@ export const deleteStudent = async (studentId: string) =>
         method: 'DELETE',
     });
 
-export const updateStudentStatus = async (studentId: string, status: StudentStatus) =>
+export const updateStudentStatus = async (studentId: string, status: StudentStatus | number) =>
     serverApi({
-        url: `${API_ROUTES.teacherStudents}/${studentId}/status`,
-        method: 'PATCH',
-        body: { status },
+        url: `${API_ROUTES.teacherStudents}/status`,
+        method: 'POST',
+        body: { status, studentId },
     });
 
 export const uploadStudents = async (payload: FormData) =>

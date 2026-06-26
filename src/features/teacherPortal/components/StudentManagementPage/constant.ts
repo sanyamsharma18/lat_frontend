@@ -44,9 +44,14 @@ export const STUDENT_FORM_TEXT = {
     section: { label: 'Section', placeholder: 'Select section' },
     fatherName: { label: 'Father Name', placeholder: 'Enter father name' },
     motherName: { label: 'Mother Name', placeholder: 'Enter mother name' },
-    gender: { label: 'Gender', placeholder: 'Select gender' },
-    dateOfBirth: { label: 'Date Of Birth' },
-    status: { label: 'Status', placeholder: 'Select status' },
+    gender: { label: 'Gender', placeholder: 'Select Gender' },
+    dateOfBirth: { label: 'Date of Birth', placeholder: 'Select Date' },
+    status: { label: 'Status', placeholder: 'Select Status' },
+    parentMobile: { label: 'Parent Mobile', placeholder: 'Enter parent mobile' },
+    email: { label: 'Email', placeholder: 'Enter email address' },
+    rollNo: { label: 'Roll Number', placeholder: 'Enter roll number' },
+    udisecode: { label: 'UDISE Code', placeholder: 'Enter UDISE code' },
+    address: { label: 'Address', placeholder: 'Enter address' },
     cancelButton: 'Cancel',
     addSubmitButton: 'Add Student',
     editSubmitButton: 'Save Changes',
@@ -77,14 +82,14 @@ export const GRADE_OPTIONS: StudentOption[] = Array.from({ length: 12 }, (_, ind
 }));
 
 export const SECTION_OPTIONS: StudentOption[] = ['A', 'B', 'C', 'D'].map((section) => ({
-    id: section,
-    name: section,
+    id: `Section ${section}`,
+    name: `Section ${section}`,
 }));
 
-export const STATUS_OPTIONS: StudentOption[] = ['Active', 'Inactive'].map((status) => ({
-    id: status,
-    name: status,
-}));
+export const STATUS_OPTIONS: StudentOption[] = [
+    { id: '1', name: 'Active' },
+    { id: '0', name: 'Inactive' },
+];
 
 export const GENDER_OPTIONS: StudentOption[] = ['Male', 'Female', 'Other'].map((gender) => ({
     id: gender,
@@ -115,6 +120,11 @@ export const STUDENT_VALIDATION = {
     gender: { requiredMessage: 'Gender is required' },
     dateOfBirth: { requiredMessage: 'Date of birth is required' },
     status: { requiredMessage: 'Status is required' },
+    parentMobile: { requiredMessage: 'Parent Mobile is required' },
+    email: { requiredMessage: '' },
+    rollNo: { requiredMessage: '' },
+    udisecode: { requiredMessage: 'UDISE Code is required' },
+    address: { requiredMessage: '' },
 };
 
 export const STUDENT_PAGE_SIZE = 10;

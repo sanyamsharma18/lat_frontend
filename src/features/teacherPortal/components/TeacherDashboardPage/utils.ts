@@ -33,6 +33,10 @@ const getSummarySource = (response: unknown) => {
         return {};
     }
 
+    if (isRecord(response.response) && isRecord(response.response.data)) {
+        return response.response.data;
+    }
+
     if (isRecord(response.data)) {
         return response.data;
     }
@@ -77,9 +81,8 @@ export const getTeacherDashboard = async () => {
 
         return normalizeTeacherDashboard(assertSuccessfulResponse(response));
     } catch (error) {
-        console.warn('Teacher dashboard API failed. Falling back to mock data.', error);
-
-        return MOCK_TEACHER_DASHBOARD;
+        console.error('Teacher dashboard API failed.', error);
+        throw error;
     }
 };
 

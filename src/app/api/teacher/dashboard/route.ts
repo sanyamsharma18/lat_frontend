@@ -1,15 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { serverApiResponse } from '@/lib/serverApi';
+import { getTeacherDashboard } from '@/services/student/student.service';
 
-import { TeacherDashboardSummary } from '@/types/student';
-
-const MOCK_TEACHER_DASHBOARD: TeacherDashboardSummary = {
-    totalStudents: 120,
-    activeStudents: 95,
-    inactiveStudents: 25,
-    totalQuestionsAttempted: 4580,
-    isMock: true,
-};
-
-export async function GET() {
-    return NextResponse.json(MOCK_TEACHER_DASHBOARD);
+export async function GET(_request: NextRequest) {
+    const result = await getTeacherDashboard();
+    return serverApiResponse(result);
 }
