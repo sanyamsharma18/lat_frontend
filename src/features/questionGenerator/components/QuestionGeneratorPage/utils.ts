@@ -78,3 +78,82 @@ export const questionListQueryOptions = (filters: QuestionListFilters) => ({
     staleTime: StaleAndCacheTime.STALE_TIME,
     gcTime: StaleAndCacheTime.CACHE_TIME,
 });
+
+export const getGradesByGradeGroup = async (gradeGroupId: string) =>
+    callApi<any>({
+        url: `${ServerSideRoutes.GRADES_BY_GRADE_GROUP}/${gradeGroupId}`,
+        method: HTTP_METHOD.GET,
+    }).then((res) => {
+        // Handle deeply nested NextJS/Backend wrapped response: { response: { data: [...] } }
+        if (res?.response?.data && Array.isArray(res.response.data)) {
+            return res.response.data;
+        } else if (res?.data && Array.isArray(res.data)) {
+            return res.data;
+        } else if (res?.response && Array.isArray(res.response)) {
+            return res.response;
+        } else if (Array.isArray(res)) {
+            return res;
+        }
+
+        // If it reaches here, the API returned something unexpected or failed
+        console.error("API returned invalid data:", res);
+        return [{ id: 'error', name: `API Error: ${JSON.stringify(res).substring(0, 50)}` }];
+    });
+
+export const getGradeGroups = async () =>
+    callApi<any>({
+        url: ServerSideRoutes.GRADE_GROUP,
+        method: HTTP_METHOD.GET,
+    }).then((res) => {
+        // Handle deeply nested NextJS/Backend wrapped response: { response: { data: [...] } }
+        if (res?.response?.data && Array.isArray(res.response.data)) {
+            return res.response.data;
+        } else if (res?.data && Array.isArray(res.data)) {
+            return res.data;
+        } else if (res?.response && Array.isArray(res.response)) {
+            return res.response;
+        } else if (Array.isArray(res)) {
+            return res;
+        }
+
+        // If it reaches here, the API returned something unexpected or failed
+        console.error("API returned invalid data:", res);
+        return [{ id: 'error', name: `API Error: ${JSON.stringify(res).substring(0, 50)}` }];
+    });
+
+export const getSubjectsByGradeGroup = async (gradeGroupId: string) =>
+    callApi<any>({
+        url: `${ServerSideRoutes.SUBJECTS_BY_GRADE_GROUP}/${gradeGroupId}`,
+        method: HTTP_METHOD.GET,
+    }).then((res) => {
+        if (res?.response?.data && Array.isArray(res.response.data)) {
+            return res.response.data;
+        } else if (res?.data && Array.isArray(res.data)) {
+            return res.data;
+        } else if (res?.response && Array.isArray(res.response)) {
+            return res.response;
+        } else if (Array.isArray(res)) {
+            return res;
+        }
+        console.error("Subjects API returned invalid data:", res);
+        return [{ id: 'error', name: `API Error: ${JSON.stringify(res).substring(0, 50)}` }];
+    });
+
+export const getCompetenciesList = async (payload: { gradeId: number; subjectId: number; term: string }) =>
+    callApi<any>({
+        url: ServerSideRoutes.COMPETENCIES_LIST,
+        method: HTTP_METHOD.POST,
+        body: payload,
+    }).then((res) => {
+        if (res?.response?.data && Array.isArray(res.response.data)) {
+            return res.response.data;
+        } else if (res?.data && Array.isArray(res.data)) {
+            return res.data;
+        } else if (res?.response && Array.isArray(res.response)) {
+            return res.response;
+        } else if (Array.isArray(res)) {
+            return res;
+        }
+        console.error("Competencies API returned invalid data:", res);
+        return [{ id: 'error', name: `API Error: ${JSON.stringify(res).substring(0, 50)}` }];
+    });

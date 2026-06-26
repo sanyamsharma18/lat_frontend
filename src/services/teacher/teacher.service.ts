@@ -63,3 +63,20 @@ export const getGrades = async () =>
     serverApi({
         url: API_ROUTES.grades,
     });
+
+export const getGradesByGradeGroup = async (id: string) =>
+    serverApi({
+        url: API_ROUTES.gradesByGradeGroup(id),
+    });
+
+export const getSubjectsByGradeGroup = async (id: string) =>
+    serverApi({
+        url: API_ROUTES.subjectsByGradeGroup(id),
+    });
+
+export const getCompetenciesList = async (body: { gradeId: number; subjectId: number; term: string }) =>
+    serverApi({
+        url: API_ROUTES.competenciesList,
+        method: 'POST',
+        body,
+    });

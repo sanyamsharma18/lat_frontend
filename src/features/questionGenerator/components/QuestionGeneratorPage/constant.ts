@@ -96,6 +96,11 @@ export const GRADE_GROUP_OPTIONS: QuestionOptionItem[] = [
     { id: 'Secondary', name: 'Secondary' },
 ];
 
+export const TERM_OPTIONS: QuestionOptionItem[] = [
+    { id: 'Term 1', name: 'Term 1' },
+    { id: 'Term 2', name: 'Term 2' },
+];
+
 export const GRADE_OPTIONS: QuestionOptionItem[] = [
     { id: 'Grade V', name: 'Grade V' },
     { id: 'Grade VI', name: 'Grade VI' },
@@ -120,9 +125,9 @@ export const COMPETENCY_OPTIONS: QuestionOptionItem[] = [
 ];
 
 export const STATUS_OPTIONS: QuestionOptionItem[] = [
-    { id: 'Active', name: 'Active' },
-    { id: 'Draft', name: 'Draft' },
-    { id: 'Inactive', name: 'Inactive' },
+    { id: '1', name: 'Approve' },
+    { id: '0', name: 'Reject' },
+    { id: '2', name: 'Draft' },
 ];
 
 export const ALL_STATUS_OPTIONS: QuestionOptionItem[] = [

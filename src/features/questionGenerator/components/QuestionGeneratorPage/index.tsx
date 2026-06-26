@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useMemo } from 'react';
+import { ChangeEvent, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 import cx from 'classnames';
@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 import DataTable, { DataTableColumn } from '@/components/ui/DataTable';
 import Dropdown from '@/components/ui/Dropdown';
 import Input from '@/components/ui/Input/Input';
+import Modal from '@/components/ui/Modal';
 import ShimmerUiContainer from '@/components/ui/ShimmerUiContainer';
 import Text from '@/components/ui/Text';
 import Toaster from '@/components/ui/Toaster';
@@ -32,6 +33,7 @@ import {
     GRADE_OPTIONS,
     QUESTION_GENERATOR_TEXT,
     SUBJECT_OPTIONS,
+    TERM_OPTIONS,
 } from './constant';
 
 import styles from './styles.module.scss';
@@ -40,6 +42,7 @@ interface QuestionActionHandlers {
     onPreview: (question: QuestionRecord) => void;
     onEdit: (question: QuestionRecord) => void;
     onDelete: (question: QuestionRecord) => void;
+    onImageClick: (url: string) => void;
 }
 
 const getOption = (options: QuestionOptionItem[], id?: string) =>
@@ -59,20 +62,23 @@ const HtmlQuestionText = ({ value }: { value: string }) => (
     />
 );
 
-const StatusBadge = ({ status }: { status: QuestionRecord['status'] }) => (
-    <span
-        className={cx(
-            styles.statusBadge,
-            status === 'Active' && styles.statusActive,
-            status === 'Draft' && styles.statusDraft,
-            status === 'Inactive' && styles.statusInactive,
-        )}
-    >
-        {status}
-    </span>
-);
+const StatusBadge = ({ status }: { status: QuestionRecord['status'] }) => {
+    const displayStatus = status === 'Active' ? 'Approve' : status === 'Inactive' ? 'Reject' : status;
+    return (
+        <span
+            className={cx(
+                styles.statusBadge,
+                status === 'Active' && styles.statusActive,
+                status === 'Draft' && styles.statusDraft,
+                status === 'Inactive' && styles.statusInactive,
+            )}
+        >
+            {displayStatus}
+        </span>
+    );
+};
 
-const QuestionActions = ({ question, onPreview, onEdit, onDelete }: QuestionActionHandlers & {
+const QuestionActions = ({ question, onPreview }: Pick<QuestionActionHandlers, 'onPreview'> & {
     question: QuestionRecord;
 }) => (
     <div className={styles.rowActions}>
@@ -84,24 +90,6 @@ const QuestionActions = ({ question, onPreview, onEdit, onDelete }: QuestionActi
             title={QUESTION_GENERATOR_TEXT.viewAction}
         >
             View
-        </button>
-        <button
-            type='button'
-            className={styles.iconButton}
-            onClick={() => onEdit(question)}
-            aria-label={QUESTION_GENERATOR_TEXT.editAction}
-            title={QUESTION_GENERATOR_TEXT.editAction}
-        >
-            Edit
-        </button>
-        <button
-            type='button'
-            className={cx(styles.iconButton, styles.deleteIconButton)}
-            onClick={() => onDelete(question)}
-            aria-label={QUESTION_GENERATOR_TEXT.deleteAction}
-            title={QUESTION_GENERATOR_TEXT.deleteAction}
-        >
-            Del
         </button>
     </div>
 );
@@ -159,66 +147,65 @@ const getQuestionColumns = (handlers: QuestionActionHandlers): DataTableColumn<Q
         header: QUESTION_GENERATOR_TEXT.imageColumn,
         className: styles.imageColumn,
         cell: (question) =>
-            (
-                <div className={styles.imageCell}>
-                    {question.imageUrl ? (
-                        <div className={styles.thumbnail}>
-                            <Image
-                                src={question.imageUrl}
-                                alt={`Preview for ${question.questionId}`}
-                                width={72}
-                                height={44}
-                            />
-                        </div>
-                    ) : null}
-                    <button
-                        type='button'
-                        className={styles.imageAction}
-                        onClick={() => handlers.onEdit(question)}
+        (
+            <div className={styles.imageCell}>
+                {question.imageUrl ? (
+                    <div 
+                        className={styles.thumbnail}
+                        onClick={() => handlers.onImageClick(question.imageUrl!)}
+                        style={{ cursor: 'pointer' }}
+                        title="Click to preview image"
                     >
-                        {question.imageUrl
-                            ? QUESTION_GENERATOR_TEXT.changeImageText
-                            : QUESTION_GENERATOR_TEXT.addImageText}
-                    </button>
-                </div>
-            ),
+                        <Image
+                            src={question.imageUrl}
+                            alt={`Preview for ${question.questionId}`}
+                            width={72}
+                            height={44}
+                        />
+                    </div>
+                ) : (
+                    <span style={{ color: '#94a3b8', fontSize: '14px' }}>-</span>
+                )}
+            </div>
+        ),
     },
     {
         id: 'actions',
         header: QUESTION_GENERATOR_TEXT.actionsColumn,
-        cell: (question) => <QuestionActions question={question} {...handlers} />,
+        cell: (question) => <QuestionActions question={question} onPreview={handlers.onPreview} />,
     },
 ];
 
 const getRenderMobileCard =
     (handlers: QuestionActionHandlers) =>
-    (question: QuestionRecord) => {
-        const { competency, grade, questionId, questionText, status, subject } = question;
+        (question: QuestionRecord) => {
+            const { competency, grade, questionId, questionText, status, subject } = question;
 
-        return (
-            <div className={styles.mobileCardContent}>
-                <div className={styles.mobileCardMain}>
-                    <Text
-                        font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
-                        color='black'
-                    >
-                        {questionId}
-                    </Text>
-                    <HtmlQuestionText value={questionText} />
-                    <Text
-                        font={[FontType.text_xs_regular, FontType.text_xs_regular]}
-                        color='gray-500'
-                    >
-                        {grade} | {subject} | {competency}
-                    </Text>
-                    <StatusBadge status={status} />
+            return (
+                <div className={styles.mobileCardContent}>
+                    <div className={styles.mobileCardMain}>
+                        <Text
+                            font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
+                            color='black'
+                        >
+                            {questionId}
+                        </Text>
+                        <HtmlQuestionText value={questionText} />
+                        <Text
+                            font={[FontType.text_xs_regular, FontType.text_xs_regular]}
+                            color='gray-500'
+                        >
+                            {grade} | {subject} | {competency}
+                        </Text>
+                        <StatusBadge status={status} />
+                    </div>
+                    <QuestionActions question={question} {...handlers} />
                 </div>
-                <QuestionActions question={question} {...handlers} />
-            </div>
-        );
-    };
+            );
+        };
 
 const QuestionGeneratorPage = () => {
+    const [activePreviewImage, setActivePreviewImage] = useState<string | null>(null);
     const {
         generateValues,
         handleDeleteQuestion,
@@ -228,6 +215,7 @@ const QuestionGeneratorPage = () => {
         handleOpenEditModal,
         handleOpenPreviewModal,
         handleResetFilters,
+        handleResetGenerateFilters,
         handleSearchChange,
         handleSaveQuestionEditor,
         handleSubmitQuestion,
@@ -256,11 +244,25 @@ const QuestionGeneratorPage = () => {
         setSelectedStatusFilter,
         setSelectedSubjectFilter,
         totalPages,
+        gradeGroupOptions,
+        gradeOptions,
+        subjectOptions,
+        competencyOptions,
+        selectedGradeGroupFilter,
+        selectedTermFilter,
+        searchGradeOptions,
+        searchSubjectOptions,
+        searchCompetencyOptions,
+        handleGradeGroupFilterChange,
+        handleGradeFilterChange,
+        handleSubjectFilterChange,
+        handleTermFilterChange,
     } = useQuestionGenerator();
 
-    const selectedGenerateGradeGroup = getOption(GRADE_GROUP_OPTIONS, generateValues.gradeGroup);
-    const selectedGenerateGrade = getOption(GRADE_OPTIONS, generateValues.grade);
-    const selectedGenerateSubject = getOption(SUBJECT_OPTIONS, generateValues.subject);
+    const selectedGenerateGradeGroup = getOption(gradeGroupOptions, generateValues.gradeGroup);
+    const selectedGenerateGrade = getOption(gradeOptions, generateValues.grade);
+    const selectedGenerateSubject = getOption(subjectOptions, generateValues.subject);
+    const selectedGenerateTerm = getOption(TERM_OPTIONS, generateValues.term);
 
     const columns = useMemo(
         () =>
@@ -268,6 +270,7 @@ const QuestionGeneratorPage = () => {
                 onPreview: handleOpenPreviewModal,
                 onEdit: handleOpenEditModal,
                 onDelete: handleOpenDeleteModal,
+                onImageClick: (url) => setActivePreviewImage(url),
             }),
         [handleOpenDeleteModal, handleOpenEditModal, handleOpenPreviewModal],
     );
@@ -278,6 +281,7 @@ const QuestionGeneratorPage = () => {
                 onPreview: handleOpenPreviewModal,
                 onEdit: handleOpenEditModal,
                 onDelete: handleOpenDeleteModal,
+                onImageClick: (url) => setActivePreviewImage(url),
             }),
         [handleOpenDeleteModal, handleOpenEditModal, handleOpenPreviewModal],
     );
@@ -384,7 +388,7 @@ const QuestionGeneratorPage = () => {
                     <Dropdown
                         label='Select Grade Group'
                         dropDownTitle={QUESTION_GENERATOR_TEXT.gradeGroupLabel}
-                        options={GRADE_GROUP_OPTIONS}
+                        options={gradeGroupOptions}
                         selectValue='name'
                         value={selectedGenerateGradeGroup}
                         onChange={(option) => handleGenerateValueChange('gradeGroup', option.id)}
@@ -393,27 +397,40 @@ const QuestionGeneratorPage = () => {
                     <Dropdown
                         label='Select Grade'
                         dropDownTitle={QUESTION_GENERATOR_TEXT.gradeLabel}
-                        options={GRADE_OPTIONS}
+                        options={gradeOptions}
                         selectValue='name'
                         value={selectedGenerateGrade}
                         onChange={(option) => handleGenerateValueChange('grade', option.id)}
                         isSearchable={false}
+                        disable={!generateValues.gradeGroup}
                     />
                     <Dropdown
                         label='Select Subject'
                         dropDownTitle={QUESTION_GENERATOR_TEXT.subjectLabel}
-                        options={SUBJECT_OPTIONS}
+                        options={subjectOptions}
                         selectValue='name'
                         value={selectedGenerateSubject}
                         onChange={(option) => handleGenerateValueChange('subject', option.id)}
                         isSearchable={false}
+                        disable={!generateValues.grade}
+                    />
+                    <Dropdown
+                        label='Select Term'
+                        dropDownTitle='Term'
+                        options={TERM_OPTIONS}
+                        selectValue='name'
+                        value={selectedGenerateTerm}
+                        onChange={(option) => handleGenerateValueChange('term', option.id)}
+                        isSearchable={false}
+                        disable={!generateValues.subject}
                     />
                     <CompetencyMultiSelect
                         label={QUESTION_GENERATOR_TEXT.competencyLabel}
                         placeholder='Select Competency'
-                        options={COMPETENCY_OPTIONS}
+                        options={competencyOptions}
                         value={generateValues.competencyIds}
                         onChange={(value) => handleGenerateValueChange('competencyIds', value)}
+                        disable={!generateValues.term}
                     />
                     <Input
                         id='questionCount'
@@ -427,6 +444,14 @@ const QuestionGeneratorPage = () => {
                     />
                 </div>
                 <div className={styles.centerAction}>
+                    <Button
+                        type='button'
+                        label="Reset"
+                        variant={ButtonVariant.OUTLINED}
+                        color='black'
+                        onClick={handleResetGenerateFilters}
+                        disabled={isGenerating}
+                    />
                     <Button
                         type='button'
                         label={QUESTION_GENERATOR_TEXT.generateButton}
@@ -460,31 +485,53 @@ const QuestionGeneratorPage = () => {
                         autoComplete='off'
                     />
                     <Dropdown
-                        label={QUESTION_GENERATOR_TEXT.allOption}
+                        label='Select Grade Group'
+                        dropDownTitle={QUESTION_GENERATOR_TEXT.gradeGroupLabel}
+                        options={gradeGroupOptions}
+                        selectValue='name'
+                        value={selectedGradeGroupFilter}
+                        onChange={handleGradeGroupFilterChange}
+                        isSearchable={false}
+                    />
+                    <Dropdown
+                        label='Select Grade'
                         dropDownTitle={QUESTION_GENERATOR_TEXT.gradeLabel}
-                        options={ALL_GRADE_OPTIONS}
+                        options={searchGradeOptions}
                         selectValue='name'
                         value={selectedGradeFilter}
-                        onChange={setSelectedGradeFilter}
+                        onChange={handleGradeFilterChange}
                         isSearchable={false}
+                        disable={!selectedGradeGroupFilter}
                     />
                     <Dropdown
-                        label={QUESTION_GENERATOR_TEXT.allOption}
+                        label='Select Subject'
                         dropDownTitle={QUESTION_GENERATOR_TEXT.subjectLabel}
-                        options={ALL_SUBJECT_OPTIONS}
+                        options={searchSubjectOptions}
                         selectValue='name'
                         value={selectedSubjectFilter}
-                        onChange={setSelectedSubjectFilter}
+                        onChange={handleSubjectFilterChange}
                         isSearchable={false}
+                        disable={!selectedGradeFilter}
                     />
                     <Dropdown
-                        label={QUESTION_GENERATOR_TEXT.allOption}
+                        label='Select Term'
+                        dropDownTitle='Term'
+                        options={TERM_OPTIONS}
+                        selectValue='name'
+                        value={selectedTermFilter}
+                        onChange={handleTermFilterChange}
+                        isSearchable={false}
+                        disable={!selectedSubjectFilter}
+                    />
+                    <Dropdown
+                        label='Select Competency'
                         dropDownTitle={QUESTION_GENERATOR_TEXT.competencyLabel}
-                        options={ALL_COMPETENCY_OPTIONS}
+                        options={searchCompetencyOptions}
                         selectValue='name'
                         value={selectedCompetencyFilter}
                         onChange={setSelectedCompetencyFilter}
                         isSearchable={false}
+                        disable={!selectedTermFilter}
                     />
                     <Dropdown
                         label={QUESTION_GENERATOR_TEXT.allOption}
@@ -560,6 +607,7 @@ const QuestionGeneratorPage = () => {
                 onClose={() => setIsPreviewModalOpen(false)}
                 onSave={handleSaveQuestionEditor}
                 isSubmitting={isSubmitting}
+                onImageClick={(url) => setActivePreviewImage(url)}
             />
             <DeleteQuestionModal
                 open={isDeleteModalOpen}
@@ -568,6 +616,27 @@ const QuestionGeneratorPage = () => {
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDeleteQuestion}
             />
+            {activePreviewImage && (
+                <Modal open={!!activePreviewImage} setOpen={() => setActivePreviewImage(null)}>
+                    <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#fff', borderRadius: '12px', maxWidth: '90vw', maxHeight: '90vh', gap: '16px' }}>
+                        <Text tagType="h3" font={[FontType.text_lg_semibold, FontType.text_lg_semibold]} color="black">
+                            Image Preview
+                        </Text>
+                        <img 
+                            src={activePreviewImage} 
+                            alt="Preview" 
+                            style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: '8px', border: '1px solid #e2e8f0' }} 
+                        />
+                        <Button
+                            type="button"
+                            label="Close"
+                            variant={ButtonVariant.SOLID}
+                            color="white"
+                            onClick={() => setActivePreviewImage(null)}
+                        />
+                    </div>
+                </Modal>
+            )}
             <Toaster />
         </main>
     );

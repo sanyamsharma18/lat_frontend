@@ -21,7 +21,7 @@ const RootLayout = ({
     children: ReactNode;
 }>) => (
     <html lang='en'>
-        <body className={`${inter.style.fontFamily}`} style={{ margin: 0 }}>
+        <body className={inter.className} style={{ margin: 0 }}>
             <Providers>{children}</Providers>
         </body>
     </html>

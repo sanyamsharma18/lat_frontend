@@ -30,5 +30,10 @@ export const API_ROUTES = {
     studentExamCheck: `${API_URL}/students/exam/check`,
     gradeGroup: `${API_URL}/grade-group`,
     grades: `${API_URL}/grades`,
+    gradesByGradeGroup: (id: string) => `${API_URL}/grades/grade-group/${id}`,
+    subjectsByGradeGroup: (id: string) => `${API_URL}/subjects/grade-group/${id}`,
+    competenciesList: `${API_URL}/competencies-list`,
+    adminQuestions: `${API_URL}/questions`,
+    generateQuestions: `${API_URL}/generate-batch`,
     login: `${API_URL}/login`,
 };
