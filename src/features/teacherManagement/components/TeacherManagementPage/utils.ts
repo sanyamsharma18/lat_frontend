@@ -88,6 +88,8 @@ export const getTeacherList = async (filters: TeacherListFilters): Promise<Teach
         udisecode: item.udiseCode || '',
         gender: item.gender || '',
         address: item.address || '',
+        gradeId: String(item.gradeId || ''),
+        subjectId: String(item.subjectId || ''),
         regionId: String(item.regionId || ''),
         schoolId: String(item.schoolId || ''),
         schoolName: item.schoolName || '',

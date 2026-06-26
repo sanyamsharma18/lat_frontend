@@ -230,7 +230,7 @@ export const useStudentManagement = () => {
     const handleToggleStatus = (isActive: boolean, studentId: string) => {
         updateStatusMutation.mutate({
             studentId,
-            status: (isActive ? 'Active' : 'Inactive') as StudentStatus,
+            status: (isActive ? 1 : 0) as any,
         });
     };
 

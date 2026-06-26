@@ -27,6 +27,7 @@ interface StudentFormModalProps {
     mode: 'add' | 'edit';
     student: Student | null;
     isSubmitting: boolean;
+    gradeOptions: StudentOption[];
     onClose: () => void;
     onSubmit: (values: StudentFormValues) => void;
 }
@@ -42,7 +43,12 @@ const EMPTY_FORM_VALUES: StudentFormValues = {
     motherName: '',
     gender: '',
     dateOfBirth: '',
-    status: 'Active',
+    status: '1' as any,
+    parentMobile: '',
+    email: '',
+    rollNo: '',
+    udisecode: '',
+    address: '',
 };
 
 const STUDENT_FORM_FIELDS: StudentFormField[] = [
@@ -54,6 +60,11 @@ const STUDENT_FORM_FIELDS: StudentFormField[] = [
     'gender',
     'dateOfBirth',
     'status',
+    'parentMobile',
+    'email',
+    'rollNo',
+    'udisecode',
+    'address',
 ];
 
 const validateField = (name: StudentFormField, value: string) => {
@@ -82,6 +93,7 @@ const StudentFormModal = ({
     mode,
     student,
     isSubmitting,
+    gradeOptions,
     onClose,
     onSubmit,
 }: StudentFormModalProps) => {
@@ -114,7 +126,12 @@ const StudentFormModal = ({
                       motherName: student.motherName,
                       gender: student.gender,
                       dateOfBirth: student.dateOfBirth,
-                      status: student.status,
+                      status: (student.status === 'Active' ? '1' : '0') as any,
+                      parentMobile: student.parentMobile || '',
+                      email: student.email || '',
+                      rollNo: student.rollNo || '',
+                      udisecode: student.udisecode || '',
+                      address: student.address || '',
                   }
                 : EMPTY_FORM_VALUES,
         );
@@ -224,7 +241,7 @@ const StudentFormModal = ({
                         'grade',
                         STUDENT_FORM_TEXT.grade.label,
                         STUDENT_FORM_TEXT.grade.placeholder,
-                        GRADE_OPTIONS,
+                        gradeOptions,
                     )}
                     {renderDropdown(
                         'section',
@@ -277,6 +294,59 @@ const StudentFormModal = ({
                         STUDENT_FORM_TEXT.status.placeholder,
                         STATUS_OPTIONS,
                     )}
+                    <Input
+                        id='parentMobile'
+                        label={STUDENT_FORM_TEXT.parentMobile.label}
+                        name='parentMobile'
+                        value={formValues.parentMobile}
+                        placeholder={STUDENT_FORM_TEXT.parentMobile.placeholder}
+                        helperText={errorMessages.parentMobile || ''}
+                        error={!!errorMessages.parentMobile}
+                        onChange={handleChange}
+                        required
+                    />
+                    <Input
+                        id='email'
+                        label={STUDENT_FORM_TEXT.email.label}
+                        name='email'
+                        type='email'
+                        value={formValues.email}
+                        placeholder={STUDENT_FORM_TEXT.email.placeholder}
+                        helperText={errorMessages.email || ''}
+                        error={!!errorMessages.email}
+                        onChange={handleChange}
+                    />
+                    <Input
+                        id='rollNo'
+                        label={STUDENT_FORM_TEXT.rollNo.label}
+                        name='rollNo'
+                        value={formValues.rollNo}
+                        placeholder={STUDENT_FORM_TEXT.rollNo.placeholder}
+                        helperText={errorMessages.rollNo || ''}
+                        error={!!errorMessages.rollNo}
+                        onChange={handleChange}
+                    />
+                    <Input
+                        id='udisecode'
+                        label={STUDENT_FORM_TEXT.udisecode.label}
+                        name='udisecode'
+                        value={formValues.udisecode}
+                        placeholder={STUDENT_FORM_TEXT.udisecode.placeholder}
+                        helperText={errorMessages.udisecode || ''}
+                        error={!!errorMessages.udisecode}
+                        onChange={handleChange}
+                        required
+                    />
+                    <Input
+                        id='address'
+                        label={STUDENT_FORM_TEXT.address.label}
+                        name='address'
+                        value={formValues.address}
+                        placeholder={STUDENT_FORM_TEXT.address.placeholder}
+                        helperText={errorMessages.address || ''}
+                        error={!!errorMessages.address}
+                        onChange={handleChange}
+                    />
                 </div>
 
                 <div className={styles.actions}>

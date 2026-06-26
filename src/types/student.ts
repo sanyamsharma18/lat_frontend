@@ -13,6 +13,11 @@ export interface Student {
     dateOfBirth: string;
     status: StudentStatus;
     createdDate: string;
+    parentMobile: string;
+    email: string;
+    rollNo: string;
+    udisecode: string;
+    address: string;
 }
 
 export interface StudentFormValues {
@@ -24,6 +29,11 @@ export interface StudentFormValues {
     gender: StudentGender | '';
     dateOfBirth: string;
     status: StudentStatus;
+    parentMobile: string;
+    email: string;
+    rollNo: string;
+    udisecode: string;
+    address: string;
 }
 
 export interface StudentListFilters {

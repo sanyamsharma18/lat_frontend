@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useQuery, queryOptions } from '@tanstack/react-query';
 
 import cx from 'classnames';
 
@@ -18,11 +19,12 @@ import { ButtonVariant, FontType } from '@/types/typographyCommon';
 
 import { useStudentManagement } from '../../hooks/useStudentManagement';
 
+import { allGradesQueryOptions } from '@/features/teacherManagement/components/TeacherManagementPage/utils';
+
 import DeleteStudentModal from './components/DeleteStudentModal';
 import StudentFormModal from './components/StudentFormModal';
 import UploadStudentsModal from './components/UploadStudentsModal';
 import {
-    GRADE_OPTIONS,
     SECTION_OPTIONS,
     STATUS_OPTIONS,
     STUDENT_MANAGEMENT_TEXT,
@@ -123,7 +125,14 @@ const getStudentColumns = ({
     {
         id: 'dateOfBirth',
         header: STUDENT_MANAGEMENT_TEXT.dobColumn,
-        cell: (student) => student.dateOfBirth,
+        cell: (student) => {
+            if (!student.dateOfBirth) return '';
+            const parts = student.dateOfBirth.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return student.dateOfBirth;
+        },
     },
     {
         id: 'status',
@@ -174,6 +183,8 @@ const StudentManagementPage = () => {
         studentListQuery,
         totalPages,
     } = useStudentManagement();
+
+    const gradeListQuery = useQuery(queryOptions(allGradesQueryOptions()));
 
     const columns = useMemo(
         () =>
@@ -286,9 +297,10 @@ const StudentManagementPage = () => {
                 <Dropdown
                     label={STUDENT_MANAGEMENT_TEXT.gradeFilterPlaceholder}
                     dropDownTitle={STUDENT_MANAGEMENT_TEXT.gradeFilterLabel}
-                    options={GRADE_OPTIONS}
+                    options={gradeListQuery.data ?? []}
                     selectValue='name'
                     value={selectedGrade}
+                    loading={gradeListQuery.isLoading}
                     onChange={handleGradeChange}
                     isSearchable={false}
                     widthClassName={styles.filterControl}
@@ -394,6 +406,7 @@ const StudentManagementPage = () => {
                 mode={modalMode}
                 student={selectedStudent}
                 isSubmitting={isSubmitting}
+                gradeOptions={gradeListQuery.data ?? []}
                 onClose={() => setIsFormModalOpen(false)}
                 onSubmit={handleSubmitStudent}
             />

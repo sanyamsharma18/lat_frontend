@@ -18,7 +18,7 @@ export const createTeacher = async (payload: TeacherFormValues) =>
 export const updateTeacher = async (teacherId: string, payload: TeacherFormValues) =>
     serverApi({
         url: `${API_ROUTES.adminTeachers}/${teacherId}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: payload,
     });
 

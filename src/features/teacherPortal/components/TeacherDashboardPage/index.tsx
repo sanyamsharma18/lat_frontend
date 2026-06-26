@@ -11,7 +11,7 @@ import { FontType } from '@/types/typographyCommon';
 import { useTeacherDashboard } from '../../hooks/useTeacherDashboard';
 
 import { TEACHER_DASHBOARD_METRICS, TEACHER_DASHBOARD_TEXT } from './constant';
-import { MOCK_TEACHER_DASHBOARD } from './utils';
+
 
 import styles from './styles.module.scss';
 
@@ -19,7 +19,13 @@ const formatMetricValue = (value: number) => new Intl.NumberFormat('en-US').form
 
 const TeacherDashboardPage = () => {
     const { teacherDashboardQuery } = useTeacherDashboard();
-    const summary = teacherDashboardQuery.data ?? MOCK_TEACHER_DASHBOARD;
+    const summary = teacherDashboardQuery.data ?? {
+        totalStudents: 0,
+        activeStudents: 0,
+        inactiveStudents: 0,
+        totalQuestionsAttempted: 0,
+        isMock: false,
+    };
 
     const metrics = useMemo(
         () =>

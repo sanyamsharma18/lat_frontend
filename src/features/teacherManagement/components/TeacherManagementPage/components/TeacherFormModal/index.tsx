@@ -79,10 +79,6 @@ const validateForm = (values: TeacherFormValues) =>
 const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit }: TeacherFormModalProps) => {
     const [formValues, setFormValues] = useState<TeacherFormValues>(EMPTY_FORM_VALUES);
     const [errorMessages, setErrorMessages] = useState<TeacherFormErrors>({});
-    
-    const [selectedGrade, setSelectedGrade] = useState<GradeOption | null>(null);
-    const [selectedSubject, setSelectedSubject] = useState<SubjectOption | null>(null);
-    const [selectedGender, setSelectedGender] = useState<{ id: string, name: string } | null>(null);
 
     const gradeListQuery = useQuery(queryOptions(allGradesQueryOptions()));
     const subjectListQuery = useQuery(queryOptions(subjectQueryOptions()));
@@ -107,11 +103,25 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
             subjectId: teacher.subjectId || '',
         } : EMPTY_FORM_VALUES);
 
-        setSelectedGrade(teacher?.gradeId ? { id: teacher.gradeId, name: 'Grade' } : null);
-        setSelectedSubject(teacher?.subjectId ? { id: teacher.subjectId, name: 'Subject' } : null);
-        setSelectedGender(teacher?.gender ? { id: teacher.gender, name: teacher.gender } : null);
         setErrorMessages({});
     }, [open, teacher]);
+
+    const selectedGrade = useMemo(() => {
+        if (!formValues.gradeId) return null;
+        return gradeListQuery.data?.find(g => String(g.id) === String(formValues.gradeId)) 
+            || { id: formValues.gradeId, name: 'Loading...' };
+    }, [formValues.gradeId, gradeListQuery.data]);
+
+    const selectedSubject = useMemo(() => {
+        if (!formValues.subjectId) return null;
+        return subjectListQuery.data?.find(s => String(s.id) === String(formValues.subjectId)) 
+            || { id: formValues.subjectId, name: 'Loading...' };
+    }, [formValues.subjectId, subjectListQuery.data]);
+
+    const selectedGender = useMemo(() => {
+        if (!formValues.gender) return null;
+        return GENDER_OPTIONS.find(g => g.id === formValues.gender) || { id: formValues.gender, name: formValues.gender };
+    }, [formValues.gender]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -123,19 +133,16 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
     };
 
     const handleGradeChange = (grade: GradeOption) => {
-        setSelectedGrade(grade);
         setFormValues(prev => ({ ...prev, gradeId: grade.id }));
         setErrorMessages(prev => ({ ...prev, gradeId: validateField('gradeId', grade.id) }));
     };
 
     const handleSubjectChange = (subject: SubjectOption) => {
-        setSelectedSubject(subject);
         setFormValues(prev => ({ ...prev, subjectId: subject.id }));
         setErrorMessages(prev => ({ ...prev, subjectId: validateField('subjectId', subject.id) }));
     };
 
     const handleGenderChange = (gender: { id: string, name: string }) => {
-        setSelectedGender(gender);
         setFormValues(prev => ({ ...prev, gender: gender.id }));
     };
 
