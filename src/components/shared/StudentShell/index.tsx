@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 import cx from 'classnames';
 
@@ -38,6 +39,7 @@ const getDisplayName = (userDetail: ClientStudentDetail | null) => {
 };
 
 const StudentShell = ({ children }: StudentShellProps) => {
+    const pathname = usePathname();
     const [studentName, setStudentName] = useState('Student');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [logoutModal, setLogoutModal] = useState(false);
@@ -53,6 +55,8 @@ const StudentShell = ({ children }: StudentShellProps) => {
         setIsMenuOpen(false);
         setLogoutModal(true);
     };
+
+    const showProfileMenu = pathname !== '/student/examination';
 
     return (
         <div className={styles.shell}>
@@ -75,46 +79,71 @@ const StudentShell = ({ children }: StudentShellProps) => {
                     </Text>
                 </div>
 
-                <div className={styles.profileMenu} ref={menuRef}>
-                    <button
-                        type='button'
-                        className={cx(styles.profileButton, isMenuOpen && styles.profileButtonOpen)}
-                        onClick={() => setIsMenuOpen((previous) => !previous)}
-                        aria-expanded={isMenuOpen}
-                        aria-haspopup='menu'
-                    >
-                        <div className={styles.profileInfo}>
-                            <div className={styles.avatar}>
-                                {studentName?.charAt(0)?.toUpperCase()}
-                            </div>
-
-                            <div className={styles.userDetails}>
-                                <span className={styles.welcomeText}>Welcome</span>
-                                <span className={styles.userName}>{studentName}</span>
-                            </div>
-                        </div>
-
-                        <span
-                            className={cx(styles.arrow, isMenuOpen && styles.arrowOpen)}
-                            aria-hidden='true'
+                {showProfileMenu ? (
+                    <div className={styles.profileMenu} ref={menuRef}>
+                        <button
+                            type='button'
+                            className={cx(
+                                styles.profileButton,
+                                isMenuOpen && styles.profileButtonOpen,
+                            )}
+                            onClick={() => setIsMenuOpen((previous) => !previous)}
+                            aria-expanded={isMenuOpen}
+                            aria-haspopup='menu'
                         >
-                            ▼
-                        </span>
-                    </button>
+                            <div className={styles.profileInfo}>
+                                <div className={styles.avatar}>
+                                    {studentName?.charAt(0)?.toUpperCase()}
+                                </div>
 
-                    {isMenuOpen && (
-                        <div className={styles.menu} role='menu'>
-                            <button
-                                type='button'
-                                className={styles.menuItem}
-                                onClick={handleLogoutClick}
-                                role='menuitem'
-                            >   
-                                Logout
-                            </button>
-                        </div>
-                    )}
-                </div>
+                                <div className={styles.userDetails}>
+                                    <Text
+                                        color='black'
+                                        font={[FontType.text_md_regular, FontType.text_md_regular]}
+                                    >
+                                        Welcome
+                                    </Text>
+                                    <Text
+                                        color='black'
+                                        font={[FontType.text_xs_regular, FontType.text_xs_regular]}
+                                    >
+                                        {studentName}
+                                    </Text>
+                                </div>
+                            </div>
+
+                            <span
+                                className={cx(styles.arrow, isMenuOpen && styles.arrowOpen)}
+                                aria-hidden='true'
+                            >
+                                ▼
+                            </span>
+                        </button>
+
+                        {isMenuOpen && (
+                            <div className={styles.menu} role='menu'>
+                                <button
+                                    type='button'
+                                    className={styles.menuItem}
+                                    onClick={handleLogoutClick}
+                                    role='menuitem'
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div className={styles.examLockStatus} aria-live='polite'>
+                        <span className={styles.lockDot} />
+                        <Text
+                            font={[FontType.text_sm_medium, FontType.text_sm_medium]}
+                            color='slate-600'
+                        >
+                            Examination in progress
+                        </Text>
+                    </div>
+                )}
             </header>
 
             <main className={styles.content}>{children}</main>

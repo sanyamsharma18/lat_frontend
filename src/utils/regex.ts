@@ -4,6 +4,9 @@ export const EMAIL_REGEX =
 export const EMAIL_OR_PHONE_REGEX =
     /^(\+?\d{10,15}|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})$/;
 
+export const EMAIL_OR_STUDENT_ID_REGEX =
+    /^([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|[A-Za-z0-9][A-Za-z0-9._/-]{2,49})$/;
+
 export const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
 
 export const NO_LEADING_SPACES_REGEX = /^\s+/;

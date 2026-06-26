@@ -1,23 +1,46 @@
 import CryptoJS from 'crypto-js';
 import Cookies from 'js-cookie';
 
+import {
+    CLIENT_USER_DETAIL,
+    JWT_TOKEN,
+    USER_DETAIL,
+    USER_EMAIL,
+    USER_MENU_LIST,
+} from '@/constants/authSession';
+
+export { CLIENT_USER_DETAIL, JWT_TOKEN, USER_DETAIL, USER_EMAIL, USER_MENU_LIST };
+
 const ENCRYPTION_KEY = 'your-strong-key-32-chars';
-
-export const JWT_TOKEN = 'x_tok';
-export const USER_DETAIL = 'x_det';
-export const CLIENT_USER_DETAIL = 'c_x_det';
-export const USER_MENU_LIST = 'x_m_li';
-
-export const USER_EMAIL = 'x-m';
 
 const clearJwtToken = () => Cookies.remove(JWT_TOKEN);
 const clearUserDetail = () => Cookies.remove(USER_DETAIL);
 const clearClientUserDetail = () => Cookies.remove(CLIENT_USER_DETAIL);
+const clearUserMenuList = () => Cookies.remove(USER_MENU_LIST);
+
+const clearClientSideCookies = () => {
+    Object.keys(Cookies.get()).forEach((cookieName) => {
+        Cookies.remove(cookieName);
+        Cookies.remove(cookieName, { path: '/' });
+    });
+};
+
+const clearBrowserStorage = () => {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+};
 
 const clearAllCookies = () => {
     clearJwtToken();
     clearUserDetail();
     clearClientUserDetail();
+    clearUserMenuList();
+    clearClientSideCookies();
+};
+
+const clearClientSessionData = () => {
+    clearAllCookies();
+    clearBrowserStorage();
 };
 
 const setClientSideUserDetail = (contentValue: unknown) => {
@@ -50,4 +73,11 @@ const getClientUserDetails = () => {
     return null;
 };
 
-export { clearAllCookies, clearJwtToken, setClientSideUserDetail, getClientUserDetails };
+export {
+    clearAllCookies,
+    clearBrowserStorage,
+    clearClientSessionData,
+    clearJwtToken,
+    setClientSideUserDetail,
+    getClientUserDetails,
+};

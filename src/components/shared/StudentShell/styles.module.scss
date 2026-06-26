@@ -148,6 +148,25 @@
     }
 }
 
+.examLockStatus {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    padding: 9px 14px;
+    border: 1px solid $orange-200;
+    border-radius: 8px;
+    background: $orange-50;
+}
+
+.lockDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $orange-600;
+    box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.12);
+}
+
 @keyframes dropdownFade {
     from {
         opacity: 0;

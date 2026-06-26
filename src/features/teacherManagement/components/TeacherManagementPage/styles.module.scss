@@ -1,7 +1,7 @@
 @use '@styles/theme' as *;
 
 .page {
-    min-height: 100vh;
+    min-height: 100%;
     padding: 20px;
     background-color: $gray-100;
     display: flex;
@@ -49,8 +49,14 @@
 
     @include breakpoints('md') {
         grid-template-columns:
-            minmax(128px, 0.85fr) minmax(148px, 0.95fr) minmax(190px, 1.15fr)
-            86px 82px 124px 144px;
+            minmax(180px, 1fr) minmax(180px, 1fr);
+    }
+
+    @include breakpoints('xl') {
+        grid-template-columns:
+            minmax(160px, 0.95fr) minmax(180px, 1fr) minmax(220px, 1.2fr)
+            minmax(96px, max-content) minmax(132px, max-content)
+            minmax(156px, max-content);
     }
 }
 
@@ -74,10 +80,11 @@
 }
 
 .compactButton {
+    min-width: max-content;
     height: 40px;
     justify-content: center;
     align-self: end;
-    padding: 8px 14px !important;
+    padding: 8px 18px !important;
     white-space: nowrap;
 }
 
@@ -92,6 +99,18 @@
     min-height: 0 !important;
     max-height: 220px !important;
     padding: 8px !important;
+}
+
+.uploadButton {
+    min-width: 156px;
+}
+
+.addButton {
+    min-width: 132px;
+}
+
+.clearButton {
+    min-width: 96px;
 }
 
 .warningAlert {

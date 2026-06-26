@@ -18,6 +18,7 @@ interface ExamInstructionsModalProps {
     instructions?: ExamInstructionsResponse;
     onAccept: () => void;
     onCancel: () => void;
+    showCancel?: boolean;
 }
 
 const ExamInstructionsModal = ({
@@ -25,10 +26,11 @@ const ExamInstructionsModal = ({
     instructions,
     onAccept,
     onCancel,
+    showCancel = false,
 }: ExamInstructionsModalProps) => (
     <Modal
         open={open}
-        setOpen={onCancel}
+        setOpen={showCancel ? onCancel : undefined}
         sx={{
             ...MODAL_STYLING,
             '& .MuiPaper-root': {
@@ -66,13 +68,15 @@ const ExamInstructionsModal = ({
             </ul>
 
             <div className={styles.actions}>
-                <Button
-                    type='button'
-                    label={EXAM_INSTRUCTIONS_TEXT.cancelButton}
-                    variant={ButtonVariant.OUTLINED}
-                    color='black'
-                    onClick={onCancel}
-                />
+                {showCancel ? (
+                    <Button
+                        type='button'
+                        label={EXAM_INSTRUCTIONS_TEXT.cancelButton}
+                        variant={ButtonVariant.OUTLINED}
+                        color='black'
+                        onClick={onCancel}
+                    />
+                ) : null}
                 <Button
                     type='button'
                     label={EXAM_INSTRUCTIONS_TEXT.acceptButton}

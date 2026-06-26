@@ -1,4 +1,4 @@
-export const API_URL = `${process.env.NEXT_PUBLIC_APP_URL}api/v1`;
+export const API_URL = `${process.env.NEXT_PUBLIC_APP_URL?.trim() ?? ''}api/v1`;
 
 export const MARKETING_EXECUTIVE = `${API_URL}/marketing-executive`;
 
@@ -23,7 +23,8 @@ export const API_ROUTES = {
     uploadTeachers: `${API_URL}/teachers/bulk`,
     dashboardSummary: `${API_URL}/admin/dashboard/summary`,
     teacherDashboard: `${API_URL}/teacher/dashboard`,
-    teacherStudents: `${API_URL}/students`,
+    teacherStudents: `${API_URL}/teacher/students`,
+    studentExamCheck: `${API_URL}/students/exam/check`,
     regions: `${API_URL}/regions`,
     schools: (regionId: string) => `${API_URL}/regions/${regionId}/schools`,
     subjects: `${API_URL}/subjects`,
@@ -31,7 +32,4 @@ export const API_ROUTES = {
     grades: `${API_URL}/grades`,
     login: `${API_URL}/login`,
     addNewLead: `${MARKETING_EXECUTIVE}/leads`,
-    marketingCountDashboard: MARKETING_COUNT_DASHBOARD,
-    marketingLeadDashboard: MARKETING_LEAD_DASHBOARD,
-    marketingLeadTimeLine: MARKETING_LEAD_TIMELINE,
 };

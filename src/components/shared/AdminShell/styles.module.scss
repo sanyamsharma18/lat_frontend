@@ -1,14 +1,17 @@
 @use '@styles/theme' as *;
 
 .shell {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
+    overflow: hidden;
     background-color: $gray-100;
 }
 
 .desktopSidebar {
     display: none;
     flex: 0 0 240px;
+    height: 100vh;
+    overflow: hidden;
 
     @include breakpoints('lg') {
         display: block;
@@ -20,6 +23,8 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .mobileHeader {
@@ -33,4 +38,6 @@
 .content {
     min-width: 0;
     flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

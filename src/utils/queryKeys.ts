@@ -5,11 +5,13 @@ export enum QueryKeys {
     TEACHERS = 'teachers',
     REGIONS = 'regions',
     SCHOOLS = 'schools',
+    QUESTIONS = 'questions',
     DASHBOARD_SUMMARY = 'dashboard-summary',
     TEACHER_DASHBOARD = 'teacher-dashboard',
     STUDENTS = 'students',
     STUDENT = 'student',
     STUDENT_PROFILE = 'student-profile',
+    STUDENT_EXAM_STATUS = 'student-exam-status',
     EXAM_INSTRUCTIONS = 'exam-instructions',
     EXAM_QUESTIONS = 'exam-questions',
 }

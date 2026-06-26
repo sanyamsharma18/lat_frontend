@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import cx from 'classnames';
 
 import Button from '@/components/ui/Button';
@@ -7,6 +8,7 @@ import Radio from '@/components/ui/Radio';
 import ShimmerUiContainer from '@/components/ui/ShimmerUiContainer';
 import Text from '@/components/ui/Text';
 import Toaster from '@/components/ui/Toaster';
+import { showToast } from '@/components/ui/Toaster/constant';
 
 import { QuestionPaletteState } from '@/types/studentPortal';
 import { ButtonVariant, FontType } from '@/types/typographyCommon';
@@ -26,6 +28,8 @@ const paletteStateLabel: Record<QuestionPaletteState, string> = {
 };
 
 const StudentExaminationPage = () => {
+    const paletteGridRef = useRef<HTMLDivElement>(null);
+
     const {
         answeredCount,
         answers,
@@ -41,12 +45,15 @@ const StudentExaminationPage = () => {
         handleSelectQuestion,
         handleSubmitExam,
         isFirstQuestion,
-        isExamSubmitted,
         isLastQuestion,
         isSubmitting,
         questions,
+        studentExamStatusQuery,
         totalQuestions,
     } = useStudentExamination();
+
+    const isLoadingExam = studentExamStatusQuery.isLoading || examQuestionsQuery.isLoading;
+    const isExamError = studentExamStatusQuery.isError || examQuestionsQuery.isError;
 
     const renderLoading = () => (
         <div className={styles.examGrid} role='status' aria-live='polite'>
@@ -78,7 +85,10 @@ const StudentExaminationPage = () => {
                 label={STUDENT_EXAM_TEXT.retryButton}
                 variant={ButtonVariant.OUTLINED}
                 color='black'
-                onClick={() => examQuestionsQuery.refetch()}
+                onClick={() => {
+                    studentExamStatusQuery.refetch();
+                    examQuestionsQuery.refetch();
+                }}
             />
         </section>
     );
@@ -137,7 +147,7 @@ const StudentExaminationPage = () => {
                     <ImageOptionQuestion
                         question={currentQuestion}
                         selectedOptionId={answers[currentQuestion.id]}
-                        isSubmitted={isExamSubmitted}
+                        isSubmitted={false}
                         onSelect={handleSelectAnswer}
                     />
                 ) : (
@@ -148,9 +158,6 @@ const StudentExaminationPage = () => {
                     >
                         {currentQuestion.options.map((option, optionIndex) => {
                             const isSelected = answers[currentQuestion.id] === option;
-                            const isCorrect = currentQuestion.correctAnswer === option;
-                            const showCorrect = isExamSubmitted && isCorrect;
-                            const showIncorrect = isExamSubmitted && isSelected && !isCorrect;
 
                             return (
                                 <div
@@ -158,9 +165,6 @@ const StudentExaminationPage = () => {
                                     className={cx(
                                         styles.optionCard,
                                         isSelected && styles.selectedOption,
-                                        showCorrect && styles.correctOption,
-                                        showIncorrect && styles.incorrectOption,
-                                        isExamSubmitted && styles.submittedOption,
                                     )}
                                     onClick={() => handleSelectAnswer(option)}
                                     onKeyDown={(event) => {
@@ -170,9 +174,8 @@ const StudentExaminationPage = () => {
                                         }
                                     }}
                                     role='radio'
-                                    tabIndex={isExamSubmitted ? -1 : 0}
+                                    tabIndex={0}
                                     aria-checked={isSelected}
-                                    aria-disabled={isExamSubmitted}
                                 >
                                     <Text className={styles.optionIndex}>
                                         {String.fromCharCode(65 + optionIndex)}
@@ -183,32 +186,8 @@ const StudentExaminationPage = () => {
                                         label={option}
                                         checked={isSelected}
                                         readOnly
-                                        disabled={isExamSubmitted}
                                         color='black'
                                     />
-                                    {isExamSubmitted ? (
-                                        <span className={styles.answerFeedback}>
-                                            <Text
-                                                font={[
-                                                    FontType.text_xs_semibold,
-                                                    FontType.text_xs_semibold,
-                                                ]}
-                                                color={
-                                                    isCorrect
-                                                        ? 'green-600'
-                                                        : showIncorrect
-                                                          ? 'red-600'
-                                                          : 'gray-500'
-                                                }
-                                            >
-                                                {isCorrect
-                                                    ? 'Correct'
-                                                    : showIncorrect
-                                                      ? 'Incorrect'
-                                                      : ''}
-                                            </Text>
-                                        </span>
-                                    ) : null}
                                 </div>
                             );
                         })}
@@ -293,13 +272,14 @@ const StudentExaminationPage = () => {
                     </Text>
                 </div>
 
-                <div className={styles.paletteGrid}>
+                <div ref={paletteGridRef} className={styles.paletteGrid}>
                     {questions.map((question, index) => {
                         const state = getQuestionState(question.id, index);
 
                         return (
                             <button
                                 key={question.id}
+                                data-current={index === currentQuestionIndex}
                                 type='button'
                                 className={cx(styles.paletteButton, styles[state])}
                                 onClick={() => handleSelectQuestion(index)}
@@ -328,20 +308,63 @@ const StudentExaminationPage = () => {
 
             <Button
                 type='button'
-                label={
-                    isExamSubmitted
-                        ? STUDENT_EXAM_TEXT.submittedButton
-                        : STUDENT_EXAM_TEXT.submitButton
-                }
+                label={STUDENT_EXAM_TEXT.submitButton}
                 variant={ButtonVariant.WARN}
                 color='white'
                 className={styles.submitButton}
                 onClick={handleSubmitExam}
-                disabled={isSubmitting || isExamSubmitted}
+                disabled={isSubmitting}
                 loader={isSubmitting}
             />
         </aside>
     );
+
+    useEffect(() => {
+        const currentButton = paletteGridRef.current?.querySelector(
+            '[data-current="true"]',
+        ) as HTMLButtonElement | null;
+
+        currentButton?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+        });
+    }, [currentQuestionIndex]);
+
+    useEffect(() => {
+        window.history.pushState(null, '', window.location.href);
+
+        const handlePopState = () => {
+            window.history.pushState(null, '', window.location.href);
+
+            showToast({
+                type: 'error',
+                message: 'You cannot navigate back during the examination.',
+            });
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                showToast({
+                    type: 'error',
+                    message: 'Leaving the examination window is not allowed.',
+                });
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, []);
 
     return (
         <main className={styles.page}>
@@ -378,9 +401,9 @@ const StudentExaminationPage = () => {
                 </div>
             </section>
 
-            {examQuestionsQuery.isLoading ? renderLoading() : null}
-            {examQuestionsQuery.isError ? renderError() : null}
-            {!examQuestionsQuery.isLoading && !examQuestionsQuery.isError ? (
+            {isLoadingExam ? renderLoading() : null}
+            {isExamError ? renderError() : null}
+            {!isLoadingExam && !isExamError ? (
                 <div className={styles.examGrid}>
                     {renderQuestion()}
                     {renderPalette()}

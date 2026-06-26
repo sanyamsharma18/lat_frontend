@@ -23,6 +23,12 @@ export const ADMIN_MENU: MenuItem[] = [
         path: '/admin/teachers',
         icon: <AnalyticsIcon />,
     },
+    {
+        menuId: 4,
+        menuName: 'Question Generator',
+        path: '/admin/questions',
+        icon: <AnalyticsIcon />,
+    },
 ];
 
 export const TEACHER_MENU: MenuItem[] = [

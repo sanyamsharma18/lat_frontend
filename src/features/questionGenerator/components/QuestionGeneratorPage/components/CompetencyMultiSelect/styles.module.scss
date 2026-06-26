@@ -1,0 +1,61 @@
+@use '@styles/theme' as *;
+
+.wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.trigger {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    color: $black;
+    cursor: pointer;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.triggerOpen {
+    border-color: $orange-500;
+    box-shadow: 0 0 0 1px $orange-500;
+}
+
+.menu {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+}
+
+.optionList {
+    max-height: 190px;
+    overflow-y: auto;
+}
+
+.optionRow {
+    padding: 6px;
+    border-radius: 6px;
+
+    &:hover {
+        background: $gray-100;
+    }
+}

@@ -10,8 +10,7 @@ import { FontType } from '@/types/typographyCommon';
 
 import { useDashboardManagement } from '../../hooks/useDashboardManagement';
 
-import { DASHBOARD_METRICS, DASHBOARD_TEXT } from './constant';
-
+import { DASHBOARD_METRICS, DASHBOARD_TEXT, DEFAULT_SUMMARY } from './constant';
 
 import styles from './styles.module.scss';
 
@@ -20,13 +19,7 @@ const formatMetricValue = (value: number) => new Intl.NumberFormat('en-US').form
 const DashboardPage = () => {
     const { dashboardSummaryQuery } = useDashboardManagement();
 
-    const summary = dashboardSummaryQuery.data ?? {
-        totalTeachers: 0,
-        totalStudents: 0,
-        totalQuestionsGenerated: 0,
-        totalQuestionsAttemptedLastYear: 0,
-        isMock: false,
-    };
+    const summary = dashboardSummaryQuery.data ?? DEFAULT_SUMMARY;
 
     const metrics = useMemo(
         () =>

@@ -1,0 +1,276 @@
+@use '@styles/theme' as *;
+
+.page {
+    min-height: 100%;
+    padding: 20px;
+    background: $gray-100;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @include breakpoints('lg') {
+        padding: 24px;
+    }
+}
+
+.header,
+.tableHeader,
+.tableFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-direction: column;
+
+    @include breakpoints('md') {
+        align-items: center;
+        flex-direction: row;
+    }
+}
+
+.titleGroup,
+.panelTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.panel,
+.tablePanel {
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.panel {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.generateGrid,
+.searchGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    align-items: end;
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include breakpoints('xl') {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+.searchGrid {
+    @include breakpoints('xl') {
+        grid-template-columns: minmax(220px, 1.3fr) repeat(4, minmax(140px, 1fr)) minmax(96px, max-content);
+    }
+}
+
+.centerAction {
+    display: flex;
+    justify-content: center;
+}
+
+.searchButton {
+    height: 40px;
+    align-self: end;
+}
+
+.tablePanel {
+    overflow: hidden;
+}
+
+.tableHeader,
+.tableFooter {
+    padding: 14px;
+}
+
+.questionTextColumn {
+    min-width: 220px;
+}
+
+.htmlQuestionText {
+    color: $black;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+
+    p {
+        margin: 0;
+    }
+}
+
+.imageColumn {
+    min-width: 96px;
+}
+
+.imageCell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.thumbnail {
+    width: 78px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $gray-200;
+    border-radius: 6px;
+    overflow: hidden;
+    background: $gray-100;
+
+    img {
+        object-fit: contain;
+    }
+}
+
+.imageAction {
+    color: $blue-600;
+    background: $blue-50;
+    border: 1px solid $blue-200;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid $orange-500;
+        outline-offset: 2px;
+    }
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.statusActive {
+    color: $green-600;
+    background: $green-50;
+}
+
+.statusDraft {
+    color: $orange-700;
+    background: $orange-50;
+}
+
+.statusInactive {
+    color: $red-600;
+    background: $red-0;
+}
+
+.rowActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.iconButton {
+    min-width: 42px;
+    min-height: 32px;
+    padding: 6px 8px;
+    border: 1px solid $gray-200;
+    border-radius: 6px;
+    background: $white;
+    color: $blue-600;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+        background: $blue-50;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $orange-500;
+        outline-offset: 2px;
+    }
+}
+
+.deleteIconButton {
+    color: $red-600;
+
+    &:hover {
+        background: $red-0;
+    }
+}
+
+.mobileCardContent {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mobileCardMain {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+}
+
+.shimmerRow {
+    height: 48px;
+    border-radius: 8px;
+}
+
+.errorState,
+.emptyState {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 28px;
+    text-align: center;
+}
+
+.errorState {
+    background: $red-0;
+}
+
+.emptyIcon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: $orange-50;
+    color: $orange-700;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
