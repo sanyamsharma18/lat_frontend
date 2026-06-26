@@ -841,3 +841,88 @@ Cookie-Based Backend Authorization for Exam Check
 ### Future Improvements
 
 * Move all authenticated backend calls to this explicit token-forwarding pattern for easier auditing.
+
+## Admin Question Generator
+
+### Feature Name
+
+Question Generator Admin Module
+
+### What Was Changed
+
+* Added a new Admin page at `/admin/questions`.
+* Added a Question Generator sidebar entry in the Admin portal.
+* Built a professional admin UI for generating, searching, viewing, adding, editing, and deleting questions.
+* Added mock-backed API routes for question list, create, update, delete, and generation workflows.
+* Added typed question records, options, filters, form values, and generate payloads.
+* Added responsive table and mobile card layouts.
+* Added Add/Edit Question modal with validation.
+* Added Question Preview modal.
+* Added Delete Question confirmation modal.
+* Added status badges and image thumbnail handling.
+
+### Why It Was Changed
+
+* Admin users need a dedicated interface to manage assessment question content.
+* The module should be ready for backend integration while remaining usable with mock data during development.
+
+### Files Modified
+
+* `src/app/admin/questions/page.tsx`
+* `src/app/api/admin/questions/route.ts`
+* `src/app/api/admin/questions/[questionId]/route.ts`
+* `src/app/api/admin/questions/generate/route.ts`
+* `src/components/shared/Sidebar/constant.tsx`
+* `src/constants/serverSideRoutes.ts`
+* `src/features/questionGenerator/index.ts`
+* `src/features/questionGenerator/hooks/useQuestionGenerator.ts`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/styles.module.scss`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/constant.ts`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/utils.ts`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/QuestionFormModal/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/QuestionFormModal/styles.module.scss`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/QuestionPreviewModal/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/QuestionPreviewModal/styles.module.scss`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/DeleteQuestionModal/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/DeleteQuestionModal/styles.module.scss`
+* `src/services/questionGenerator/questionGenerator.service.ts`
+* `src/types/questionGenerator.ts`
+* `src/utils/queryKeys.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin sidebar.
+* Admin question generator page.
+* Question table, filters, generation panel, and modals.
+
+### APIs Affected
+
+* Added `GET /api/admin/questions`.
+* Added `POST /api/admin/questions`.
+* Added `PUT /api/admin/questions/:questionId`.
+* Added `DELETE /api/admin/questions/:questionId`.
+* Added `POST /api/admin/questions/generate`.
+
+### Any Breaking Changes
+
+* None. The page is additive and does not change existing admin, teacher, or student flows.
+
+### Testing Considerations
+
+* Open `/admin/questions` as an Admin user.
+* Generate draft questions from the top panel.
+* Search by question ID or text.
+* Filter by grade, subject, competency, and status.
+* Add a question manually and verify it appears in the list.
+* Preview a question and verify options/correct answer are displayed.
+* Edit a question and verify updates persist in the mock list.
+* Delete a question and verify it is removed from the mock list.
+* Check desktop and mobile layouts.
+
+### Future Improvements
+
+* Replace mock API services with backend question-bank APIs when available.
+* Add bulk import/export when backend question templates are finalized.
+* Add image upload support instead of manual image URL entry.

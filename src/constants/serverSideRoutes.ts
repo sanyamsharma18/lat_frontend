@@ -7,6 +7,8 @@ export enum ServerSideRoutes {
     ADMIN_REGIONS = `${ServerSideRoutes.APP}/admin/regions`,
     ADMIN_SCHOOLS = `${ServerSideRoutes.APP}/admin/schools`,
     ADMIN_DASHBOARD = `${ServerSideRoutes.APP}/admin/dashboard`,
+    ADMIN_QUESTIONS = `${ServerSideRoutes.APP}/admin/questions`,
+    ADMIN_QUESTIONS_GENERATE = `${ServerSideRoutes.APP}/admin/questions/generate`,
     TEACHER_DASHBOARD = `${ServerSideRoutes.APP}/teacher/dashboard`,
     TEACHER_STUDENTS = `${ServerSideRoutes.APP}/teacher/students`,
     TEACHER_STUDENTS_UPLOAD = `${ServerSideRoutes.APP}/teacher/students/upload`,
