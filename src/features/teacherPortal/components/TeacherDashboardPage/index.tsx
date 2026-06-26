@@ -19,13 +19,17 @@ const formatMetricValue = (value: number) => new Intl.NumberFormat('en-US').form
 
 const TeacherDashboardPage = () => {
     const { teacherDashboardQuery } = useTeacherDashboard();
-    const summary = teacherDashboardQuery.data ?? {
-        totalStudents: 0,
-        activeStudents: 0,
-        inactiveStudents: 0,
-        totalQuestionsAttempted: 0,
-        isMock: false,
-    };
+    const summary = useMemo(
+        () =>
+            teacherDashboardQuery.data ?? {
+                totalStudents: 0,
+                activeStudents: 0,
+                inactiveStudents: 0,
+                totalQuestionsAttempted: 0,
+                isMock: false,
+            },
+        [teacherDashboardQuery.data],
+    );
 
     const metrics = useMemo(
         () =>

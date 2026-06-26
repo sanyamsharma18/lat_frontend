@@ -120,7 +120,12 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
 
     const selectedGender = useMemo(() => {
         if (!formValues.gender) return null;
-        return GENDER_OPTIONS.find(g => g.id === formValues.gender) || { id: formValues.gender, name: formValues.gender };
+        return (
+            GENDER_OPTIONS.find((g) => g.id === formValues.gender) || {
+                id: formValues.gender,
+                name: formValues.gender,
+            }
+        );
     }, [formValues.gender]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

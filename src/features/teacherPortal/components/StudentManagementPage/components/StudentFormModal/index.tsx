@@ -13,7 +13,6 @@ import { ButtonVariant, FontType } from '@/types/typographyCommon';
 
 import {
     GENDER_OPTIONS,
-    GRADE_OPTIONS,
     SECTION_OPTIONS,
     STATUS_OPTIONS,
     STUDENT_FORM_TEXT,
@@ -174,6 +173,8 @@ const StudentFormModal = ({
             return;
         }
 
+        const statusValue = String(formValues.status);
+
         onSubmit({
             studentName: formValues.studentName.trim(),
             grade: formValues.grade,
@@ -182,7 +183,12 @@ const StudentFormModal = ({
             motherName: formValues.motherName.trim(),
             gender: formValues.gender,
             dateOfBirth: formValues.dateOfBirth,
-            status: formValues.status,
+            status: statusValue === 'Active' || statusValue === '1' ? 'Active' : 'Inactive',
+            parentMobile: formValues.parentMobile.trim(),
+            email: formValues.email.trim(),
+            rollNo: formValues.rollNo.trim(),
+            udisecode: formValues.udisecode.trim(),
+            address: formValues.address.trim(),
         });
     };
 

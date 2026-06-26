@@ -17,9 +17,9 @@ import Toggle from '@/components/ui/Toggle';
 import { Student } from '@/types/student';
 import { ButtonVariant, FontType } from '@/types/typographyCommon';
 
-import { useStudentManagement } from '../../hooks/useStudentManagement';
-
 import { allGradesQueryOptions } from '@/features/teacherManagement/components/TeacherManagementPage/utils';
+
+import { useStudentManagement } from '../../hooks/useStudentManagement';
 
 import DeleteStudentModal from './components/DeleteStudentModal';
 import StudentFormModal from './components/StudentFormModal';

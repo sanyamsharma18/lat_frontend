@@ -1,7 +1,5 @@
 'use client';
 
-import cx from 'classnames';
-
 import Button from '@/components/ui/Button';
 import ShimmerUiContainer from '@/components/ui/ShimmerUiContainer';
 import Text from '@/components/ui/Text';
@@ -27,32 +25,10 @@ const StudentDashboardPage = () => {
         isInstructionsModalOpen,
         isLoading,
         setIsInstructionsModalOpen,
-        studentExamStatusQuery,
         studentProfileQuery,
     } = useStudentDashboard();
 
     const profile = studentProfileQuery.data;
-    const examStatus = studentExamStatusQuery.data;
-
-    const getExamStatusLabel = () => {
-        if (studentExamStatusQuery.isFetching) {
-            return STUDENT_DASHBOARD_TEXT.examStatusLoading;
-        }
-
-        if (!examStatus) {
-            return STUDENT_DASHBOARD_TEXT.examStatusUnavailable;
-        }
-
-        if (examStatus.status === 'COMPLETED') {
-            return STUDENT_DASHBOARD_TEXT.examCompletedText;
-        }
-
-        if (examStatus.status === 'NOT_UNDER_SCHEDULED') {
-            return STUDENT_DASHBOARD_TEXT.examNotScheduledText;
-        }
-
-        return examStatus.message || STUDENT_DASHBOARD_TEXT.statusValue;
-    };
 
     const renderContent = () => {
         if (isLoading) {
@@ -84,7 +60,6 @@ const StudentDashboardPage = () => {
                         onClick={() => {
                             studentProfileQuery.refetch();
                             examInstructionsQuery.refetch();
-                            studentExamStatusQuery.refetch();
                         }}
                     />
                 </div>
@@ -111,16 +86,7 @@ const StudentDashboardPage = () => {
                     </span>
                 </div>
 
-                <div
-                    className={cx(
-                        styles.examStatusCard,
-                        examStatus?.status === 'COMPLETED' && styles.examStatusCompleted,
-                        examStatus?.status === 'NOT_UNDER_SCHEDULED' &&
-                            styles.examStatusUnavailable,
-                    )}
-                    role='status'
-                    aria-live='polite'
-                >
+                <div className={styles.examStatusCard} role='status' aria-live='polite'>
                     <Text
                         font={[FontType.text_sm_semibold, FontType.text_sm_semibold]}
                         color='black'
@@ -131,7 +97,7 @@ const StudentDashboardPage = () => {
                         font={[FontType.text_sm_regular, FontType.text_sm_regular]}
                         color='gray-500'
                     >
-                        {getExamStatusLabel()}
+                        {STUDENT_DASHBOARD_TEXT.statusValue}
                     </Text>
                 </div>
 
@@ -239,7 +205,6 @@ const StudentDashboardPage = () => {
                 instructions={examInstructionsQuery.data}
                 onAccept={handleAcceptInstructions}
                 onCancel={() => setIsInstructionsModalOpen(false)}
-                showCancel={canStartExam}
             />
 
             <Toaster />

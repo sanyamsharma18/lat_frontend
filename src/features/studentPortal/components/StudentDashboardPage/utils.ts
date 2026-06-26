@@ -7,6 +7,7 @@ import { ApiResponse } from '@/types/api';
 import { HTTP_METHOD } from '@/types/common';
 import {
     ExamInstructionsResponse,
+    StudentExamCheckPayload,
     StudentExamCheckResponse,
     StudentProfile,
 } from '@/types/studentPortal';
@@ -17,7 +18,13 @@ export const studentProfileQueryKey = () => [QueryKeys.STUDENT_PROFILE] as const
 
 export const examInstructionsQueryKey = () => [QueryKeys.EXAM_INSTRUCTIONS] as const;
 
-export const studentExamStatusQueryKey = () => [QueryKeys.STUDENT_EXAM_STATUS] as const;
+export const studentExamStatusQueryKey = (studentId?: string) =>
+    [QueryKeys.STUDENT_EXAM_STATUS, studentId] as const;
+
+const DEFAULT_EXAM_CONTEXT = {
+    termId: 1,
+    subjectId: 1,
+};
 
 const assertSuccessfulResponse = <TResponse>(response: ApiResponse<TResponse>) => {
     if (response.status === false || !response.response) {
@@ -45,32 +52,51 @@ export const getExamInstructions = async () => {
     return assertSuccessfulResponse(response);
 };
 
-export const getStudentExamStatus = async () => {
+export const getStudentExamStatus = async (studentId: string) => {
+    const numericStudentId = Number(studentId);
+
+    if (!Number.isFinite(numericStudentId) || numericStudentId <= 0) {
+        throw new Error('Unable to identify logged-in student');
+    }
+
+    const payload: StudentExamCheckPayload = {
+        studentId: numericStudentId,
+        ...DEFAULT_EXAM_CONTEXT,
+    };
+
     const response = await callApi<ApiResponse<StudentExamCheckResponse>>({
         url: ServerSideRoutes.STUDENT_EXAM_CHECK,
         method: HTTP_METHOD.POST,
+        body: payload,
     });
 
     return assertSuccessfulResponse(response);
 };
 
-export const studentProfileQueryOptions = () => ({
+export const studentProfileQueryOptions = (initialData?: StudentProfile) => ({
     queryKey: studentProfileQueryKey(),
     queryFn: getStudentProfile,
+    initialData,
     staleTime: StaleAndCacheTime.STALE_TIME,
     gcTime: StaleAndCacheTime.CACHE_TIME,
 });
 
-export const examInstructionsQueryOptions = () => ({
+export const examInstructionsQueryOptions = (initialData?: ExamInstructionsResponse) => ({
     queryKey: examInstructionsQueryKey(),
     queryFn: getExamInstructions,
+    initialData,
     staleTime: StaleAndCacheTime.STALE_TIME,
     gcTime: StaleAndCacheTime.CACHE_TIME,
 });
 
-export const studentExamStatusQueryOptions = () => ({
-    queryKey: studentExamStatusQueryKey(),
-    queryFn: getStudentExamStatus,
+export const studentExamStatusQueryOptions = (
+    studentId?: string,
+    initialData?: StudentExamCheckResponse,
+) => ({
+    queryKey: studentExamStatusQueryKey(studentId),
+    queryFn: () => getStudentExamStatus(studentId ?? ''),
+    enabled: Boolean(studentId),
+    initialData,
     staleTime: 0,
     gcTime: StaleAndCacheTime.CACHE_TIME,
     refetchOnMount: 'always' as const,

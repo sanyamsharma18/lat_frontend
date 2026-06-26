@@ -29,6 +29,11 @@ let fallbackStudents: Student[] = [
         dateOfBirth: '2015-05-12',
         status: 'Active',
         createdDate: '2026-01-15',
+        parentMobile: '9876543210',
+        email: 'john.doe@example.com',
+        rollNo: 'STU-001',
+        udisecode: 'UDISE-001',
+        address: 'Main campus area',
     },
     {
         id: '2',
@@ -42,6 +47,11 @@ let fallbackStudents: Student[] = [
         dateOfBirth: '2014-09-21',
         status: 'Inactive',
         createdDate: '2026-02-03',
+        parentMobile: '9876543211',
+        email: 'anita.sharma@example.com',
+        rollNo: 'STU-002',
+        udisecode: 'UDISE-002',
+        address: 'North campus area',
     },
 ];
 
@@ -117,7 +127,7 @@ const normalizeStudentListResponse = (
     const formatDateStr = (dateStr: string) => {
         if (!dateStr) return '';
         const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return dateStr;
+        if (Number.isNaN(date.getTime())) return dateStr;
         const dd = String(date.getDate()).padStart(2, '0');
         const mm = String(date.getMonth() + 1).padStart(2, '0');
         const yyyy = date.getFullYear();
@@ -166,6 +176,11 @@ const buildFallbackStudent = (payload: StudentFormValues): Student => {
         dateOfBirth: payload.dateOfBirth,
         status: payload.status,
         createdDate: new Date().toISOString().slice(0, 10),
+        parentMobile: payload.parentMobile,
+        email: payload.email,
+        rollNo: payload.rollNo,
+        udisecode: payload.udisecode,
+        address: payload.address,
     };
 };
 

@@ -1,5 +1,331 @@
 # Change Log
 
+## Student Start Exam Backend Check
+
+### Feature Name
+
+Backend Start Exam Availability
+
+### What Was Changed
+
+* Added the internal Student Exam Check API route at `/api/student/exam/check`.
+* Added backend route configuration for `/api/v1/students/exam/check`.
+* Added a student exam check service method that forwards through `serverApi()` so the logged-in JWT is sent as a bearer token.
+* Added Student Dashboard React Query integration for the exam check API.
+* Aligned the local student exam helper with the internal Next.js route instead of `/api/v1`.
+* The dashboard sends `{ studentId, termId: 1, subjectId: 1 }`, using the logged-in profile `id`.
+* The Start Examination button is enabled only when the backend status normalizes to `NOT_STARTED`.
+* All other backend statuses disable the button.
+
+### Why It Was Changed
+
+* Start Examination availability must be controlled by the backend response.
+* The backend call must not be made directly from the browser because the JWT is stored in an HttpOnly cookie.
+
+### Files Modified
+
+* `src/app/api/student/exam/check/route.ts`
+* `src/config/apiRoutes.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/services/studentPortal/studentPortal.service.ts`
+* `src/types/studentPortal.ts`
+* `src/utils/queryKeys.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/studentExam.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Start Examination button.
+* Exam status card.
+
+### APIs Affected
+
+* Browser route: `POST /api/student/exam/check`.
+* Backend route: `POST /api/v1/students/exam/check`.
+
+### Any Breaking Changes
+
+* The Start Examination button is now disabled unless the backend returns a startable status.
+
+### Testing Considerations
+
+* Login as a student and open `/student/dashboard`.
+* Confirm the browser calls `/api/student/exam/check`.
+* Confirm the request payload contains `studentId`, `termId`, and `subjectId`.
+* Confirm backend `Not_Started` enables the button.
+* Confirm other statuses disable the button.
+
+### Future Improvements
+
+* Replace default term and subject IDs with dynamic assigned exam data when that backend response is available.
+
+## Student Roll Number Cookie Mapping Fix
+
+### Feature Name
+
+Roll Number Fallback Correction
+
+### What Was Changed
+
+* Removed `username` as a fallback source for Student Dashboard roll number.
+* Roll number now comes only from `rollNumber` or `rollNo`.
+* If no roll number field exists in `x_det`, the dashboard shows `_`.
+
+### Why It Was Changed
+
+* Username should not be displayed as roll number.
+
+### Files Modified
+
+* `src/services/studentPortal/studentPortal.service.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard profile card.
+
+### APIs Affected
+
+* `GET /api/student/profile` roll number mapping.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as a student whose cookie has no `rollNumber` or `rollNo`.
+* Confirm the Roll Number field displays `_`, not username.
+
+### Future Improvements
+
+* Use the backend-provided roll number field when available in the authenticated user payload.
+
+## Student Exam Check Integration Removal
+
+### Feature Name
+
+Remove Backend Exam Check Integration
+
+### What Was Changed
+
+* Removed the internal Student Exam Check API route.
+* Removed the backend exam check route config, service method, query key, and TypeScript payload/response types.
+* Removed the Student Dashboard exam status React Query call.
+* Restored the dashboard to static "Ready For Examination" status.
+* Restored Start Examination navigation without backend exam-check gating.
+
+### Why It Was Changed
+
+* The backend exam-check functionality needed to be removed before the next instruction.
+
+### Files Modified
+
+* `src/app/api/student/exam/check/route.ts`
+* `src/config/apiRoutes.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/services/studentPortal/studentPortal.service.ts`
+* `src/types/studentPortal.ts`
+* `src/utils/queryKeys.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Start Examination button.
+* Exam status card.
+
+### APIs Affected
+
+* Removed frontend route: `POST /api/student/exam/check`.
+* Removed frontend service entry for backend route: `POST /api/v1/students/exam/check`.
+
+### Any Breaking Changes
+
+* The Student Dashboard no longer checks backend exam availability.
+
+### Testing Considerations
+
+* Open `/student/dashboard` and confirm no `/api/student/exam/check` request is made.
+* Accept exam rules and confirm Start Examination navigates to `/student/examination`.
+
+### Future Improvements
+
+* Reintroduce exam availability only when the final backend flow is requested again.
+
+## Student Exam Check Backend Integration
+
+### Feature Name
+
+Backend Controlled Start Examination Button
+
+### What Was Changed
+
+* Added the internal Student Exam Check API route: `POST /api/student/exam/check`.
+* Added the backend route config for `POST /api/v1/students/exam/check`.
+* Added a student exam check service method using the existing `serverApi()` helper so the JWT bearer token is forwarded from the HttpOnly cookie.
+* Added a React Query exam status query on the Student Dashboard.
+* The dashboard sends `{ studentId, termId: 1, subjectId: 1 }`, where `studentId` comes from the logged-in profile.
+* The Start Examination button is enabled only when the backend status normalizes to `NOT_STARTED`.
+* Any other backend status disables the Start Examination button.
+
+### Why It Was Changed
+
+* Exam availability must come from the backend API instead of static frontend state.
+* Direct browser calls to the backend IP cannot attach the HttpOnly JWT, so the internal Next.js route keeps authentication consistent with the rest of the app.
+
+### Files Modified
+
+* `src/app/api/student/exam/check/route.ts`
+* `src/config/apiRoutes.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/services/studentPortal/studentPortal.service.ts`
+* `src/types/studentPortal.ts`
+* `src/utils/queryKeys.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Start Examination button.
+* Exam status card.
+
+### APIs Affected
+
+* Browser calls internal route: `POST /api/student/exam/check`.
+* Internal route forwards to backend: `POST /api/v1/students/exam/check`.
+
+### Any Breaking Changes
+
+* The Start Examination button now depends on the backend status response.
+* Students cannot start the exam unless the backend returns `Not_Started` or an equivalent `NOT_STARTED` value.
+
+### Testing Considerations
+
+* Login as a student and open `/student/dashboard`.
+* Confirm the browser calls `/api/student/exam/check`, not the backend IP directly.
+* Confirm the request body includes `studentId`, `termId`, and `subjectId`.
+* Confirm `Not_Started` enables the button.
+* Confirm any other status disables the button.
+
+### Future Improvements
+
+* Replace default term and subject IDs with backend-provided assigned exam values when available.
+
+## Dynamic Student Profile From Cookie
+
+### Feature Name
+
+Cookie-Based Student Profile
+
+### What Was Changed
+
+* Updated the student profile service to read logged-in student details from the `x_det` cookie.
+* Mapped cookie values into the existing Student Dashboard profile shape.
+* Added `_` fallback values when the cookie or individual fields are missing.
+* Kept the existing profile API route and response envelope unchanged.
+
+### Why It Was Changed
+
+* The Student Dashboard should show the logged-in student's details instead of mock profile data.
+* Missing profile values should display a safe placeholder instead of blank text.
+
+### Files Modified
+
+* `src/services/studentPortal/studentPortal.service.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard profile card.
+
+### APIs Affected
+
+* `GET /api/student/profile` now resolves profile data from the authenticated user-detail cookie.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as a student and open `/student/dashboard`.
+* Confirm name, username-derived roll number, and other available details come from `x_det`.
+* Clear or remove fields from `x_det` and confirm `_` is displayed for missing values.
+
+### Future Improvements
+
+* Replace cookie-only grade, section, and roll number mapping with backend profile fields when the backend provides them.
+
+## Static Student Dashboard Restore
+
+### Feature Name
+
+Static Student Dashboard
+
+### What Was Changed
+
+* Removed the dynamic Student Exam Check API route from the frontend.
+* Removed the student exam check backend route configuration and service method.
+* Removed the student exam status query key.
+* Restored the Student Dashboard to a static "Ready For Examination" status.
+* Restored Start Examination navigation from the Student Dashboard without calling the exam-check API.
+* Restored the Student Examination page to load mock/static exam questions directly without exam-status gating.
+
+### Why It Was Changed
+
+* The dashboard needed to be static again before the next implementation step.
+* Removing the dynamic API call prevents the dashboard from calling the backend exam-check endpoint for now.
+
+### Files Modified
+
+* `src/app/api/student/exam/check/route.ts`
+* `src/config/apiRoutes.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/services/studentPortal/studentPortal.service.ts`
+* `src/utils/queryKeys.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/index.tsx`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/hooks/useStudentExamination.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Student Examination page.
+
+### APIs Affected
+
+* Removed frontend route: `POST /api/student/exam/check`.
+* Removed frontend service entry for backend route: `POST /api/v1/students/exam/check`.
+
+### Any Breaking Changes
+
+* The Student Dashboard no longer checks backend exam availability.
+* The Start Examination flow is static and available after the student accepts the instructions.
+
+### Testing Considerations
+
+* Open `/student/dashboard` and confirm no `/api/student/exam/check` request is made.
+* Accept the rules popup and confirm Start Examination navigates to `/student/examination`.
+* Confirm the examination page loads static/mock questions.
+
+### Future Improvements
+
+* Reintroduce backend-driven availability only when the final API flow and payload are confirmed.
+
 ## Student Portal
 
 ### Authentication
@@ -1002,3 +1328,301 @@ Question Generator Review and HTML Editing Enhancements
 
 * Replace the lightweight content-editable editor with the approved rich text editor package when dependencies are finalized.
 * Add backend-provided competency IDs and option relation IDs when the real question API is available.
+
+## Student Exam Check Backend Reimplementation
+
+### Feature Name
+
+Direct Backend Exam Check Route
+
+### What Was Changed
+
+* Removed the student exam check call from the mock student portal service layer.
+* Reimplemented `/api/student/exam/check` to directly POST to the backend endpoint.
+* The route now calls `http://192.168.0.233:3001/api/v1/students/exam/check` through the configured backend base URL.
+* The route reads `studentId` from the logged-in user's `x_det` cookie.
+* The route reads the bearer token from the `x_tok` cookie.
+* The backend payload is sent as `{ studentId, termId, subjectId }`, with `termId` and `subjectId` still defaulting to `1` until assignment data is available.
+* Removed the unused `studentExamCheck` API route constant from `apiRoutes.ts`.
+
+### Why It Was Changed
+
+* The exam status check should be handled by the real backend API, not the mock student service.
+* The student ID and token must come from the authenticated session cookies.
+
+### Files Modified
+
+* `src/app/api/student/exam/check/route.ts`
+* `src/services/studentPortal/studentPortal.service.ts`
+* `src/config/apiRoutes.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student dashboard exam availability check.
+* Student examination access guard.
+
+### APIs Affected
+
+* Local BFF route: `POST /api/student/exam/check`.
+* Backend route: `POST /api/v1/students/exam/check`.
+
+### Any Breaking Changes
+
+* The local route no longer uses mock fallback logic.
+* The route returns `401` if `x_tok` or a valid student ID is missing.
+
+### Testing Considerations
+
+* Login as a student and verify `x_tok` and `x_det` cookies exist.
+* Open `/student/dashboard` and confirm the local route calls the backend with the cookie token.
+* Confirm the backend receives the dynamic student ID from cookies.
+
+### Future Improvements
+
+* Replace default `termId` and `subjectId` with dynamic values from the backend exam assignment API.
+
+## Student Dashboard Exam Status Request Fix
+
+### Feature Name
+
+Authenticated Exam Status Check
+
+### What Was Changed
+
+* Updated the student dashboard exam status utility to call the local Next.js route again.
+* The dashboard now sends only exam context values: `termId` and `subjectId`.
+* The server route remains responsible for adding the dynamic `studentId` from cookies and the bearer token from the httpOnly auth cookie.
+
+### Why It Was Changed
+
+* Direct browser calls to `http://192.168.0.233:3001/api/v1/students/exam/check` were returning unauthorized because the browser cannot read the httpOnly token cookie and backend-domain requests do not receive localhost app cookies.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student dashboard exam start button status.
+
+### APIs Affected
+
+* Frontend BFF route: `POST /api/student/exam/check`.
+* Backend route still receives: `POST /api/v1/students/exam/check`.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as a student and open `/student/dashboard`.
+* Confirm the browser calls `/api/student/exam/check`.
+* Confirm the backend receives `Authorization: Bearer <token>` and payload `{ studentId, termId, subjectId }`.
+
+### Future Improvements
+
+* Replace the default term and subject values with backend-provided assigned exam values.
+
+## Backend Driven Student Exam Availability
+
+### Feature Name
+
+Student Dashboard Exam Availability
+
+### What Was Changed
+
+* Restored the student exam status API function in the dashboard utility layer.
+* Wired the React Query option to call the exam status API instead of using a missing or mock query function.
+* Updated the dashboard hook so the Start Examination button is enabled only when the backend returns `NOT_STARTED`.
+* Added backend-driven exam status text for available, completed, unavailable, loading, and error states.
+* Updated the retry action to refetch profile, instructions, and exam status together.
+
+### Why It Was Changed
+
+* The backend exam check response must be the single source of truth for whether a student can start the examination.
+* Direct frontend conditions and mock/local availability checks could allow the wrong button state.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Start Examination button.
+* Exam status message card.
+
+### APIs Affected
+
+* Frontend BFF route: `POST /api/student/exam/check`.
+* Backend route: `POST /api/v1/students/exam/check`.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as a student and open `/student/dashboard`.
+* Verify `NOT_STARTED` enables the Start Examination button.
+* Verify `COMPLETED` disables the Start Examination button.
+* Verify `NOT_UNDER_SCHEDULED` disables the Start Examination button.
+* Verify API error or loading state keeps the button disabled.
+
+### Future Improvements
+
+* Replace the default term and subject IDs with values from the assigned exam record when that backend API is available.
+
+## Student Exam Check Contract Alignment
+
+### Feature Name
+
+Complete Student Exam Check Payload
+
+### What Was Changed
+
+* Added the backend student exam check endpoint to the central API route configuration.
+* Added a real student exam check service method that uses the existing server API helper.
+* Updated the student dashboard API utility to send the complete payload: `studentId`, `termId`, and `subjectId`.
+* The `studentId` is read from the logged-in student's existing client user details, not hardcoded.
+* Updated the proxy route to validate the incoming `studentId` against the authenticated server cookie before forwarding.
+* The proxy now forwards the complete validated payload to the backend without dropping required fields.
+
+### Why It Was Changed
+
+* The backend API contract requires `studentId`, `termId`, and `subjectId`.
+* The browser request to the local proxy and the backend-forwarded request should both match that contract.
+* The authenticated cookie remains the server-side guard so one student cannot submit another student's ID.
+
+### Files Modified
+
+* `src/config/apiRoutes.ts`
+* `src/services/studentPortal/studentPortal.service.ts`
+* `src/app/api/student/exam/check/route.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Start Examination button availability check.
+
+### APIs Affected
+
+* Frontend BFF route: `POST /api/student/exam/check`
+* Backend route: `POST /api/v1/students/exam/check`
+
+### Any Breaking Changes
+
+* The local proxy route now rejects exam-check requests that do not include a valid `studentId`, `termId`, and `subjectId`.
+* The local proxy route rejects requests when the submitted `studentId` does not match the authenticated student's cookie.
+
+### Testing Considerations
+
+* In the browser Network tab, confirm `/api/student/exam/check` receives `{ studentId, termId, subjectId }`.
+* Confirm the backend request includes `Authorization: Bearer <token>`, `Content-Type: application/json`, `accept: application/json`, and the same complete payload.
+* Verify `NOT_STARTED`, `COMPLETED`, and `NOT_UNDER_SCHEDULED` still drive the Start Examination button state.
+
+### Future Improvements
+
+* Replace the default term and subject IDs with values from the assigned exam record when that backend API is available.
+
+## Student Exam Check Unauthorized Fix
+
+### Feature Name
+
+Proxy-Based Authenticated Exam Check
+
+### What Was Changed
+
+* Removed the direct browser call to `http://192.168.0.233:3001/api/v1/students/exam/check`.
+* Restored the Student Dashboard exam check call to the internal route: `/api/student/exam/check`.
+* Kept the complete payload with dynamic `studentId`, `termId`, and `subjectId`.
+* The internal Next.js route continues to forward the request through the existing `serverApi()` authentication flow.
+
+### Why It Was Changed
+
+* Client-side `callApi()` does not read the HttpOnly JWT cookie and does not automatically attach the `Authorization` header.
+* The backend was returning `401 Unauthorized` because the direct browser request reached `JwtAuthGuard` without a valid bearer token.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Start Examination button availability check.
+
+### APIs Affected
+
+* Browser route: `POST /api/student/exam/check`
+* Backend route: `POST /api/v1/students/exam/check`
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* In the browser Network tab, confirm the request goes to `/api/student/exam/check`, not `192.168.0.233`.
+* Confirm the request payload includes `studentId`, `termId`, and `subjectId`.
+* Confirm the backend no longer returns `401 Unauthorized` when the logged-in token is valid.
+
+### Future Improvements
+
+* Replace the default term and subject IDs with dynamic assigned exam data when the backend provides it.
+
+## Teacher Student Typecheck Stabilization
+
+### Feature Name
+
+Teacher Student Payload Compatibility
+
+### What Was Changed
+
+* Added the missing student status service import in the teacher student update route.
+* Preserved extended student fields when the add/edit student form submits.
+* Added required extended fields to mock/fallback student records.
+
+### Why It Was Changed
+
+* Full TypeScript verification was failing because strict student types require these fields wherever a student record or form payload is created.
+
+### Files Modified
+
+* `src/app/api/teacher/students/[studentId]/route.ts`
+* `src/app/api/teacher/students/[studentId]/status/route.ts`
+* `src/features/teacherPortal/components/StudentManagementPage/components/StudentFormModal/index.tsx`
+* `src/features/teacherPortal/components/StudentManagementPage/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Teacher student add/edit modal.
+* Teacher student fallback list.
+
+### APIs Affected
+
+* Teacher student update route now calls the existing status update service correctly.
+* Dynamic teacher student routes now use the Next.js 16 async route params shape.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Re-run TypeScript checks after the student exam backend reimplementation.
+* Verify adding/editing a teacher student still keeps all form fields.
+
+### Future Improvements
+
+* Align the status dropdown value type with the shared `StudentStatus` type so numeric dropdown values are no longer needed.

@@ -9,10 +9,6 @@ import { showToast } from '@/components/ui/Toaster/constant';
 
 import { QuestionPaletteState } from '@/types/studentPortal';
 
-import {
-    studentExamStatusQueryKey,
-    studentExamStatusQueryOptions,
-} from '../components/StudentDashboardPage/utils';
 import { EXAM_SUBMITTED_REDIRECT_PATH } from '../components/StudentExaminationPage/constant';
 import {
     examQuestionsQueryKey,
@@ -61,15 +57,9 @@ export const useStudentExamination = () => {
     const [isExamSubmitted, setIsExamSubmitted] = useState(false);
     const hasSubmittedRef = useRef(false);
 
-    const studentExamStatusQuery = useQuery(queryOptions(studentExamStatusQueryOptions()));
-    const canLoadExam = studentExamStatusQuery.data?.status === 'NOT_STARTED';
-    const examQuestionsQuery = useQuery(
-        queryOptions({
-            ...examQuestionsQueryOptions(),
-            enabled: canLoadExam,
-        }),
-    );
+    const examQuestionsQuery = useQuery(queryOptions(examQuestionsQueryOptions()));
     const exam = examQuestionsQuery.data;
+
     const questions = exam?.questions ?? [];
     const currentQuestion = questions[currentQuestionIndex];
     const totalQuestions = exam?.totalQuestions ?? questions.length;
@@ -123,7 +113,6 @@ export const useStudentExamination = () => {
             setIsExamSubmitted(true);
             showToast({ message: 'Examination submitted successfully', type: 'success' });
             queryClient.invalidateQueries({ queryKey: examQuestionsQueryKey() });
-            queryClient.invalidateQueries({ queryKey: studentExamStatusQueryKey() });
             setTimeout(() => {
                 router.replace(EXAM_SUBMITTED_REDIRECT_PATH);
             }, 2000);
@@ -149,33 +138,6 @@ export const useStudentExamination = () => {
     });
 
     const formattedRemainingTime = useMemo(() => formatTime(remainingSeconds), [remainingSeconds]);
-
-    useEffect(() => {
-        if (studentExamStatusQuery.isLoading || studentExamStatusQuery.isFetching || isExamSubmitted) {
-            return;
-        }
-
-        if (studentExamStatusQuery.data?.status === 'NOT_STARTED') {
-            return;
-        }
-
-        window.localStorage.removeItem(EXAM_PROGRESS_STORAGE_KEY);
-        window.sessionStorage.removeItem(EXAM_REFRESH_WARNING_KEY);
-        showToast({
-            type: 'error',
-            message:
-                studentExamStatusQuery.data?.message ||
-                'This examination is not available for attempt.',
-        });
-        router.replace(EXAM_SUBMITTED_REDIRECT_PATH);
-    }, [
-        isExamSubmitted,
-        router,
-        studentExamStatusQuery.data?.message,
-        studentExamStatusQuery.data?.status,
-        studentExamStatusQuery.isFetching,
-        studentExamStatusQuery.isLoading,
-    ]);
 
     const handleSubmitExam = useCallback(() => {
         if (!exam || hasSubmittedRef.current) {
@@ -333,7 +295,6 @@ export const useStudentExamination = () => {
         isSubmitting: submitExamMutation.isPending,
         questions,
         remainingSeconds,
-        studentExamStatusQuery,
         totalQuestions,
     };
 };

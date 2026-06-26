@@ -10,7 +10,6 @@ import {
     Student,
     StudentFormValues,
     StudentOption,
-    StudentStatus,
     UploadStudentsPayload,
 } from '@/types/student';
 

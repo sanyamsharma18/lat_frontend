@@ -1,13 +1,19 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import {
+    ExamInstructionsResponse,
+    StudentExamCheckResponse,
+    StudentProfile,
+} from '@/types/studentPortal';
+import {
     EXAM_INSTRUCTIONS_AUTO_SHOWN_KEY,
     EXAM_INSTRUCTIONS_ACCEPTED_KEY,
+    STUDENT_DASHBOARD_TEXT,
 } from '../components/StudentDashboardPage/constant';
 import {
     examInstructionsQueryOptions,
@@ -15,14 +21,31 @@ import {
     studentProfileQueryOptions,
 } from '../components/StudentDashboardPage/utils';
 
-export const useStudentDashboard = () => {
+const AVAILABLE_EXAM_STATUS = 'NOT_STARTED';
+
+const normalizeExamStatus = (status?: string) => status?.trim().toUpperCase();
+
+export const useStudentDashboard = (
+    initialProfile?: StudentProfile,
+    initialInstructions?: ExamInstructionsResponse,
+    initialExamStatus?: StudentExamCheckResponse,
+) => {
     const router = useRouter();
     const [isInstructionsAccepted, setIsInstructionsAccepted] = useState(false);
     const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
 
-    const studentProfileQuery = useQuery(queryOptions(studentProfileQueryOptions()));
-    const examInstructionsQuery = useQuery(queryOptions(examInstructionsQueryOptions()));
-    const studentExamStatusQuery = useQuery(queryOptions(studentExamStatusQueryOptions()));
+    const studentProfileQuery = useQuery(
+        queryOptions(studentProfileQueryOptions(initialProfile)),
+    );
+    const examInstructionsQuery = useQuery(
+        queryOptions(examInstructionsQueryOptions(initialInstructions)),
+    );
+    const studentExamStatusQuery = useQuery(
+        queryOptions(
+            studentExamStatusQueryOptions(studentProfileQuery.data?.id, initialExamStatus),
+        ),
+    );
+    const examStatus = studentExamStatusQuery.data;
 
     useEffect(() => {
         const accepted = window.localStorage.getItem(EXAM_INSTRUCTIONS_ACCEPTED_KEY) === 'true';
@@ -48,7 +71,7 @@ export const useStudentDashboard = () => {
     };
 
     const handleStartExamination = () => {
-        if (studentExamStatusQuery.data?.status !== 'NOT_STARTED') {
+        if (normalizeExamStatus(examStatus?.status) !== AVAILABLE_EXAM_STATUS) {
             studentExamStatusQuery.refetch();
             return;
         }
@@ -60,20 +83,30 @@ export const useStudentDashboard = () => {
         studentProfileQuery.isLoading ||
         examInstructionsQuery.isLoading ||
         studentExamStatusQuery.isLoading;
-    const isError =
-        studentProfileQuery.isError || examInstructionsQuery.isError || studentExamStatusQuery.isError;
+    const isError = studentProfileQuery.isError || examInstructionsQuery.isError;
+    const canStartExam =
+        isInstructionsAccepted &&
+        normalizeExamStatus(examStatus?.status) === AVAILABLE_EXAM_STATUS &&
+        !studentExamStatusQuery.isError;
 
-    const canStartExam = useMemo(
-        () =>
-            isInstructionsAccepted &&
-            Boolean(studentProfileQuery.data) &&
-            studentExamStatusQuery.data?.status === 'NOT_STARTED',
-        [isInstructionsAccepted, studentExamStatusQuery.data?.status, studentProfileQuery.data],
-    );
+    const getExamStatusLabel = () => {
+        if (studentExamStatusQuery.isLoading || studentExamStatusQuery.isFetching) {
+            return STUDENT_DASHBOARD_TEXT.examStatusLoading;
+        }
+
+        if (studentExamStatusQuery.isError || !examStatus) {
+            return STUDENT_DASHBOARD_TEXT.examStatusUnavailable;
+        }
+
+        return examStatus.message || STUDENT_DASHBOARD_TEXT.examStatusUnavailable;
+    };
+
 
     return {
         canStartExam,
+        examStatus,
         examInstructionsQuery,
+        getExamStatusLabel,
         handleAcceptInstructions,
         handleOpenInstructions,
         handleStartExamination,
