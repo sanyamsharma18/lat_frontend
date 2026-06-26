@@ -3,7 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input/Input';
+// import Input from '@/components/ui/Input/Input';
 import Modal from '@/components/ui/Modal';
 import Text from '@/components/ui/Text';
 
@@ -53,10 +53,10 @@ const UploadTeacherModal = ({
         setErrorMessage('');
     };
 
-    const handleSheetUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setSheetUrl(event.target.value);
-        setErrorMessage('');
-    };
+    // const handleSheetUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
+    //     setSheetUrl(event.target.value);
+    //     setErrorMessage('');
+    // };
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -126,7 +126,7 @@ const UploadTeacherModal = ({
                         </span>
                     </label>
 
-                    <Input
+                    {/* <Input
                         id='teacherSheetUrl'
                         label={UPLOAD_TEACHER_TEXT.sheetUrl.label}
                         name='teacherSheetUrl'
@@ -136,7 +136,7 @@ const UploadTeacherModal = ({
                         onChange={handleSheetUrlChange}
                         disabled={isUploading}
                         autoComplete='url'
-                    />
+                    /> */}
 
                     {errorMessage ? (
                         <Text

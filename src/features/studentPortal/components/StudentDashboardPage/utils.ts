@@ -5,13 +5,19 @@ import { StaleAndCacheTime } from '@/constants/appConstants';
 
 import { ApiResponse } from '@/types/api';
 import { HTTP_METHOD } from '@/types/common';
-import { ExamInstructionsResponse, StudentProfile } from '@/types/studentPortal';
+import {
+    ExamInstructionsResponse,
+    StudentExamCheckResponse,
+    StudentProfile,
+} from '@/types/studentPortal';
 
 import { QueryKeys } from '@/utils/queryKeys';
 
 export const studentProfileQueryKey = () => [QueryKeys.STUDENT_PROFILE] as const;
 
 export const examInstructionsQueryKey = () => [QueryKeys.EXAM_INSTRUCTIONS] as const;
+
+export const studentExamStatusQueryKey = () => [QueryKeys.STUDENT_EXAM_STATUS] as const;
 
 const assertSuccessfulResponse = <TResponse>(response: ApiResponse<TResponse>) => {
     if (response.status === false || !response.response) {
@@ -39,6 +45,15 @@ export const getExamInstructions = async () => {
     return assertSuccessfulResponse(response);
 };
 
+export const getStudentExamStatus = async () => {
+    const response = await callApi<ApiResponse<StudentExamCheckResponse>>({
+        url: ServerSideRoutes.STUDENT_EXAM_CHECK,
+        method: HTTP_METHOD.POST,
+    });
+
+    return assertSuccessfulResponse(response);
+};
+
 export const studentProfileQueryOptions = () => ({
     queryKey: studentProfileQueryKey(),
     queryFn: getStudentProfile,
@@ -51,4 +66,12 @@ export const examInstructionsQueryOptions = () => ({
     queryFn: getExamInstructions,
     staleTime: StaleAndCacheTime.STALE_TIME,
     gcTime: StaleAndCacheTime.CACHE_TIME,
+});
+
+export const studentExamStatusQueryOptions = () => ({
+    queryKey: studentExamStatusQueryKey(),
+    queryFn: getStudentExamStatus,
+    staleTime: 0,
+    gcTime: StaleAndCacheTime.CACHE_TIME,
+    refetchOnMount: 'always' as const,
 });

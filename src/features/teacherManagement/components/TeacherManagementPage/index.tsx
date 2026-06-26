@@ -17,7 +17,7 @@ import { Teacher } from '@/types/teacher';
 
 import { useTeacherManagement } from '../../hooks/useTeacherManagement';
 
-import DeleteTeacherModal from './components/DeleteTeacherModal';
+// import DeleteTeacherModal from './components/DeleteTeacherModal';
 import TeacherFormModal from './components/TeacherFormModal';
 import UploadTeacherModal from './components/UploadTeacherModal';
 import { TEACHER_MANAGEMENT_TEXT } from './constant';
@@ -26,13 +26,13 @@ import styles from './styles.module.scss';
 
 interface TeacherActionHandlers {
     onEdit: (teacher: Teacher) => void;
-    onDelete: (teacher: Teacher) => void;
+    // onDelete: (teacher: Teacher) => void;
 }
 
 const TeacherActions = ({
     teacher: selectedTeacher,
     onEdit,
-    onDelete,
+    // onDelete,
 }: TeacherActionHandlers & { teacher: Teacher }) => (
     <div className={styles.rowActions}>
         <button
@@ -42,19 +42,19 @@ const TeacherActions = ({
         >
             {TEACHER_MANAGEMENT_TEXT.editButton}
         </button>
-        <button
+        {/* <button
             type='button'
             className={styles.deleteButton}
             onClick={() => onDelete(selectedTeacher)}
         >
             {TEACHER_MANAGEMENT_TEXT.deleteButton}
-        </button>
+        </button> */}
     </div>
 );
 
 const getTeacherColumns = ({
     onEdit,
-    onDelete,
+    // onDelete,
 }: TeacherActionHandlers): DataTableColumn<Teacher>[] => [
     {
         id: 'teacherName',
@@ -108,12 +108,21 @@ const getTeacherColumns = ({
     {
         id: 'actions',
         header: TEACHER_MANAGEMENT_TEXT.actionsColumn,
-        cell: (teacher) => <TeacherActions teacher={teacher} onEdit={onEdit} onDelete={onDelete} />,
+        cell: (teacher) => (
+            <TeacherActions
+                teacher={teacher}
+                onEdit={onEdit}
+                // onDelete={onDelete}
+            />
+        ),
     },
 ];
 
 const getRenderMobileCard =
-    ({ onEdit, onDelete }: TeacherActionHandlers) =>
+    ({
+        onEdit,
+        // onDelete
+    }: TeacherActionHandlers) =>
     (teacher: Teacher) => {
         const { firstName, lastName, schoolName, regionName } = teacher;
         const fullName = `${firstName || ''} ${lastName || ''}`.trim() || '-';
@@ -142,7 +151,11 @@ const getRenderMobileCard =
                     </Text>
                 </div>
 
-                <TeacherActions teacher={teacher} onEdit={onEdit} onDelete={onDelete} />
+                <TeacherActions
+                    teacher={teacher}
+                    onEdit={onEdit}
+                    // onDelete={onDelete}
+                />
             </div>
         );
     };
@@ -150,10 +163,10 @@ const getRenderMobileCard =
 const TeacherManagementPage = () => {
     const {
         handleClearFilters,
-        handleDeleteTeacher,
+        // handleDeleteTeacher,
         handleDownloadTeacherTemplate,
         handleOpenAddModal,
-        handleOpenDeleteModal,
+        // handleOpenDeleteModal,
         handleOpenEditModal,
         handleOpenUploadModal,
         handleRegionChange,
@@ -162,8 +175,8 @@ const TeacherManagementPage = () => {
         handleSubmitTeacher,
         handleUploadTeachers,
         hasActiveFilters,
-        isDeleteModalOpen,
-        isDeleting,
+        // isDeleteModalOpen,
+        // isDeleting,
         isFormModalOpen,
         isSubmitting,
         isTemplateDownloading,
@@ -177,7 +190,7 @@ const TeacherManagementPage = () => {
         selectedRegion,
         selectedSchool,
         selectedTeacher,
-        setIsDeleteModalOpen,
+        // setIsDeleteModalOpen,
         setIsFormModalOpen,
         setIsUploadModalOpen,
         setPage,
@@ -189,18 +202,24 @@ const TeacherManagementPage = () => {
         () =>
             getTeacherColumns({
                 onEdit: handleOpenEditModal,
-                onDelete: handleOpenDeleteModal,
+                // onDelete: handleOpenDeleteModal,
             }),
-        [handleOpenDeleteModal, handleOpenEditModal],
+        [
+            // handleOpenDeleteModal,
+            handleOpenEditModal,
+        ],
     );
 
     const renderMobileCard = useMemo(
         () =>
             getRenderMobileCard({
                 onEdit: handleOpenEditModal,
-                onDelete: handleOpenDeleteModal,
+                // onDelete: handleOpenDeleteModal,
             }),
-        [handleOpenDeleteModal, handleOpenEditModal],
+        [
+            //  handleOpenDeleteModal,
+            handleOpenEditModal,
+        ],
     );
 
     const renderTableContent = () => {
@@ -429,13 +448,13 @@ const TeacherManagementPage = () => {
                 onSubmit={handleSubmitTeacher}
             />
 
-            <DeleteTeacherModal
+            {/* <DeleteTeacherModal
                 open={isDeleteModalOpen}
                 teacher={selectedTeacher}
                 isDeleting={isDeleting}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDeleteTeacher}
-            />
+            /> */}
 
             <UploadTeacherModal
                 open={isUploadModalOpen}

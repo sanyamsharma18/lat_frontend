@@ -16,7 +16,7 @@ export const getDashboardSummary = async () => {
     });
 
     if (!result.ok) {
-        throw new Error(result.error || 'Failed to fetch dashboard summary');
+        throw new Error('Failed to fetch dashboard summary');
     }
 
     return result;

@@ -1,14 +1,17 @@
 import CryptoJS from 'crypto-js';
 import Cookies from 'js-cookie';
 
+import {
+    CLIENT_USER_DETAIL,
+    JWT_TOKEN,
+    USER_DETAIL,
+    USER_EMAIL,
+    USER_MENU_LIST,
+} from '@/constants/authSession';
+
+export { CLIENT_USER_DETAIL, JWT_TOKEN, USER_DETAIL, USER_EMAIL, USER_MENU_LIST };
+
 const ENCRYPTION_KEY = 'your-strong-key-32-chars';
-
-export const JWT_TOKEN = 'x_tok';
-export const USER_DETAIL = 'x_det';
-export const CLIENT_USER_DETAIL = 'c_x_det';
-export const USER_MENU_LIST = 'x_m_li';
-
-export const USER_EMAIL = 'x-m';
 
 const clearJwtToken = () => Cookies.remove(JWT_TOKEN);
 const clearUserDetail = () => Cookies.remove(USER_DETAIL);

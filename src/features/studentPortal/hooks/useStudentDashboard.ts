@@ -11,6 +11,7 @@ import {
 } from '../components/StudentDashboardPage/constant';
 import {
     examInstructionsQueryOptions,
+    studentExamStatusQueryOptions,
     studentProfileQueryOptions,
 } from '../components/StudentDashboardPage/utils';
 
@@ -21,6 +22,7 @@ export const useStudentDashboard = () => {
 
     const studentProfileQuery = useQuery(queryOptions(studentProfileQueryOptions()));
     const examInstructionsQuery = useQuery(queryOptions(examInstructionsQueryOptions()));
+    const studentExamStatusQuery = useQuery(queryOptions(studentExamStatusQueryOptions()));
 
     useEffect(() => {
         const accepted = window.localStorage.getItem(EXAM_INSTRUCTIONS_ACCEPTED_KEY) === 'true';
@@ -46,15 +48,27 @@ export const useStudentDashboard = () => {
     };
 
     const handleStartExamination = () => {
+        if (studentExamStatusQuery.data?.status !== 'NOT_STARTED') {
+            studentExamStatusQuery.refetch();
+            return;
+        }
+
         router.push('/student/examination');
     };
 
-    const isLoading = studentProfileQuery.isLoading || examInstructionsQuery.isLoading;
-    const isError = studentProfileQuery.isError || examInstructionsQuery.isError;
+    const isLoading =
+        studentProfileQuery.isLoading ||
+        examInstructionsQuery.isLoading ||
+        studentExamStatusQuery.isLoading;
+    const isError =
+        studentProfileQuery.isError || examInstructionsQuery.isError || studentExamStatusQuery.isError;
 
     const canStartExam = useMemo(
-        () => isInstructionsAccepted && Boolean(studentProfileQuery.data),
-        [isInstructionsAccepted, studentProfileQuery.data],
+        () =>
+            isInstructionsAccepted &&
+            Boolean(studentProfileQuery.data) &&
+            studentExamStatusQuery.data?.status === 'NOT_STARTED',
+        [isInstructionsAccepted, studentExamStatusQuery.data?.status, studentProfileQuery.data],
     );
 
     return {
@@ -68,6 +82,7 @@ export const useStudentDashboard = () => {
         isInstructionsModalOpen,
         isLoading,
         setIsInstructionsModalOpen,
+        studentExamStatusQuery,
         studentProfileQuery,
     };
 };

@@ -47,3 +47,11 @@ export const DASHBOARD_METRICS = [
         getValue: (summary: DashboardSummary) => summary.totalQuestionsAttemptedLastYear,
     },
 ] as const;
+
+export const DEFAULT_SUMMARY = {
+    totalTeachers: 0,
+    totalStudents: 0,
+    totalQuestionsGenerated: 0,
+    totalQuestionsAttemptedLastYear: 0,
+    isMock: false,
+};

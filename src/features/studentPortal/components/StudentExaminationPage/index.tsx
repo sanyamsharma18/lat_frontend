@@ -48,8 +48,12 @@ const StudentExaminationPage = () => {
         isLastQuestion,
         isSubmitting,
         questions,
+        studentExamStatusQuery,
         totalQuestions,
     } = useStudentExamination();
+
+    const isLoadingExam = studentExamStatusQuery.isLoading || examQuestionsQuery.isLoading;
+    const isExamError = studentExamStatusQuery.isError || examQuestionsQuery.isError;
 
     const renderLoading = () => (
         <div className={styles.examGrid} role='status' aria-live='polite'>
@@ -81,7 +85,10 @@ const StudentExaminationPage = () => {
                 label={STUDENT_EXAM_TEXT.retryButton}
                 variant={ButtonVariant.OUTLINED}
                 color='black'
-                onClick={() => examQuestionsQuery.refetch()}
+                onClick={() => {
+                    studentExamStatusQuery.refetch();
+                    examQuestionsQuery.refetch();
+                }}
             />
         </section>
     );
@@ -394,9 +401,9 @@ const StudentExaminationPage = () => {
                 </div>
             </section>
 
-            {examQuestionsQuery.isLoading ? renderLoading() : null}
-            {examQuestionsQuery.isError ? renderError() : null}
-            {!examQuestionsQuery.isLoading && !examQuestionsQuery.isError ? (
+            {isLoadingExam ? renderLoading() : null}
+            {isExamError ? renderError() : null}
+            {!isLoadingExam && !isExamError ? (
                 <div className={styles.examGrid}>
                     {renderQuestion()}
                     {renderPalette()}

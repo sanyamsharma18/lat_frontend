@@ -50,6 +50,26 @@
     white-space: nowrap;
 }
 
+.examStatusCard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px;
+    border: 1px solid $green-600;
+    border-radius: 8px;
+    background: $green-50;
+}
+
+.examStatusCompleted {
+    border-color: $orange-200;
+    background: $orange-50;
+}
+
+.examStatusUnavailable {
+    border-color: $red-600;
+    background: rgba($red-600, 0.06);
+}
+
 .infoGrid {
     display: grid;
     grid-template-columns: 1fr;

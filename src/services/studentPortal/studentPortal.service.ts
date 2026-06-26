@@ -2,9 +2,15 @@ import {
     ExamInstructionsResponse,
     ExamQuestionsResponse,
     SaveAnswerPayload,
+    StudentExamCheckPayload,
+    StudentExamCheckResponse,
     StudentProfile,
     SubmitExamPayload,
 } from '@/types/studentPortal';
+import { ApiResponse } from '@/types/api';
+import { API_ROUTES } from '@/config/apiRoutes';
+import { HTTP_METHOD } from '@/types/common';
+import { serverApi } from '@/lib/serverApi';
 
 const MOCK_STUDENT_PROFILE: StudentProfile = {
     id: 'student-001',
@@ -369,6 +375,14 @@ export const studentLogin = async () =>
 export const getStudentProfile = async () => buildMockResult(MOCK_STUDENT_PROFILE);
 
 export const getExamInstructions = async () => buildMockResult(MOCK_EXAM_INSTRUCTIONS);
+
+export const checkStudentExamStatus = async (payload: StudentExamCheckPayload, bearerToken: string) =>
+    serverApi<ApiResponse<StudentExamCheckResponse>>({
+        url: API_ROUTES.studentExamCheck,
+        method: HTTP_METHOD.POST,
+        body: payload,
+        bearerToken,
+    });
 
 export const getExamQuestions = async () => buildMockResult(MOCK_EXAM_QUESTIONS);
 

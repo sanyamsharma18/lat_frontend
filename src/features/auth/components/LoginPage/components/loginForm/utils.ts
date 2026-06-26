@@ -2,14 +2,12 @@ import { API_ROUTES } from '@/config/apiRoutes';
 import callApi from '@/lib/clientApi';
 
 
-import { EIGHT_MIN_LENGTH, TEN_MIN_LENGTH } from '@/constants/appConstants';
-
 import { HTTP_METHOD } from '@/types/common';
 
 import { ApiResponse } from '@/types/api';
 import { ErrorMessagesType, SignInFormKeys, SignInFormType } from '@/types/signInFormType';
 
-import { EMAIL_OR_PHONE_REGEX, PASSWORD_PATTERN } from '@/utils/regex';
+import { EMAIL_OR_STUDENT_ID_REGEX } from '@/utils/regex';
 
 
 interface LoginUserDetail {
@@ -39,21 +37,18 @@ interface CheckSignInValuesArgs {
 }
 
 export const ERROR_MESSAGES = {
-    passwordPattern: 'Password length should be 8 to 30 digits',
-    namePattern: 'Please enter a valid email address or phone number',
+    passwordPattern: 'Please enter your password',
+    namePattern: 'Please enter a valid email address or student ID',
 };
 
 export const VALIDATION_RULES = {
     [SignInFormKeys.PASSWORD]: {
-        length: EIGHT_MIN_LENGTH,
         required: true,
-        regex: PASSWORD_PATTERN,
         errorMessage: ERROR_MESSAGES.passwordPattern,
     },
     [SignInFormKeys.NAME]: {
-        length: TEN_MIN_LENGTH,
         required: true,
-        regex: EMAIL_OR_PHONE_REGEX,
+        regex: EMAIL_OR_STUDENT_ID_REGEX,
         errorMessage: ERROR_MESSAGES.namePattern,
     },
 };

@@ -51,6 +51,19 @@ export interface ExamQuestionsResponse {
     questions: ExamQuestion[];
 }
 
+export type StudentExamStatus = 'NOT_STARTED' | 'COMPLETED' | 'NOT_UNDER_SCHEDULED';
+
+export interface StudentExamCheckPayload {
+    studentId: number;
+    termId: number;
+    subjectId: number;
+}
+
+export interface StudentExamCheckResponse {
+    message: string;
+    status: StudentExamStatus;
+}
+
 export interface SaveAnswerPayload {
     examId: number;
     questionId: number;
