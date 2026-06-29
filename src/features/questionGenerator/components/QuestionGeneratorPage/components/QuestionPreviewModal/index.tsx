@@ -16,6 +16,10 @@ interface QuestionPreviewModalProps {
     onClose: () => void;
     onSave?: (values: any) => void;
     onImageClick?: (url: string) => void;
+    onGenerateImage?: (question: QuestionRecord, optionLetter?: string) => void;
+    isGeneratingImage?: (questionId: string, optionLetter?: string) => boolean;
+    onUploadImage?: (question: QuestionRecord, optionLetter: string | undefined, file: File) => void;
+    isUploadingImage?: (questionId: string, optionLetter?: string) => boolean;
 }
 
 const sanitizeHtml = (value: string) =>
@@ -45,6 +49,10 @@ const QuestionPreviewModal = ({
     question,
     onClose,
     onImageClick,
+    onGenerateImage,
+    isGeneratingImage,
+    onUploadImage,
+    isUploadingImage,
 }: QuestionPreviewModalProps) => {
     return (
         <Modal
@@ -88,11 +96,43 @@ const QuestionPreviewModal = ({
                         <RichTextDisplay label="Question Text" value={question.questionText} />
 
                         {/* 4. Question Image */}
-                        {question.imageUrl ? (
-                            <div className={styles.editorGroup}>
+                        <div className={styles.editorGroup}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                 <Text font={[FontType.text_sm_semibold, FontType.text_sm_semibold]} color='gray-500'>
                                     Question Image
                                 </Text>
+                                {onUploadImage && (
+                                    <label
+                                        style={{
+                                            color: question.imageUrl ? '#2563eb' : '#16a34a',
+                                            background: question.imageUrl ? '#eff6ff' : '#f0fdf4',
+                                            border: question.imageUrl ? '1px solid #bfdbfe' : '1px solid #bbf7d0',
+                                            borderRadius: '6px',
+                                            padding: '4px 12px',
+                                            fontSize: '12px',
+                                            fontWeight: 'bold',
+                                            cursor: isUploadingImage?.(question.id, undefined) ? 'not-allowed' : 'pointer',
+                                            opacity: isUploadingImage?.(question.id, undefined) ? 0.6 : 1,
+                                            display: 'inline-block'
+                                        }}
+                                        title="Upload an image for this question"
+                                    >
+                                        {isUploadingImage?.(question.id, undefined) ? 'Uploading...' : question.imageUrl ? 'Upload Image' : 'Upload Image'}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            style={{ display: 'none' }}
+                                            disabled={isUploadingImage?.(question.id, undefined)}
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) onUploadImage(question, undefined, file);
+                                                e.target.value = '';
+                                            }}
+                                        />
+                                    </label>
+                                )}
+                            </div>
+                            {question.imageUrl ? (
                                 <img
                                     className={styles.previewImage}
                                     src={question.imageUrl}
@@ -101,8 +141,10 @@ const QuestionPreviewModal = ({
                                     onClick={() => onImageClick?.(question.imageUrl!)}
                                     title="Click to preview full image"
                                 />
-                            </div>
-                        ) : null}
+                            ) : (
+                                <span style={{ color: '#94a3b8', fontSize: '14px' }}>No image uploaded</span>
+                            )}
+                        </div>
 
                         {/* 5. Options */}
                         <div className={styles.editorGroup}>
@@ -113,7 +155,7 @@ const QuestionPreviewModal = ({
                                 className={styles.optionList}
                                 style={{
                                     display: 'grid',
-                                    gridTemplateColumns: question.options.some(o => o.imageUrl) ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))',
+                                    gridTemplateColumns: question.options.some(o => o.imageUrl || o.imagePrompt) ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))',
                                     gap: '16px'
                                 }}
                             >
@@ -178,9 +220,9 @@ const QuestionPreviewModal = ({
                                                     ) : null}
                                                 </div>
 
-                                                {/* Option Image */}
-                                                {option.imageUrl ? (
-                                                    <div style={{ flexShrink: 0 }}>
+                                                {/* Option Image and Actions */}
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+                                                    {option.imageUrl && (
                                                         <img
                                                             src={option.imageUrl}
                                                             alt={`Option ${option.id} visual`}
@@ -196,8 +238,62 @@ const QuestionPreviewModal = ({
                                                             onClick={() => onImageClick?.(option.imageUrl!)}
                                                             title="Click to preview option image"
                                                         />
-                                                    </div>
-                                                ) : null}
+                                                    )}
+                                                    
+                                                    {/* Upload button for option */}
+                                                    {onUploadImage && (
+                                                        <label
+                                                            style={{
+                                                                color: option.imageUrl ? '#2563eb' : '#16a34a',
+                                                                background: option.imageUrl ? '#eff6ff' : '#f0fdf4',
+                                                                border: option.imageUrl ? '1px solid #bfdbfe' : '1px solid #bbf7d0',
+                                                                borderRadius: '6px',
+                                                                padding: '4px 8px',
+                                                                fontSize: '11px',
+                                                                fontWeight: 'bold',
+                                                                cursor: isUploadingImage?.(question.id, option.id) ? 'not-allowed' : 'pointer',
+                                                                opacity: isUploadingImage?.(question.id, option.id) ? 0.6 : 1,
+                                                                display: 'inline-block',
+                                                                textAlign: 'center'
+                                                            }}
+                                                            title="Upload an image for this option"
+                                                        >
+                                                            {isUploadingImage?.(question.id, option.id) ? 'Uploading...' : option.imageUrl ? 'Upload Image' : 'Upload'}
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                style={{ display: 'none' }}
+                                                                disabled={isUploadingImage?.(question.id, option.id)}
+                                                                onChange={(e) => {
+                                                                    const file = e.target.files?.[0];
+                                                                    if (file) onUploadImage(question, option.id, file);
+                                                                    e.target.value = '';
+                                                                }}
+                                                            />
+                                                        </label>
+                                                    )}
+
+                                                    {/* Generate with AI button for option when prompt is available and no image */}
+                                                    {!option.imageUrl && option.imagePrompt && onGenerateImage && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => onGenerateImage(question, option.id)}
+                                                            disabled={isGeneratingImage?.(question.id, option.id)}
+                                                            style={{
+                                                                color: '#2563eb',
+                                                                background: '#eff6ff',
+                                                                border: '1px solid #bfdbfe',
+                                                                borderRadius: '6px',
+                                                                padding: '4px 8px',
+                                                                fontSize: '11px',
+                                                                fontWeight: 'bold',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                        >
+                                                            {isGeneratingImage?.(question.id, option.id) ? 'Generating...' : 'Generate Image'}
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     );

@@ -27,6 +27,8 @@ import {
     getGradesByGradeGroup,
     getSubjectsByGradeGroup,
     getCompetenciesList,
+    generateQuestionImage,
+    uploadQuestionImage,
 } from '../components/QuestionGeneratorPage/utils';
 
 export type QuestionModalMode = 'add' | 'edit';
@@ -99,6 +101,7 @@ export const useQuestionGenerator = () => {
             subject: selectedSubjectFilter?.id ?? '',
             competency: selectedCompetencyFilter?.id ?? '',
             status: selectedStatusFilter?.id ?? '',
+            termId: selectedTermFilter?.id === 'Term 1' ? '1' : selectedTermFilter?.id === 'Term 2' ? '2' : '',
             page,
             limit: QUESTION_PAGE_SIZE,
         }),
@@ -109,6 +112,7 @@ export const useQuestionGenerator = () => {
             selectedGradeFilter?.id,
             selectedStatusFilter?.id,
             selectedSubjectFilter?.id,
+            selectedTermFilter?.id,
         ],
     );
 
@@ -274,6 +278,34 @@ export const useQuestionGenerator = () => {
         onSettled: invalidateQuestions,
     });
 
+    const generateImageMutation = useMutation({
+        mutationFn: generateQuestionImage,
+        onSuccess: () => {
+            showToast({ message: 'Image generated successfully', type: 'success' });
+        },
+        onError: (error) => {
+            showToast({
+                message: error instanceof Error ? error.message : 'Unable to generate image',
+                type: 'error',
+            });
+        },
+        onSettled: invalidateQuestions,
+    });
+
+    const uploadImageMutation = useMutation({
+        mutationFn: uploadQuestionImage,
+        onSuccess: () => {
+            showToast({ message: 'Image uploaded successfully', type: 'success' });
+        },
+        onError: (error) => {
+            showToast({
+                message: error instanceof Error ? error.message : 'Unable to upload image',
+                type: 'error',
+            });
+        },
+        onSettled: invalidateQuestions,
+    });
+
     const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value);
         setPage(1);
@@ -418,6 +450,10 @@ export const useQuestionGenerator = () => {
         hasActiveFilters,
         isDeleteModalOpen,
         isDeleting: deleteQuestionMutation.isPending,
+        isGeneratingImage: generateImageMutation.isPending,
+        generateImageMutation,
+        uploadImageMutation,
+        isUploadingImage: uploadImageMutation.isPending,
         isFormModalOpen,
         isGenerating: generateQuestionsMutation.isPending,
         isPreviewModalOpen,
