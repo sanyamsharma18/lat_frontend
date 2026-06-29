@@ -20,6 +20,7 @@ const StudentDashboardPage = () => {
         examInstructionsQuery,
         handleAcceptInstructions,
         handleOpenInstructions,
+        handlePlaySpaceMission,
         handleStartExamination,
         isError,
         isInstructionsModalOpen,
@@ -160,16 +161,27 @@ const StudentDashboardPage = () => {
                     </div>
                 </dl>
 
-                <Button
-                    type='button'
-                    label={STUDENT_DASHBOARD_TEXT.startButton}
-                    variant={ButtonVariant.SOLID}
-                    color='white'
-                    size='large'
-                    className={styles.startButton}
-                    disabled={!canStartExam}
-                    onClick={handleStartExamination}
-                />
+                {canStartExam ? (
+                    <Button
+                        type='button'
+                        label={STUDENT_DASHBOARD_TEXT.startButton}
+                        variant={ButtonVariant.SOLID}
+                        color='white'
+                        size='large'
+                        className={styles.startButton}
+                        onClick={handleStartExamination}
+                    />
+                ) : (
+                    <Button
+                        type='button'
+                        label={STUDENT_DASHBOARD_TEXT.playSpaceMissionButton}
+                        variant={ButtonVariant.SOLID}
+                        color='white'
+                        size='large'
+                        className={styles.spaceMissionButton}
+                        onClick={handlePlaySpaceMission}
+                    />
+                )}
 
                 <Button
                     type='button'

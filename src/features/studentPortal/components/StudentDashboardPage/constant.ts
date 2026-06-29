@@ -14,6 +14,7 @@ export const STUDENT_DASHBOARD_TEXT = {
     examCompletedText: 'You have already completed this examination.',
     examNotScheduledText: 'This examination is not available under the current schedule.',
     startButton: 'Start Examination',
+    playSpaceMissionButton: 'Play Space Mission',
     rulesButton: 'View Examination Rules',
     loadingText: 'Loading student profile',
     errorTitle: 'Unable to load student dashboard',

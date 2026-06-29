@@ -1,11 +1,5 @@
 export const API_URL = `${process.env.NEXT_PUBLIC_APP_URL?.trim() ?? ''}api/v1`;
 
-export const MARKETING_EXECUTIVE = `${API_URL}/marketing-executive`;
-
-export const MARKETING_COUNT_DASHBOARD = `${MARKETING_EXECUTIVE}/dashboard-metrics`;
-export const MARKETING_LEAD_DASHBOARD = `${MARKETING_EXECUTIVE}/leads-matrix`;
-export const MARKETING_LEAD_TIMELINE = `${MARKETING_EXECUTIVE}/timeline/`;
-
 export const API_ROUTES = {
     adminActionRequired: `${API_URL}/admin/action-required`,
     adminApprove: `${API_URL}/admin/approve`,
@@ -28,6 +22,7 @@ export const API_ROUTES = {
     schools: (regionId: string) => `${API_URL}/regions/${regionId}/schools`,
     subjects: `${API_URL}/subjects`,
     studentExamCheck: `${API_URL}/students/exam/check`,
+    studentExamQuestions: `${API_URL}/students/exam/questions`,
     gradeGroup: `${API_URL}/grade-group`,
     grades: `${API_URL}/grades`,
     gradesByGradeGroup: (id: string) => `${API_URL}/grades/grade-group/${id}`,

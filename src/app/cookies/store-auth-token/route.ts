@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     (await cookies()).set({
         name: JWT_TOKEN,
         value: token,
-        httpOnly: true,
+        httpOnly: false,
         secure: false,
         sameSite: 'lax', // for local dev
         path: '/',

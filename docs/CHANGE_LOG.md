@@ -1,5 +1,472 @@
 # Change Log
 
+## Student Exam Broken Image Fallback
+
+### Feature Name
+
+Question Image Fallback State
+
+### What Was Changed
+
+* Added failed-image tracking for question and option images on the Student Examination page.
+* Added visible fallback text when a backend image URL is present but the file cannot be loaded.
+* Added stable question image area height so a broken image no longer collapses into a thin line.
+
+### Why It Was Changed
+
+* Backend can return an `image_url` whose file is unavailable.
+* The UI should not silently hide question media when a backend image request fails.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentExaminationPage/index.tsx`
+* `src/features/studentPortal/components/StudentExaminationPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Examination question image area.
+* Student Examination option image thumbnails.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Load a valid question image URL and confirm it displays.
+* Load a missing question image URL and confirm a visible fallback message appears.
+* Confirm option image thumbnails still render when their backend files exist.
+
+### Future Improvements
+
+* Ask the backend to guarantee that `image_url` only points to existing files or return a separate image availability field.
+
+## Student Exam Backend Image Loading Fix
+
+### Feature Name
+
+Question Image Display Fix
+
+### What Was Changed
+
+* Updated question, option, and preview images to load backend URLs with direct browser image tags.
+* Trimmed question image URLs before rendering so valid backend `image_url` values display reliably.
+* Accepted both `image_url` and `imageUrl` when normalizing backend question and option image data.
+
+### Why It Was Changed
+
+* Backend image URLs come from the private backend host and should be displayed directly in the browser.
+* Question-level images should display whenever the backend sends `image_url`.
+
+### Files Modified
+
+* `src/types/studentPortal.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/utils.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Examination question image.
+* Student Examination option image thumbnails.
+* Student Examination image preview modal.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Load a backend question with `image_url`.
+* Confirm the question image appears below the question text.
+* Click the question image and confirm preview opens.
+
+### Future Improvements
+
+* Proxy backend images through a controlled frontend image endpoint if the backend host should not be exposed to clients.
+
+## Student Exam Question And Option Image Preview
+
+### Feature Name
+
+Exam Image Rendering and Preview
+
+### What Was Changed
+
+* Preserved option-level `image_url` values from the backend exam questions response.
+* Displayed question images when the backend sends a question `image_url`.
+* Displayed option image thumbnails when an option sends `image_url`.
+* Added an image preview modal for question and option images.
+* Kept option row selection behavior stable while allowing image clicks to preview instead of selecting accidentally.
+* Added responsive image sizing so option rows do not crash or stretch on mobile and desktop.
+
+### Why It Was Changed
+
+* Backend questions can now include images at both question and option level.
+* Students need to inspect images clearly before choosing an answer.
+
+### Files Modified
+
+* `src/types/studentPortal.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/utils.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/index.tsx`
+* `src/features/studentPortal/components/StudentExaminationPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Examination page.
+* Question and option rendering.
+* Image preview modal.
+
+### APIs Affected
+
+* Uses backend `image_url` fields already returned by `POST /api/v1/students/exam/questions`.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Load a question with a question-level image and confirm it renders.
+* Load options with image URLs and confirm thumbnails render inside option rows.
+* Click question and option images and confirm the preview modal opens.
+* Click normal option row space and confirm the answer is still selected.
+* Check mobile width to confirm image thumbnails do not overflow the option card.
+
+### Future Improvements
+
+* Add a zoom control inside the preview modal if students need to inspect detailed diagrams.
+
+## Space Mission Balloon Answer Gameplay
+
+### Feature Name
+
+Galaxy Balloon Answer Game
+
+### What Was Changed
+
+* Reworked the Space Mission question interaction into a balloon-burst game.
+* Answers now appear directly on colorful floating balloons inside a galaxy playfield.
+* Clicking or keyboard-activating a balloon immediately bursts it and checks the answer.
+* Added selected, floating, hover, focus, and burst animation states.
+* Improved the mission question area with brighter game-style colors and stronger readable typography.
+* Kept the existing missions, timer, pause menu, rewards, progress tracking, and dashboard navigation.
+
+### Why It Was Changed
+
+* The previous mission screen felt like a regular quiz.
+* The student experience should feel like a real gamified activity while still answering questions.
+
+### Files Modified
+
+* `src/features/studentPortal/components/SpaceMissionGamePage/index.tsx`
+* `src/features/studentPortal/components/SpaceMissionGamePage/styles.module.scss`
+* `src/features/studentPortal/hooks/useSpaceMissionGame.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Space Mission game mission screen.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Open `/student/space-mission`.
+* Start a mission and confirm answers appear on floating balloons.
+* Click a balloon and confirm it bursts before showing correct or incorrect feedback.
+* Use keyboard focus and Enter/Space on a balloon to confirm accessibility still works.
+* Confirm Continue, rewards, timer, pause, restart, and dashboard actions still work.
+
+### Future Improvements
+
+* Add sound effects for balloon burst and correct/incorrect answers when audio assets are approved.
+* Add backend-provided game questions when available.
+
+## Student Examination Dynamic Header Name
+
+### Feature Name
+
+Dynamic Examination Student Name
+
+### What Was Changed
+
+* Removed the static `John Doe` label from the Student Examination header.
+* The header now reads the logged-in student's details from the existing client user cookie.
+* The display name uses `fullName`, then `firstName lastName`, then `username`, and finally `Student` as a fallback.
+
+### Why It Was Changed
+
+* The examination header should show the actual logged-in student instead of mock text.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentExaminationPage/constant.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Examination page header.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as a student and open `/student/examination`.
+* Confirm the header shows the logged-in student's name from cookies.
+* Confirm the header falls back to `Student` if no name details are available.
+
+### Future Improvements
+
+* Use backend exam session metadata for the student display name if the exam API returns it later.
+
+## Student Exam Questions Backend Integration
+
+### Feature Name
+
+Backend Student Exam Questions
+
+### What Was Changed
+
+* Updated the student exam questions route to POST to the backend question API.
+* Added the backend `/students/exam/questions` route configuration to the student portal service flow.
+* The examination page now sends `{ studentId, termId: 1 }`, with `studentId` read from the logged-in student details.
+* Mapped backend question records into the existing examination page question model.
+* Added support for backend HTML in instruction, stimulus, question text, and option text.
+* Sanitized backend HTML before rendering it on the examination page.
+* Added support for backend question images using the existing Next.js image configuration.
+* Kept the existing timer, answer state, question palette, navigation, and submit behavior unchanged.
+
+### Why It Was Changed
+
+* Student examination questions now come from the real backend API instead of the old mock response.
+* The UI must display backend-provided rich question content correctly.
+
+### Files Modified
+
+* `src/app/api/student/exam/questions/route.ts`
+* `src/services/studentPortal/studentPortal.service.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/utils.ts`
+* `src/features/studentPortal/components/StudentExaminationPage/index.tsx`
+* `src/features/studentPortal/components/StudentExaminationPage/styles.module.scss`
+* `src/types/studentPortal.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Examination page.
+* Student examination API route.
+* Student portal service layer.
+
+### APIs Affected
+
+* Browser route: `POST /api/student/exam/questions`.
+* Backend route: `POST /api/v1/students/exam/questions`.
+* Backend request body: `{ studentId, termId }`.
+
+### Any Breaking Changes
+
+* The student examination page now expects backend question records when the route receives a payload.
+* The local route method changed from GET to POST for real question loading.
+
+### Testing Considerations
+
+* Login as a student and start the examination.
+* Confirm `/api/student/exam/questions` is called with `{ studentId, termId: 1 }`.
+* Confirm the backend receives the logged-in user's bearer token through the internal route.
+* Confirm instruction, stimulus, question text, option HTML, and question image render correctly.
+* Confirm selecting options, palette states, timer, refresh restore, and submit still work.
+
+### Future Improvements
+
+* Replace default `termId: 1` with the assigned term from the backend when that data is available.
+* Add backend-provided exam title, duration, and total question metadata when the API returns it.
+
+## Space Mission Student Game
+
+### Feature Name
+
+Space Mission Educational Game
+
+### What Was Changed
+
+* Added a new Student Portal game route at `/student/space-mission`.
+* Added a Space Mission game page with intro, briefing, galaxy map, missions, rewards, pause menu, and competency report.
+* Added reusable game constants, types, utilities, and hook logic.
+* Added local progress persistence for completed planets, XP, coins, stars, crystals, badges, accuracy, and competency scores.
+* Updated the Student Dashboard so Start Examination shows only when the exam is enabled.
+* Added Play Space Mission when Start Examination is disabled.
+* Added dashboard return behavior for Exit and mission completion actions.
+
+### Why It Was Changed
+
+* Students need an educational activity when the exam cannot be started.
+* Space Mission gives students a competency-based activity for reasoning, memory, sequencing, mathematics, and decision-making.
+
+### Files Modified
+
+* `src/app/student/space-mission/page.tsx`
+* `src/features/studentPortal/index.ts`
+* `src/features/studentPortal/components/SpaceMissionGamePage/index.tsx`
+* `src/features/studentPortal/components/SpaceMissionGamePage/styles.module.scss`
+* `src/features/studentPortal/components/SpaceMissionGamePage/constants.ts`
+* `src/features/studentPortal/components/SpaceMissionGamePage/types.ts`
+* `src/features/studentPortal/components/SpaceMissionGamePage/utils.ts`
+* `src/features/studentPortal/hooks/useSpaceMissionGame.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/index.tsx`
+* `src/features/studentPortal/components/StudentDashboardPage/constant.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Student Portal game experience.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Confirm Start Examination appears when the exam is enabled.
+* Confirm Play Space Mission appears when Start Examination is disabled.
+* Open `/student/space-mission`, complete missions, exit, and verify navigation returns to `/student/dashboard`.
+* Verify progress persists after returning to the game.
+
+### Future Improvements
+
+* Add real audio assets and richer canvas-based mini games when approved assets are available.
+* Replace static mission content with backend-provided competency missions if needed.
+
+## Student Exam Check Code Optimization
+
+### Feature Name
+
+Student Dashboard Exam Check Cleanup
+
+### What Was Changed
+
+* Removed unused duplicate student exam-check helper and hook files.
+* Added `subjectId: 1` to the shared exam-check payload context.
+* Removed unused returned values from the Student Dashboard hook.
+* Reused a normalized backend status value inside the hook instead of recalculating it.
+
+### Why It Was Changed
+
+* The working exam-check flow had duplicate unused code and a payload constant that did not fully reflect the backend contract.
+* The cleanup keeps the current behavior while making the dashboard code easier to maintain.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/studentExam.ts`
+* `src/features/studentPortal/hooks/useCheckExam.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+
+### APIs Affected
+
+* Student exam-check payload now consistently includes `studentId`, `termId`, and `subjectId`.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as a student and confirm the Start Examination button still follows the backend status.
+* Confirm the exam-check request includes `subjectId: 1`.
+
+### Future Improvements
+
+* Replace hardcoded term and subject IDs with assigned exam values when available.
+
+## Client Token Access For Student Exam Check
+
+### Feature Name
+
+Client-Side Exam Check Token Access
+
+### What Was Changed
+
+* Updated auth token cookie storage so `x_tok` can be read by client-side code.
+* Added a guard before the Student Dashboard exam check API call so it does not send `Bearer undefined`.
+* Restored the root `proxy.ts` entry and defined its `config` locally for Next.js static analysis.
+* Removed stale server-side dashboard exam-check prefetch so the dashboard uses the current client-side flow.
+
+### Why It Was Changed
+
+* The Student Dashboard exam check is currently implemented as a client-side backend call and needs access to the JWT token.
+* The token was previously stored as an HttpOnly cookie, which cannot be read by `js-cookie`.
+
+### Files Modified
+
+* `src/app/api/store-auth-token/route.ts`
+* `src/app/cookies/store-auth-token/route.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/app/student/dashboard/page.tsx`
+* `proxy.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard exam availability check.
+* Login token storage.
+* Global route proxy entry.
+
+### APIs Affected
+
+* `POST /api/store-auth-token`
+* `POST /cookies/store-auth-token`
+
+### Any Breaking Changes
+
+* The `x_tok` cookie is now readable by client-side JavaScript.
+
+### Testing Considerations
+
+* Login again so the token cookie is rewritten with the new settings.
+* Confirm `Cookies.get('x_tok')` returns a token on the Student Dashboard.
+* Confirm the exam check request sends `Authorization: Bearer <token>`.
+
+### Future Improvements
+
+* Prefer a server-side proxy route for authenticated backend calls if HttpOnly token protection is required again.
+
 ## Student Start Exam Backend Check
 
 ### Feature Name

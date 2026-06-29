@@ -8,6 +8,7 @@ import {
     ExamQuestionsResponse,
     SaveAnswerPayload,
     StudentExamCheckPayload,
+    StudentExamQuestionsPayload,
     StudentProfile,
     SubmitExamPayload,
 } from '@/types/studentPortal';
@@ -441,7 +442,20 @@ export const getStudentProfile = async () => buildMockResult(await buildStudentP
 
 export const getExamInstructions = async () => buildMockResult(MOCK_EXAM_INSTRUCTIONS);
 
-export const getExamQuestions = async () => buildMockResult(MOCK_EXAM_QUESTIONS);
+export const getExamQuestions = async (payload?: StudentExamQuestionsPayload) => {
+    if (!payload) {
+        return buildMockResult(MOCK_EXAM_QUESTIONS);
+    }
+
+    return serverApi({
+        url: API_ROUTES.studentExamQuestions,
+        method: 'POST',
+        headers: {
+            accept: 'application/json',
+        },
+        body: payload,
+    });
+};
 
 export const checkStudentExamStatus = async (payload: StudentExamCheckPayload) =>
     serverApi({
