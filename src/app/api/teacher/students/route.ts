@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { serverApiResponse } from '@/lib/serverApi';
 import { getStudents, createStudent } from '@/services/student/student.service';
-import { StudentFormValues } from '@/types/student';
+import { CreateStudentPayload, StudentFormValues } from '@/types/student';
 
 export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
@@ -12,27 +12,24 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const payload = (await request.json()) as StudentFormValues;
-    
-    const [firstName, ...rest] = payload.studentName.split(' ');
-    const lastName = rest.join(' ');
+    const [firstName, ...rest] = payload.studentName.trim().split(/\s+/);
 
-    const mappedPayload = {
-        firstName,
-        lastName,
-        gradeId: Number(String(payload.grade).replace('Grade ', '')),
-        section: payload.section,
-        fatherName: payload.fatherName,
-        motherName: payload.motherName,
+    const mappedPayload: CreateStudentPayload = {
+        firstName: firstName || '',
+        lastName: rest.join(' '),
+        parentMobile: payload.parentMobile.trim(),
+        email: payload.email.trim(),
+        rollNo: payload.rollNo.trim(),
+        gradeId: Number(String(payload.grade).replace(/\D/g, '')),
+        section: payload.section.replace(/^Section\s+/i, '').trim().toLowerCase(),
+        udisecode: payload.udisecode.trim(),
+        fatherName: payload.fatherName.trim(),
+        motherName: payload.motherName.trim(),
         gender: payload.gender,
         dob: payload.dateOfBirth,
-        parentMobile: payload.parentMobile,
-        email: payload.email,
-        rollNo: payload.rollNo,
-        udisecode: payload.udisecode,
-        address: payload.address
+        address: payload.address.trim(),
     };
 
-    // Note: status is set sequentially if needed, but usually default is Active on creation
-    const response = await createStudent(mappedPayload as any);
+    const response = await createStudent(mappedPayload);
     return serverApiResponse(response);
 }

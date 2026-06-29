@@ -1,6 +1,6 @@
 import { API_ROUTES } from '@/config/apiRoutes';
 import { serverApi } from '@/lib/serverApi';
-import { StudentFormValues, StudentStatus } from '@/types/student';
+import { CreateStudentPayload, StudentFormValues, StudentStatus } from '@/types/student';
 
 export const getTeacherDashboard = async () =>
     serverApi({
@@ -13,7 +13,7 @@ export const getStudents = async (searchParams: URLSearchParams) =>
         searchParams,
     });
 
-export const createStudent = async (payload: StudentFormValues) =>
+export const createStudent = async (payload: CreateStudentPayload) =>
     serverApi({
         url: API_ROUTES.teacherStudents,
         method: 'POST',
@@ -42,7 +42,7 @@ export const updateStudentStatus = async (studentId: string, status: StudentStat
 
 export const uploadStudents = async (payload: FormData) =>
     serverApi({
-        url: `${API_ROUTES.teacherStudents}/upload`,
+        url: API_ROUTES.teacherStudentsBulk,
         method: 'POST',
         body: payload,
     });

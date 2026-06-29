@@ -1,5 +1,301 @@
 # Change Log
 
+## Dynamic Student Upload Flow
+
+### Feature Name
+
+Backend-Driven Student Upload
+
+### What Was Changed
+
+* Removed hardcoded frontend CSV header validation from the Student Upload modal.
+* The upload button now enables when a file is selected and lets the backend validate file content.
+* Student upload no longer falls back to mock success when the API fails.
+* Backend upload failures are surfaced to the teacher instead of being hidden.
+* Upload success messages now use backend response details when available.
+
+### Why It Was Changed
+
+* Student upload should be dynamic and controlled by the backend upload API.
+* Frontend-only validation could block valid backend templates or hide real backend errors.
+
+### Files Modified
+
+* `src/types/student.ts`
+* `src/features/teacherPortal/components/StudentManagementPage/components/UploadStudentsModal/index.tsx`
+* `src/features/teacherPortal/components/StudentManagementPage/utils.ts`
+* `src/features/teacherPortal/hooks/useStudentManagement.ts`
+* `src/features/teacherPortal/components/StudentManagementPage/constant.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Teacher Student Management upload modal.
+* Teacher Student Management upload mutation.
+
+### APIs Affected
+
+* Browser route: `POST /api/teacher/students/upload`.
+* Backend route: `POST /api/v1/students/bulk`.
+
+### Any Breaking Changes
+
+* Upload errors now show as real errors instead of mock success.
+
+### Testing Considerations
+
+* Select a CSV file and confirm Import Students enables.
+* Upload a valid backend template and confirm backend success message appears.
+* Upload an invalid file and confirm backend error appears.
+* Confirm the student list refreshes after upload settles.
+
+### Future Improvements
+
+* Display backend row-level validation errors inside the modal if the backend returns structured row errors.
+
+## Teacher Bulk Student Upload Integration
+
+### Feature Name
+
+Bulk Student Upload API
+
+### What Was Changed
+
+* Added backend route configuration for `POST /api/v1/students/bulk`.
+* Replaced the mock `/api/teacher/students/upload` response with a real multipart forwarding route.
+* The upload route now validates that a file is present before calling the backend.
+* The selected file is forwarded as `file` in `FormData`, matching the backend curl contract.
+* Upload continues to use the existing internal frontend route and server-side auth forwarding.
+
+### Why It Was Changed
+
+* Teacher Student Management bulk upload must call the real backend API instead of returning mock success.
+
+### Files Modified
+
+* `src/config/apiRoutes.ts`
+* `src/services/student/student.service.ts`
+* `src/app/api/teacher/students/upload/route.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Teacher Student Management upload modal.
+* Teacher student upload API route.
+
+### APIs Affected
+
+* Browser route: `POST /api/teacher/students/upload`.
+* Backend route: `POST /api/v1/students/bulk`.
+* Multipart field: `file`.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Open Teacher Student Management and upload a CSV file.
+* Confirm the browser calls `/api/teacher/students/upload`.
+* Confirm the backend receives `multipart/form-data` with `file`.
+* Confirm upload success refreshes the student list.
+
+### Future Improvements
+
+* Align frontend CSV preview validation with the final backend upload template.
+
+## Student Form Required Section Indicator
+
+### Feature Name
+
+Required Section Field
+
+### What Was Changed
+
+* Added required-field marker support for Student form dropdown labels.
+* Section now displays as a required field in the Add/Edit Student modal.
+* Existing section validation remains active, so the submit button stays disabled until section is selected.
+
+### Why It Was Changed
+
+* Teachers need to clearly see that Section is mandatory before adding a student.
+
+### Files Modified
+
+* `src/features/teacherPortal/components/StudentManagementPage/components/StudentFormModal/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Teacher Student Management Add/Edit Student modal.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Open Add Student modal.
+* Confirm Section label shows a required marker.
+* Confirm Add Student remains disabled until Section is selected.
+
+### Future Improvements
+
+* Add a shared required-label pattern to the reusable Dropdown component.
+
+## Teacher Add Student Backend Payload
+
+### Feature Name
+
+Backend Add Student Integration
+
+### What Was Changed
+
+* Added a typed backend create-student payload matching `POST /api/v1/students`.
+* Updated the internal Teacher Student create route to map form values into backend fields.
+* The create payload now sends `firstName`, `lastName`, `parentMobile`, `email`, `rollNo`, `gradeId`, `section`, `udisecode`, `fatherName`, `motherName`, `gender`, `dob`, and `address`.
+* Removed `status` from the create-student backend payload because the provided backend contract does not include it.
+* Fixed Add Student button validation so optional fields do not keep the button disabled.
+
+### Why It Was Changed
+
+* The Add Student form must submit the exact backend API contract.
+* Optional fields should not prevent teachers from creating a student.
+
+### Files Modified
+
+* `src/types/student.ts`
+* `src/app/api/teacher/students/route.ts`
+* `src/services/student/student.service.ts`
+* `src/features/teacherPortal/components/StudentManagementPage/components/StudentFormModal/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Teacher Student Management add/edit modal.
+* Teacher Student Management create API route.
+
+### APIs Affected
+
+* Browser route: `POST /api/teacher/students`.
+* Backend route: `POST /api/v1/students`.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Open Teacher Student Management and click Add Student.
+* Fill only mandatory fields and confirm the Add Student button enables.
+* Submit and confirm the backend receives the expected payload.
+* Confirm optional fields can be blank.
+
+### Future Improvements
+
+* Replace the single `studentName` input with separate first and last name fields if the backend makes both mandatory.
+
+## Typecheck Stabilization For Student List Work
+
+### Feature Name
+
+Build Verification Stabilization
+
+### What Was Changed
+
+* Added the missing optional `termId` field to `QuestionListFilters`.
+* Aligned teacher upload response handling with the typed API response shape.
+
+### Why It Was Changed
+
+* Full TypeScript verification and production build were blocked by existing type mismatches outside the student list integration.
+
+### Files Modified
+
+* `src/types/questionGenerator.ts`
+* `src/features/teacherManagement/components/TeacherManagementPage/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Question Generator filters.
+* Admin Teacher upload handling.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Re-run TypeScript and production build verification.
+
+### Future Improvements
+
+* Replace broad upload response types with shared backend response DTOs.
+
+## Teacher Student List Backend Integration
+
+### Feature Name
+
+Dynamic Teacher Student List
+
+### What Was Changed
+
+* Updated the Teacher Student Management list backend target to `/api/v1/students`.
+* Kept the browser-facing route as `/api/teacher/students` so the existing UI architecture remains unchanged.
+* Normalized student list filters to match the backend query contract: `page`, `limit`, `gradeId`, `section`, and `status`.
+* Converted section filter values such as `Section A` into backend values such as `a`.
+* Expanded student list response normalization to support common backend pagination shapes.
+* Mapped backend student fields into the existing table model used by the Teacher Student Management page.
+
+### Why It Was Changed
+
+* Teacher Student Management should load real students from the backend API instead of relying only on mock/fallback data.
+* The frontend route and table should stay consistent with the current project structure.
+
+### Files Modified
+
+* `src/config/apiRoutes.ts`
+* `src/features/teacherPortal/components/StudentManagementPage/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Teacher Student Management page.
+* Student list table.
+* Student list filters and pagination.
+
+### APIs Affected
+
+* Browser route: `GET /api/teacher/students`.
+* Backend route: `GET /api/v1/students`.
+* Query params: `page`, `limit`, `gradeId`, `section`, `status`, and optional `search`.
+
+### Any Breaking Changes
+
+* None. The UI still calls the same internal frontend route.
+
+### Testing Considerations
+
+* Login as a teacher and open `/teacher/students`.
+* Confirm the browser calls `/api/teacher/students`.
+* Confirm the backend receives `/api/v1/students?page=1&limit=10&gradeId=...&section=...&status=...`.
+* Confirm the table shows backend student rows.
+* Confirm filters and pagination update the query.
+
+### Future Improvements
+
+* Remove the fallback mock list after backend availability is stable for all teacher student workflows.
+* Replace default fallback field mapping with exact backend DTO types when the final response contract is frozen.
+
 ## Student Exam Broken Image Fallback
 
 ### Feature Name

@@ -36,6 +36,22 @@ export interface StudentFormValues {
     address: string;
 }
 
+export interface CreateStudentPayload {
+    firstName: string;
+    lastName: string;
+    parentMobile: string;
+    email: string;
+    rollNo: string;
+    gradeId: number;
+    section: string;
+    udisecode: string;
+    fatherName: string;
+    motherName: string;
+    gender: string;
+    dob: string;
+    address: string;
+}
+
 export interface StudentListFilters {
     name: string;
     grade: string;
@@ -69,6 +85,13 @@ export interface StudentUploadPreview {
     totalRecords: number;
     successCount: number;
     validationErrors: StudentUploadValidationError[];
+}
+
+export interface UploadStudentsResponse {
+    successCount?: number;
+    failedCount?: number;
+    errors?: string[];
+    message?: string;
 }
 
 export interface UploadStudentsPayload {

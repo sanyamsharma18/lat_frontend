@@ -66,12 +66,28 @@ const STUDENT_FORM_FIELDS: StudentFormField[] = [
     'address',
 ];
 
+const REQUIRED_STUDENT_FORM_FIELDS: StudentFormField[] = [
+    'studentName',
+    'grade',
+    'section',
+    'fatherName',
+    'motherName',
+    'gender',
+    'dateOfBirth',
+    'parentMobile',
+    'udisecode',
+];
+
 const validateField = (name: StudentFormField, value: string) => {
     const rule = STUDENT_VALIDATION[name];
     const trimmedValue = value.trim();
 
-    if (!trimmedValue) {
+    if (!trimmedValue && REQUIRED_STUDENT_FORM_FIELDS.includes(name)) {
         return rule.requiredMessage;
+    }
+
+    if (!trimmedValue) {
+        return '';
     }
 
     if (
@@ -86,6 +102,9 @@ const validateField = (name: StudentFormField, value: string) => {
 
 const getOption = (options: StudentOption[], value?: string) =>
     options.find((option) => option.id === value) ?? null;
+
+const getFieldLabel = (fieldName: StudentFormField, label: string) =>
+    REQUIRED_STUDENT_FORM_FIELDS.includes(fieldName) ? `${label} *` : label;
 
 const StudentFormModal = ({
     open,
@@ -105,7 +124,7 @@ const StudentFormModal = ({
 
     const isFormValid = useMemo(
         () =>
-            STUDENT_FORM_FIELDS.every((field) => formValues[field]?.trim()) &&
+            REQUIRED_STUDENT_FORM_FIELDS.every((field) => formValues[field]?.trim()) &&
             Object.values(errorMessages).every((message) => !message),
         [errorMessages, formValues],
     );
@@ -201,7 +220,7 @@ const StudentFormModal = ({
         <div className={styles.fieldWithError}>
             <Dropdown
                 label={placeholder}
-                dropDownTitle={label}
+                dropDownTitle={getFieldLabel(fieldName, label)}
                 options={options}
                 selectValue='name'
                 value={getOption(options, formValues[fieldName])}

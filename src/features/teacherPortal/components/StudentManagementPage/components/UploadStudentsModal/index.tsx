@@ -22,28 +22,12 @@ interface UploadStudentsModalProps {
     onDownloadTemplate: () => void;
 }
 
-const REQUIRED_COLUMNS = [
-    'Student Name',
-    'Grade',
-    'Section',
-    'Father Name',
-    'Mother Name',
-    'Gender',
-    'DOB',
-    'Status',
-];
-
-const VALID_GENDERS = ['Male', 'Female', 'Other'];
-const VALID_STATUS = ['Active', 'Inactive'];
-
 const EMPTY_PREVIEW: StudentUploadPreview = {
     fileName: '',
     totalRecords: 0,
     successCount: 0,
     validationErrors: [],
 };
-
-const isValidDate = (value: string) => !Number.isNaN(Date.parse(value));
 
 const buildPreview = async (file: File): Promise<StudentUploadPreview> => {
     if (!file.name.toLowerCase().endsWith('.csv')) {
@@ -56,54 +40,13 @@ const buildPreview = async (file: File): Promise<StudentUploadPreview> => {
     }
 
     const content = await file.text();
-    const [headerLine = '', ...rows] = content.split(/\r?\n/).filter(Boolean);
-    const headers = headerLine.split(',').map((header) => header.trim());
-    const missingColumns = REQUIRED_COLUMNS.filter((column) => !headers.includes(column));
-    const validationErrors = missingColumns.map((column) => ({
-        row: 1,
-        message: `Missing column: ${column}`,
-    }));
-    const seenStudents = new Set<string>();
-
-    rows.forEach((row, index) => {
-        const rowNumber = index + 2;
-        const values = row.split(',').map((value) => value.trim());
-        const record = Object.fromEntries(
-            headers.map((header, itemIndex) => [header, values[itemIndex] ?? '']),
-        );
-        const studentKey =
-            `${record['Student Name']}-${record.Grade}-${record.Section}`.toLowerCase();
-
-        REQUIRED_COLUMNS.forEach((column) => {
-            if (!record[column]) {
-                validationErrors.push({ row: rowNumber, message: `${column} is required` });
-            }
-        });
-
-        if (record.Gender && !VALID_GENDERS.includes(record.Gender)) {
-            validationErrors.push({ row: rowNumber, message: 'Invalid gender' });
-        }
-
-        if (record.Status && !VALID_STATUS.includes(record.Status)) {
-            validationErrors.push({ row: rowNumber, message: 'Invalid status' });
-        }
-
-        if (record.DOB && !isValidDate(record.DOB)) {
-            validationErrors.push({ row: rowNumber, message: 'Invalid date of birth' });
-        }
-
-        if (seenStudents.has(studentKey)) {
-            validationErrors.push({ row: rowNumber, message: 'Duplicate student in file' });
-        }
-
-        seenStudents.add(studentKey);
-    });
+    const [, ...rows] = content.split(/\r?\n/).filter(Boolean);
 
     return {
         fileName: file.name,
         totalRecords: rows.length,
-        successCount: Math.max(rows.length - validationErrors.length, 0),
-        validationErrors,
+        successCount: rows.length,
+        validationErrors: [],
     };
 };
 
@@ -139,11 +82,6 @@ const UploadStudentsModal = ({
 
         if (!selectedFile) {
             setErrorMessage(UPLOAD_STUDENT_TEXT.validationMessage);
-            return;
-        }
-
-        if (preview.validationErrors.length) {
-            setErrorMessage('Resolve validation errors before import.');
             return;
         }
 
@@ -219,19 +157,8 @@ const UploadStudentsModal = ({
                                     Success Count: {preview.successCount}
                                 </Text>
                                 <Text font={[FontType.text_xs_regular, FontType.text_xs_regular]}>
-                                    Validation Errors: {preview.validationErrors.length}
+                                    Backend will validate file content during upload.
                                 </Text>
-                            </div>
-                            <div className={styles.errorList}>
-                                {preview.validationErrors.slice(0, 5).map((error) => (
-                                    <Text
-                                        key={`${error.row}-${error.message}`}
-                                        font={[FontType.text_xs_regular, FontType.text_xs_regular]}
-                                        color='red-500'
-                                    >
-                                        Row {error.row}: {error.message}
-                                    </Text>
-                                ))}
                             </div>
                         </div>
                     ) : null}
@@ -260,9 +187,7 @@ const UploadStudentsModal = ({
                         label={UPLOAD_STUDENT_TEXT.submitButton}
                         variant={ButtonVariant.SOLID}
                         color='white'
-                        disabled={
-                            !selectedFile || preview.validationErrors.length > 0 || isUploading
-                        }
+                        disabled={!selectedFile || isUploading}
                         loader={isUploading}
                     />
                 </div>

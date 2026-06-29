@@ -11,6 +11,7 @@ import {
     StudentListFilters,
     StudentListResponse,
     StudentStatus,
+    UploadStudentsResponse,
     UploadStudentsPayload,
 } from '@/types/student';
 
@@ -105,16 +106,23 @@ const normalizeStudentListResponse = (
 ): StudentListResponse => {
     let data = [];
     let total = 0;
+    const responseBody = response?.response ?? response;
 
-    if (response?.response?.data && Array.isArray(response.response.data)) {
-        data = response.response.data;
-        total = response.response.total || data.length;
-    } else if (response?.data && Array.isArray(response.data)) {
-        data = response.data;
-        total = response.total || data.length;
-    } else if (response?.response && Array.isArray(response.response)) {
-        data = response.response;
-        total = response.total || data.length;
+    if (responseBody?.data && Array.isArray(responseBody.data)) {
+        data = responseBody.data;
+        total = responseBody.total || responseBody.count || data.length;
+    } else if (responseBody?.students && Array.isArray(responseBody.students)) {
+        data = responseBody.students;
+        total = responseBody.total || responseBody.count || data.length;
+    } else if (responseBody?.items && Array.isArray(responseBody.items)) {
+        data = responseBody.items;
+        total = responseBody.total || responseBody.count || data.length;
+    } else if (responseBody?.rows && Array.isArray(responseBody.rows)) {
+        data = responseBody.rows;
+        total = responseBody.total || responseBody.count || data.length;
+    } else if (Array.isArray(responseBody)) {
+        data = responseBody;
+        total = data.length;
     } else if (Array.isArray(response)) {
         data = response;
         total = data.length;
@@ -135,17 +143,24 @@ const normalizeStudentListResponse = (
     };
 
     const students: Student[] = data.map((item: any) => ({
-        id: String(item.userId || Math.random()),
-        studentId: item.rollNo || `STU-${item.userId}`,
-        studentName: `${item.firstName || ''} ${item.lastName || ''}`.trim(),
-        grade: String(item.gradeId || ''),
+        id: String(item.id || item.userId || Math.random()),
+        studentId: item.studentId || item.rollNo || item.username || `STU-${item.id || item.userId}`,
+        studentName:
+            item.studentName ||
+            item.fullName ||
+            `${item.firstName || ''} ${item.lastName || ''}`.trim() ||
+            item.username ||
+            '-',
+        grade: item.gradeName || item.grade || String(item.gradeId || ''),
         section: item.section || '',
         fatherName: item.fatherName || '',
         motherName: item.motherName || '',
         gender: item.gender || 'Other',
-        dateOfBirth: formatDateStr(item.dob),
-        status: item.status === 1 ? 'Active' : 'Inactive',
-        createdDate: item.createdAt || '',
+        dateOfBirth: formatDateStr(item.dob || item.dateOfBirth),
+        status: item.status === 1 || item.status === 'Active' || item.status === true
+            ? 'Active'
+            : 'Inactive',
+        createdDate: item.createdAt || item.createdDate || '',
         parentMobile: item.parentMobile || '',
         email: item.email || '',
         rollNo: item.rollNo || '',
@@ -160,6 +175,15 @@ const normalizeStudentListResponse = (
         limit: filters.limit,
     };
 };
+
+const normalizeGradeFilter = (grade: string) => {
+    const match = grade.match(/\d+/);
+
+    return match ? match[0] : grade || null;
+};
+
+const normalizeSectionFilter = (section: string) =>
+    section.replace(/^Section\s+/i, '').trim().toLowerCase() || null;
 
 const buildFallbackStudent = (payload: StudentFormValues): Student => {
     const id = getNextStudentId();
@@ -187,8 +211,8 @@ const buildFallbackStudent = (payload: StudentFormValues): Student => {
 export const getStudentList = async (filters: StudentListFilters) => {
     const queryParams: QueryParamType = {
         search: filters.name || null,
-        gradeId: filters.grade || null,
-        section: filters.section || null,
+        gradeId: normalizeGradeFilter(filters.grade),
+        section: normalizeSectionFilter(filters.section),
         status: filters.status || null,
         page: String(filters.page),
         limit: String(filters.limit),
@@ -280,17 +304,23 @@ export const uploadStudents = async ({ file }: UploadStudentsPayload) => {
     const body = new FormData();
     body.append('file', file);
 
-    return callApi<ApiResponse<unknown>>({
+    return callApi<ApiResponse<UploadStudentsResponse>>({
         url: ServerSideRoutes.TEACHER_STUDENTS_UPLOAD,
         method: HTTP_METHOD.POST,
         body,
-    })
-        .then(assertSuccessfulResponse)
-        .catch((error) => {
-            console.warn('Upload students API failed. Using mock success fallback.', error);
+    }).then((response) => {
+        assertSuccessfulResponse(response);
 
-            return { status: true, message: 'Students uploaded successfully' };
-        });
+        const uploadResult = response.response;
+        if (uploadResult?.failedCount && uploadResult.failedCount > 0) {
+            const errorMessages = uploadResult.errors?.join('\n') || 'Upload failed';
+            throw new Error(
+                `Upload completed with ${uploadResult.failedCount} failure(s):\n${errorMessages}`,
+            );
+        }
+
+        return response;
+    });
 };
 
 export const downloadStudentUploadTemplate = async () =>

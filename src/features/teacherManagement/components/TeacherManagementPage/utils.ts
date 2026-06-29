@@ -141,8 +141,8 @@ export const uploadTeachers = async ({ file, sheetUrl }: UploadTeachersPayload) 
 
     assertSuccessfulResponse(response);
 
-    const data = response?.response?.data;
-    if (data?.failedCount > 0) {
+    const data = response?.response;
+    if (data && data.failedCount > 0) {
         const errorMessages = data.errors?.join('\n') || 'Upload failed';
         throw new Error(`Upload completed with ${data.failedCount} failure(s):\n${errorMessages}`);
     }

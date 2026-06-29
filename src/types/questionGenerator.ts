@@ -37,6 +37,7 @@ export interface QuestionListFilters {
     subject: string;
     competency: string;
     status: string;
+    termId?: string;
     page: number;
     limit: number;
 }

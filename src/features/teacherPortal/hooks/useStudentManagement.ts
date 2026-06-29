@@ -137,8 +137,16 @@ export const useStudentManagement = () => {
 
     const uploadStudentsMutation = useMutation({
         mutationFn: uploadStudents,
-        onSuccess: () => {
-            showToast({ message: 'Students uploaded successfully', type: 'success' });
+        onSuccess: (response) => {
+            const successCount = response.response?.successCount;
+            const message =
+                response.response?.message ||
+                response.message ||
+                (typeof successCount === 'number'
+                    ? `${successCount} students uploaded successfully`
+                    : 'Students uploaded successfully');
+
+            showToast({ message, type: 'success' });
             setIsUploadModalOpen(false);
             setPage(1);
         },

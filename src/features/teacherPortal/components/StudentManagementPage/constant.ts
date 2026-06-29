@@ -66,7 +66,7 @@ export const DELETE_STUDENT_TEXT = {
 
 export const UPLOAD_STUDENT_TEXT = {
     title: 'Upload Students',
-    description: 'Upload an Excel or CSV file with student details.',
+    description: 'Upload the backend student template file. Validation runs during upload.',
     fileLabel: 'Excel or CSV File',
     fileHint: 'Accepted formats: .xlsx, .csv',
     cancelButton: 'Cancel',
