@@ -1,5 +1,104 @@
 # Change Log
 
+## Student Exam Check Code Optimization
+
+### Feature Name
+
+Student Dashboard Exam Check Cleanup
+
+### What Was Changed
+
+* Removed unused duplicate student exam-check helper and hook files.
+* Added `subjectId: 1` to the shared exam-check payload context.
+* Removed unused returned values from the Student Dashboard hook.
+* Reused a normalized backend status value inside the hook instead of recalculating it.
+
+### Why It Was Changed
+
+* The working exam-check flow had duplicate unused code and a payload constant that did not fully reflect the backend contract.
+* The cleanup keeps the current behavior while making the dashboard code easier to maintain.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/studentExam.ts`
+* `src/features/studentPortal/hooks/useCheckExam.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+
+### APIs Affected
+
+* Student exam-check payload now consistently includes `studentId`, `termId`, and `subjectId`.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as a student and confirm the Start Examination button still follows the backend status.
+* Confirm the exam-check request includes `subjectId: 1`.
+
+### Future Improvements
+
+* Replace hardcoded term and subject IDs with assigned exam values when available.
+
+## Client Token Access For Student Exam Check
+
+### Feature Name
+
+Client-Side Exam Check Token Access
+
+### What Was Changed
+
+* Updated auth token cookie storage so `x_tok` can be read by client-side code.
+* Added a guard before the Student Dashboard exam check API call so it does not send `Bearer undefined`.
+* Restored the root `proxy.ts` entry and defined its `config` locally for Next.js static analysis.
+* Removed stale server-side dashboard exam-check prefetch so the dashboard uses the current client-side flow.
+
+### Why It Was Changed
+
+* The Student Dashboard exam check is currently implemented as a client-side backend call and needs access to the JWT token.
+* The token was previously stored as an HttpOnly cookie, which cannot be read by `js-cookie`.
+
+### Files Modified
+
+* `src/app/api/store-auth-token/route.ts`
+* `src/app/cookies/store-auth-token/route.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/app/student/dashboard/page.tsx`
+* `proxy.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard exam availability check.
+* Login token storage.
+* Global route proxy entry.
+
+### APIs Affected
+
+* `POST /api/store-auth-token`
+* `POST /cookies/store-auth-token`
+
+### Any Breaking Changes
+
+* The `x_tok` cookie is now readable by client-side JavaScript.
+
+### Testing Considerations
+
+* Login again so the token cookie is rewritten with the new settings.
+* Confirm `Cookies.get('x_tok')` returns a token on the Student Dashboard.
+* Confirm the exam check request sends `Authorization: Bearer <token>`.
+
+### Future Improvements
+
+* Prefer a server-side proxy route for authenticated backend calls if HttpOnly token protection is required again.
+
 ## Student Start Exam Backend Check
 
 ### Feature Name

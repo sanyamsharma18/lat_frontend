@@ -1,6 +1,8 @@
 import { ServerSideRoutes } from '@/constants/serverSideRoutes';
 import callApi from '@/lib/clientApi';
 
+import Cookies from 'js-cookie';
+
 import { StaleAndCacheTime } from '@/constants/appConstants';
 
 import { ApiResponse } from '@/types/api';
@@ -13,6 +15,8 @@ import {
 } from '@/types/studentPortal';
 
 import { QueryKeys } from '@/utils/queryKeys';
+import { API_ROUTES } from '@/config/apiRoutes';
+import { JWT_TOKEN } from '@/constants/authSession';
 
 export const studentProfileQueryKey = () => [QueryKeys.STUDENT_PROFILE] as const;
 
@@ -23,7 +27,6 @@ export const studentExamStatusQueryKey = (studentId?: string) =>
 
 const DEFAULT_EXAM_CONTEXT = {
     termId: 1,
-    subjectId: 1,
 };
 
 const assertSuccessfulResponse = <TResponse>(response: ApiResponse<TResponse>) => {
@@ -53,7 +56,13 @@ export const getExamInstructions = async () => {
 };
 
 export const getStudentExamStatus = async (studentId: string) => {
+    const token = Cookies.get(JWT_TOKEN);
+
     const numericStudentId = Number(studentId);
+
+    if (!token) {
+        throw new Error('Unable to verify student session');
+    }
 
     if (!Number.isFinite(numericStudentId) || numericStudentId <= 0) {
         throw new Error('Unable to identify logged-in student');
@@ -65,9 +74,12 @@ export const getStudentExamStatus = async (studentId: string) => {
     };
 
     const response = await callApi<ApiResponse<StudentExamCheckResponse>>({
-        url: ServerSideRoutes.STUDENT_EXAM_CHECK,
+        url: API_ROUTES.studentExamCheck,
         method: HTTP_METHOD.POST,
         body: payload,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
     });
 
     return assertSuccessfulResponse(response);

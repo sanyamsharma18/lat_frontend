@@ -54,7 +54,6 @@ export interface ExamQuestionsResponse {
 export interface StudentExamCheckPayload {
     studentId: number;
     termId: number;
-    subjectId: number;
 }
 
 export interface StudentExamCheckResponse {

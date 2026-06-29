@@ -13,7 +13,6 @@ import {
 import {
     EXAM_INSTRUCTIONS_AUTO_SHOWN_KEY,
     EXAM_INSTRUCTIONS_ACCEPTED_KEY,
-    STUDENT_DASHBOARD_TEXT,
 } from '../components/StudentDashboardPage/constant';
 import {
     examInstructionsQueryOptions,
@@ -46,6 +45,7 @@ export const useStudentDashboard = (
         ),
     );
     const examStatus = studentExamStatusQuery.data;
+    const normalizedExamStatus = normalizeExamStatus(examStatus?.status);
 
     useEffect(() => {
         const accepted = window.localStorage.getItem(EXAM_INSTRUCTIONS_ACCEPTED_KEY) === 'true';
@@ -71,7 +71,7 @@ export const useStudentDashboard = (
     };
 
     const handleStartExamination = () => {
-        if (normalizeExamStatus(examStatus?.status) !== AVAILABLE_EXAM_STATUS) {
+        if (normalizedExamStatus !== AVAILABLE_EXAM_STATUS) {
             studentExamStatusQuery.refetch();
             return;
         }
@@ -86,27 +86,12 @@ export const useStudentDashboard = (
     const isError = studentProfileQuery.isError || examInstructionsQuery.isError;
     const canStartExam =
         isInstructionsAccepted &&
-        normalizeExamStatus(examStatus?.status) === AVAILABLE_EXAM_STATUS &&
+        normalizedExamStatus === AVAILABLE_EXAM_STATUS &&
         !studentExamStatusQuery.isError;
-
-    const getExamStatusLabel = () => {
-        if (studentExamStatusQuery.isLoading || studentExamStatusQuery.isFetching) {
-            return STUDENT_DASHBOARD_TEXT.examStatusLoading;
-        }
-
-        if (studentExamStatusQuery.isError || !examStatus) {
-            return STUDENT_DASHBOARD_TEXT.examStatusUnavailable;
-        }
-
-        return examStatus.message || STUDENT_DASHBOARD_TEXT.examStatusUnavailable;
-    };
-
 
     return {
         canStartExam,
-        examStatus,
         examInstructionsQuery,
-        getExamStatusLabel,
         handleAcceptInstructions,
         handleOpenInstructions,
         handleStartExamination,

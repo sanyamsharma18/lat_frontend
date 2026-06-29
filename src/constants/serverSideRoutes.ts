@@ -16,7 +16,6 @@ export enum ServerSideRoutes {
     STUDENT_LOGIN = `${ServerSideRoutes.APP}/student/login`,
     STUDENT_PROFILE = `${ServerSideRoutes.APP}/student/profile`,
     STUDENT_EXAM_INSTRUCTIONS = `${ServerSideRoutes.APP}/student/exam/instructions`,
-    STUDENT_EXAM_CHECK = `${ServerSideRoutes.APP}/student/exam/check`,
     STUDENT_EXAM_QUESTIONS = `${ServerSideRoutes.APP}/student/exam/questions`,
     STUDENT_EXAM_SAVE_ANSWER = `${ServerSideRoutes.APP}/student/exam/save-answer`,
     STUDENT_EXAM_SUBMIT = `${ServerSideRoutes.APP}/student/exam/submit`,
