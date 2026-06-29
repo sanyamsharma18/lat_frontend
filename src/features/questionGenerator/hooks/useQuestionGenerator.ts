@@ -25,7 +25,7 @@ import {
     updateQuestion,
     getGradeGroups,
     getGradesByGradeGroup,
-    getSubjectsByGradeGroup,
+    getSubjectsByGrade,
     getCompetenciesList,
     generateQuestionImage,
     uploadQuestionImage,
@@ -142,9 +142,9 @@ export const useQuestionGenerator = () => {
     }));
 
     const subjectsQuery = useQuery({
-        queryKey: ['subjectsList', generateValues.gradeGroup],
-        queryFn: () => getSubjectsByGradeGroup(generateValues.gradeGroup),
-        enabled: !!generateValues.gradeGroup,
+        queryKey: ['subjectsList', generateValues.grade],
+        queryFn: () => getSubjectsByGrade(generateValues.grade),
+        enabled: !!generateValues.grade,
         staleTime: 5 * 60 * 1000,
     });
 
@@ -182,9 +182,9 @@ export const useQuestionGenerator = () => {
     }));
 
     const searchSubjectsQuery = useQuery({
-        queryKey: ['searchSubjectsList', selectedGradeGroupFilter?.id],
-        queryFn: () => getSubjectsByGradeGroup(selectedGradeGroupFilter?.id ?? ''),
-        enabled: !!selectedGradeGroupFilter?.id,
+        queryKey: ['searchSubjectsList', selectedGradeFilter?.id],
+        queryFn: () => getSubjectsByGrade(selectedGradeFilter?.id ?? ''),
+        enabled: !!selectedGradeFilter?.id,
         staleTime: 5 * 60 * 1000,
     });
 

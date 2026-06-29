@@ -27,6 +27,7 @@ export const API_ROUTES = {
     grades: `${API_URL}/grades`,
     gradesByGradeGroup: (id: string) => `${API_URL}/grades/grade-group/${id}`,
     subjectsByGradeGroup: (id: string) => `${API_URL}/subjects/grade-group/${id}`,
+    subjectsByGrade: (id: string) => `${API_URL}/subjects/grade/${id}`,
     competenciesList: `${API_URL}/competencies-list`,
     adminQuestions: `${API_URL}/questions`,
     generateQuestions: `${API_URL}/generate-batch`,

@@ -13,7 +13,7 @@ import { ButtonVariant, FontType } from '@/types/typographyCommon';
 import { Teacher, TeacherFormValues, GradeOption, SubjectOption } from '@/types/teacher';
 
 import { TEACHER_FORM_TEXT, TEACHER_VALIDATION } from '../../constant';
-import { allGradesQueryOptions, subjectQueryOptions } from '../../utils';
+import { allGradesQueryOptions, subjectByGradeQueryOptions } from '../../utils';
 
 import styles from './styles.module.scss';
 
@@ -81,7 +81,9 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
     const [errorMessages, setErrorMessages] = useState<TeacherFormErrors>({});
 
     const gradeListQuery = useQuery(queryOptions(allGradesQueryOptions()));
-    const subjectListQuery = useQuery(queryOptions(subjectQueryOptions()));
+    const subjectListQuery = useQuery({
+        ...queryOptions(subjectByGradeQueryOptions(formValues.gradeId)),
+    });
 
     const isFormValid = useMemo(() =>
         TEACHER_FORM_FIELDS.every((field) => (formValues as any)[field]?.trim()) &&
@@ -138,7 +140,7 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
     };
 
     const handleGradeChange = (grade: GradeOption) => {
-        setFormValues(prev => ({ ...prev, gradeId: grade.id }));
+        setFormValues(prev => ({ ...prev, gradeId: grade.id, subjectId: '' }));
         setErrorMessages(prev => ({ ...prev, gradeId: validateField('gradeId', grade.id) }));
     };
 

@@ -133,11 +133,21 @@ export const uploadTeachers = async ({ file, sheetUrl }: UploadTeachersPayload) 
         body.append('sheetUrl', sheetUrl.trim());
     }
 
-    return callApi<ApiResponse<unknown>>({
+    const response = await callApi<ApiResponse<{ successCount: number; failedCount: number; errors: string[] }>>({
         url: ServerSideRoutes.ADMIN_TEACHERS_UPLOAD,
         method: HTTP_METHOD.POST,
         body,
-    }).then(assertSuccessfulResponse);
+    });
+
+    assertSuccessfulResponse(response);
+
+    const data = response?.response?.data;
+    if (data?.failedCount > 0) {
+        const errorMessages = data.errors?.join('\n') || 'Upload failed';
+        throw new Error(`Upload completed with ${data.failedCount} failure(s):\n${errorMessages}`);
+    }
+
+    return response;
 };
 
 export const downloadTeacherUploadTemplate = async () =>
@@ -250,6 +260,26 @@ export const allGradesQueryOptions = () => ({
 export const subjectQueryOptions = () => ({
     queryKey: subjectQueryKey(),
     queryFn: getSubjects,
+    staleTime: StaleAndCacheTime.STALE_TIME,
+    gcTime: StaleAndCacheTime.CACHE_TIME,
+});
+
+export const getSubjectsByGrade = async (gradeId: string) => {
+    const response = await callApi<ApiResponse<any>>({
+        url: `http://192.168.0.233:3001/api/v1/subjects/grade/${gradeId}`,
+        method: HTTP_METHOD.GET,
+    });
+    assertSuccessfulResponse(response);
+    return extractDataArray(response).map((item: any) => ({
+        id: String(item.id),
+        name: item.name,
+    })) as SubjectOption[];
+};
+
+export const subjectByGradeQueryOptions = (gradeId: string) => ({
+    queryKey: [...subjectQueryKey(), gradeId] as const,
+    queryFn: () => getSubjectsByGrade(gradeId),
+    enabled: Boolean(gradeId),
     staleTime: StaleAndCacheTime.STALE_TIME,
     gcTime: StaleAndCacheTime.CACHE_TIME,
 });

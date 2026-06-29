@@ -74,6 +74,11 @@ export const getSubjectsByGradeGroup = async (id: string) =>
         url: API_ROUTES.subjectsByGradeGroup(id),
     });
 
+export const getSubjectsByGrade = async (id: string) =>
+    serverApi({
+        url: API_ROUTES.subjectsByGrade(id),
+    });
+
 export const getCompetenciesList = async (body: { gradeId: number; subjectId: number; term: string }) =>
     serverApi({
         url: API_ROUTES.competenciesList,

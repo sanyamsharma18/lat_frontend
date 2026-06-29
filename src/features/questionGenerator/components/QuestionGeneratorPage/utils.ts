@@ -129,8 +129,7 @@ export const getGradesByGradeGroup = async (gradeGroupId: string) =>
         }
 
         // If it reaches here, the API returned something unexpected or failed
-        console.error("API returned invalid data:", res);
-        return [{ id: 'error', name: `API Error: ${JSON.stringify(res).substring(0, 50)}` }];
+        return [];
     });
 
 export const getGradeGroups = async () =>
@@ -149,9 +148,7 @@ export const getGradeGroups = async () =>
             return res;
         }
 
-        // If it reaches here, the API returned something unexpected or failed
-        console.error("API returned invalid data:", res);
-        return [{ id: 'error', name: `API Error: ${JSON.stringify(res).substring(0, 50)}` }];
+        return [];
     });
 
 export const getSubjectsByGradeGroup = async (gradeGroupId: string) =>
@@ -168,8 +165,24 @@ export const getSubjectsByGradeGroup = async (gradeGroupId: string) =>
         } else if (Array.isArray(res)) {
             return res;
         }
-        console.error("Subjects API returned invalid data:", res);
-        return [{ id: 'error', name: `API Error: ${JSON.stringify(res).substring(0, 50)}` }];
+        return [];
+    });
+
+export const getSubjectsByGrade = async (gradeId: string) =>
+    callApi<any>({
+        url: `${ServerSideRoutes.SUBJECTS_BY_GRADE}/${gradeId}`,
+        method: HTTP_METHOD.GET,
+    }).then((res) => {
+        if (res?.response?.data && Array.isArray(res.response.data)) {
+            return res.response.data;
+        } else if (res?.data && Array.isArray(res.data)) {
+            return res.data;
+        } else if (res?.response && Array.isArray(res.response)) {
+            return res.response;
+        } else if (Array.isArray(res)) {
+            return res;
+        }
+        return [];
     });
 
 export const getCompetenciesList = async (payload: { gradeId: number; subjectId: number; term: string }) =>
@@ -187,6 +200,5 @@ export const getCompetenciesList = async (payload: { gradeId: number; subjectId:
         } else if (Array.isArray(res)) {
             return res;
         }
-        console.error("Competencies API returned invalid data:", res);
-        return [{ id: 'error', name: `API Error: ${JSON.stringify(res).substring(0, 50)}` }];
+        return [];
     });
