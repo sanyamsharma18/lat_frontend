@@ -22,6 +22,7 @@ export const API_ROUTES = {
     schools: (regionId: string) => `${API_URL}/regions/${regionId}/schools`,
     subjects: `${API_URL}/subjects`,
     studentExamCheck: `${API_URL}/students/exam/check`,
+    studentExamQuestions: `${API_URL}/students/exam/questions`,
     gradeGroup: `${API_URL}/grade-group`,
     grades: `${API_URL}/grades`,
     gradesByGradeGroup: (id: string) => `${API_URL}/grades/grade-group/${id}`,

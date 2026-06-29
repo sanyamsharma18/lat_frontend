@@ -29,8 +29,14 @@ export interface ImageQuestionOption {
 export interface SingleChoiceQuestion {
     id: number;
     question: string;
+    instruction?: string;
+    stimulus?: string;
+    imageUrl?: string | null;
     type?: 'single-choice';
     options: string[];
+    optionLabels?: Record<string, string>;
+    optionLetters?: Record<string, string>;
+    optionImageUrls?: Record<string, string | null>;
     correctAnswer: string;
 }
 
@@ -51,9 +57,37 @@ export interface ExamQuestionsResponse {
     questions: ExamQuestion[];
 }
 
+export interface BackendExamQuestionOption {
+    id: string;
+    option_letter: string;
+    option_text: string;
+    requires_image: number;
+    image_prompt: string;
+    image_url: string | null;
+    imageUrl?: string | null;
+}
+
+export interface BackendExamQuestion {
+    id: string;
+    instruction: string;
+    stimulus: string;
+    question_text: string;
+    requires_image: number;
+    image_prompt: string;
+    image_url: string | null;
+    imageUrl?: string | null;
+    options: BackendExamQuestionOption[];
+}
+
+export interface StudentExamQuestionsPayload {
+    studentId: number;
+    termId: number;
+}
+
 export interface StudentExamCheckPayload {
     studentId: number;
     termId: number;
+    subjectId?: number;
 }
 
 export interface StudentExamCheckResponse {

@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import cx from 'classnames';
 
 import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
 import Radio from '@/components/ui/Radio';
 import ShimmerUiContainer from '@/components/ui/ShimmerUiContainer';
 import Text from '@/components/ui/Text';
@@ -12,6 +13,8 @@ import { showToast } from '@/components/ui/Toaster/constant';
 
 import { QuestionPaletteState } from '@/types/studentPortal';
 import { ButtonVariant, FontType } from '@/types/typographyCommon';
+
+import { getClientUserDetails } from '@/utils/cookieManager';
 
 import { useStudentExamination } from '../../hooks/useStudentExamination';
 
@@ -27,8 +30,39 @@ const paletteStateLabel: Record<QuestionPaletteState, string> = {
     current: STUDENT_EXAM_TEXT.currentLabel,
 };
 
+const htmlToPlainText = (content: string) => content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+
+const sanitizeHtml = (value: string) =>
+    value
+        .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+        .replace(/\son\w+="[^"]*"/gi, '')
+        .replace(/\son\w+='[^']*'/gi, '');
+
+interface ClientStudentDetail {
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    username?: string;
+}
+
+const getStudentDisplayName = () => {
+    const userDetail = getClientUserDetails() as ClientStudentDetail | null;
+
+    if (!userDetail) {
+        return STUDENT_EXAM_TEXT.studentNameFallback;
+    }
+
+    const fullName =
+        userDetail.fullName || `${userDetail.firstName || ''} ${userDetail.lastName || ''}`.trim();
+
+    return fullName || userDetail.username || STUDENT_EXAM_TEXT.studentNameFallback;
+};
+
 const StudentExaminationPage = () => {
     const paletteGridRef = useRef<HTMLDivElement>(null);
+    const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+    const [failedImageUrls, setFailedImageUrls] = useState<Set<string>>(new Set());
+    const studentName = useMemo(() => getStudentDisplayName(), []);
 
     const {
         answeredCount,
@@ -53,6 +87,15 @@ const StudentExaminationPage = () => {
 
     const isLoadingExam = examQuestionsQuery.isLoading;
     const isExamError = examQuestionsQuery.isError;
+
+    const handlePreviewImage = (event: MouseEvent<HTMLButtonElement>, imageUrl: string) => {
+        event.stopPropagation();
+        setPreviewImageUrl(imageUrl);
+    };
+
+    const handleImageLoadError = (imageUrl: string) => {
+        setFailedImageUrls((previous) => new Set(previous).add(imageUrl));
+    };
 
     const renderLoading = () => (
         <div className={styles.examGrid} role='status' aria-live='polite'>
@@ -105,6 +148,12 @@ const StudentExaminationPage = () => {
             );
         }
 
+        const questionImageUrl =
+            'imageUrl' in currentQuestion ? currentQuestion.imageUrl?.trim() : null;
+        const isQuestionImageUnavailable = questionImageUrl
+            ? failedImageUrls.has(questionImageUrl)
+            : false;
+
         return (
             <section className={styles.questionPanel}>
                 <div className={styles.questionHeader}>
@@ -133,13 +182,55 @@ const StudentExaminationPage = () => {
                     </Text>
                 </div>
 
-                <Text
-                    tagType='h2'
-                    font={[FontType.text_xl_semibold, FontType.text_xl_semibold]}
-                    color='black'
-                >
-                    {currentQuestion.question}
-                </Text>
+                {'instruction' in currentQuestion && currentQuestion.instruction ? (
+                    <div
+                        className={styles.questionInstruction}
+                        // eslint-disable-next-line react/no-danger
+                        dangerouslySetInnerHTML={{
+                            __html: sanitizeHtml(currentQuestion.instruction),
+                        }}
+                    />
+                ) : null}
+
+                {'stimulus' in currentQuestion && currentQuestion.stimulus ? (
+                    <div
+                        className={styles.questionStimulus}
+                        // eslint-disable-next-line react/no-danger
+                        dangerouslySetInnerHTML={{
+                            __html: sanitizeHtml(currentQuestion.stimulus),
+                        }}
+                    />
+                ) : null}
+
+                <div
+                    className={styles.questionText}
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(currentQuestion.question) }}
+                />
+
+                {questionImageUrl ? (
+                    <button
+                        type='button'
+                        className={styles.questionImageButton}
+                        onClick={(event) => handlePreviewImage(event, questionImageUrl)}
+                        aria-label='Preview question image'
+                        disabled={isQuestionImageUnavailable}
+                    >
+                        {isQuestionImageUnavailable ? (
+                            <span className={styles.imageFallback}>
+                                Question image is unavailable from the backend.
+                            </span>
+                        ) : (
+                            <img
+                                src={questionImageUrl}
+                                alt='Question visual'
+                                className={styles.questionImage}
+                                loading='lazy'
+                                onError={() => handleImageLoadError(questionImageUrl)}
+                            />
+                        )}
+                    </button>
+                ) : null}
 
                 {currentQuestion.type === 'image-option' ? (
                     <ImageOptionQuestion
@@ -152,10 +243,19 @@ const StudentExaminationPage = () => {
                     <div
                         className={styles.options}
                         role='radiogroup'
-                        aria-label={currentQuestion.question}
+                        aria-label={htmlToPlainText(currentQuestion.question)}
                     >
                         {currentQuestion.options.map((option, optionIndex) => {
                             const isSelected = answers[currentQuestion.id] === option;
+                            const optionLabel =
+                                currentQuestion.optionLabels?.[option] ?? option;
+                            const optionLetter =
+                                currentQuestion.optionLetters?.[option] ??
+                                String.fromCharCode(65 + optionIndex);
+                            const optionImageUrl = currentQuestion.optionImageUrls?.[option];
+                            const isOptionImageUnavailable = optionImageUrl
+                                ? failedImageUrls.has(optionImageUrl)
+                                : false;
 
                             return (
                                 <div
@@ -176,16 +276,50 @@ const StudentExaminationPage = () => {
                                     aria-checked={isSelected}
                                 >
                                     <Text className={styles.optionIndex}>
-                                        {String.fromCharCode(65 + optionIndex)}
+                                        {optionLetter}
                                     </Text>
                                     <Radio
                                         name={`question-${currentQuestion.id}`}
                                         value={option}
-                                        label={option}
+                                        label=''
                                         checked={isSelected}
                                         readOnly
                                         color='black'
                                     />
+                                    <div
+                                        className={styles.optionText}
+                                        // eslint-disable-next-line react/no-danger
+                                        dangerouslySetInnerHTML={{
+                                            __html: sanitizeHtml(optionLabel),
+                                        }}
+                                    />
+                                    {optionImageUrl ? (
+                                        <button
+                                            type='button'
+                                            className={styles.optionImageButton}
+                                            onClick={(event) =>
+                                                handlePreviewImage(event, optionImageUrl)
+                                            }
+                                            aria-label={`Preview option ${optionLetter} image`}
+                                            disabled={isOptionImageUnavailable}
+                                        >
+                                            {isOptionImageUnavailable ? (
+                                                <span className={styles.optionImageFallback}>
+                                                    Image unavailable
+                                                </span>
+                                            ) : (
+                                                <img
+                                                    src={optionImageUrl}
+                                                    alt={`Option ${optionLetter} visual`}
+                                                    className={styles.optionImage}
+                                                    loading='lazy'
+                                                    onError={() =>
+                                                        handleImageLoadError(optionImageUrl)
+                                                    }
+                                                />
+                                            )}
+                                        </button>
+                                    ) : null}
                                 </div>
                             );
                         })}
@@ -379,7 +513,7 @@ const StudentExaminationPage = () => {
                         font={[FontType.text_sm_regular, FontType.text_sm_regular]}
                         color='gray-500'
                     >
-                        {STUDENT_EXAM_TEXT.studentName} | {STUDENT_EXAM_TEXT.subtitle}
+                        {studentName} | {STUDENT_EXAM_TEXT.subtitle}
                     </Text>
                 </div>
                 <div className={styles.mobileTimer}>
@@ -409,6 +543,38 @@ const StudentExaminationPage = () => {
             ) : null}
 
             <Toaster />
+            {previewImageUrl ? (
+                <Modal
+                    open={!!previewImageUrl}
+                    setOpen={() => setPreviewImageUrl(null)}
+                    sx={{ '& .MuiPaper-root': { borderRadius: '12px', maxWidth: '860px' } }}
+                >
+                    <div className={styles.imagePreviewModal}>
+                        <div className={styles.previewHeader}>
+                            <Text
+                                tagType='h2'
+                                font={[FontType.text_lg_semibold, FontType.text_lg_semibold]}
+                                color='black'
+                            >
+                                Image Preview
+                            </Text>
+                            <button
+                                type='button'
+                                className={styles.previewCloseButton}
+                                onClick={() => setPreviewImageUrl(null)}
+                                aria-label='Close image preview'
+                            >
+                                X
+                            </button>
+                        </div>
+                        <img
+                            src={previewImageUrl}
+                            alt='Preview'
+                            className={styles.previewImage}
+                        />
+                    </div>
+                </Modal>
+            ) : null}
         </main>
     );
 };

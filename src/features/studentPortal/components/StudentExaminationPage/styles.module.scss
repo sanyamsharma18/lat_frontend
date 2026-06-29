@@ -457,6 +457,95 @@
     font-weight: 700;
 }
 
+.questionInstruction,
+.questionStimulus,
+.questionText,
+.optionText {
+    color: $black;
+    line-height: 1.6;
+
+    p {
+        margin: 0;
+    }
+
+    b,
+    strong {
+        font-weight: 700;
+    }
+}
+
+.questionInstruction {
+    padding: 12px 14px;
+
+    border: 1px solid $blue-50;
+    border-radius: 8px;
+
+    background: $blue-50;
+    color: $blue-600;
+    font-size: 14px;
+}
+
+.questionStimulus {
+    padding: 16px;
+
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+
+    background: $gray-100;
+    color: $slate-600;
+    font-size: 15px;
+}
+
+.questionText {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.questionImageButton {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    max-width: 720px;
+    min-height: 260px;
+    overflow: hidden;
+    padding: 0;
+
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $gray-100;
+    cursor: zoom-in;
+
+    &:disabled {
+        cursor: default;
+    }
+
+    &:focus-visible {
+        outline: 3px solid $orange-200;
+        outline-offset: 2px;
+    }
+}
+
+.questionImage {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 420px;
+    object-fit: contain;
+}
+
+.imageFallback,
+.optionImageFallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    color: $gray-500;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
 .options {
     display: grid;
     grid-template-columns: 1fr;
@@ -490,6 +579,41 @@
         outline: 3px solid $orange-200;
         outline-offset: 2px;
     }
+}
+
+.optionImageButton {
+    position: relative;
+    flex: 0 0 136px;
+    width: 136px;
+    height: 96px;
+    overflow: hidden;
+    padding: 0;
+
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $gray-100;
+    cursor: zoom-in;
+
+    &:disabled {
+        cursor: default;
+    }
+
+    &:hover,
+    &:focus-visible {
+        border-color: $orange-500;
+    }
+
+    &:focus-visible {
+        outline: 3px solid $orange-200;
+        outline-offset: 2px;
+    }
+}
+
+.optionImage {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .selectedOption {
@@ -535,6 +659,13 @@
 
     font-size: 13px;
     font-weight: 400;
+}
+
+.optionText {
+    flex: 1;
+    min-width: 0;
+
+    font-size: 15px;
 }
 
 .answerFeedback {
@@ -640,7 +771,6 @@
     flex: 1;
     min-height: 0;
 
-    overflow-y: auto;
     scroll-behavior: smooth;
 
     overflow-y: auto;
@@ -756,4 +886,63 @@
 .shimmerOption {
     width: 100%;
     height: 58px;
+}
+
+.imagePreviewModal {
+    display: flex;
+    width: min(820px, 92vw);
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    background: $white;
+}
+
+.previewHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.previewCloseButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid $gray-200;
+    border-radius: 50%;
+    color: $black;
+    cursor: pointer;
+    background: $white;
+
+    &:hover,
+    &:focus-visible {
+        border-color: $orange-500;
+        background: $orange-50;
+    }
+}
+
+.previewImage {
+    display: block;
+    width: 100%;
+    max-height: min(70vh, 560px);
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    background: $gray-100;
+}
+
+@media (max-width: 640px) {
+    .optionCard {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .optionImageButton {
+        flex-basis: 100%;
+        width: 100%;
+        height: 180px;
+        margin-left: 46px;
+    }
 }

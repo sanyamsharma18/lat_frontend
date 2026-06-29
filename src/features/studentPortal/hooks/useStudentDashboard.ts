@@ -79,6 +79,10 @@ export const useStudentDashboard = (
         router.push('/student/examination');
     };
 
+    const handlePlaySpaceMission = () => {
+        router.push('/student/space-mission');
+    };
+
     const isLoading =
         studentProfileQuery.isLoading ||
         examInstructionsQuery.isLoading ||
@@ -94,6 +98,7 @@ export const useStudentDashboard = (
         examInstructionsQuery,
         handleAcceptInstructions,
         handleOpenInstructions,
+        handlePlaySpaceMission,
         handleStartExamination,
         isError,
         isInstructionsAccepted,

@@ -1,6 +1,6 @@
 export const STUDENT_EXAM_TEXT = {
     title: 'Online Examination',
-    studentName: 'John Doe',
+    studentNameFallback: 'Student',
     subtitle: 'Answer all questions before submitting the examination.',
     questionLabel: 'Question',
     previousButton: 'Previous Question',

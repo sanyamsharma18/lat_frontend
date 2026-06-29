@@ -1,0 +1,471 @@
+@use '@styles/theme' as *;
+
+.page {
+    position: relative;
+    min-height: calc(100vh - 120px);
+    overflow: hidden;
+    padding: 24px;
+    border-radius: 8px;
+    color: $white;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(85, 199, 255, 0.28), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(177, 140, 255, 0.3), transparent 24%),
+        linear-gradient(135deg, #111833, #15103b 52%, #07111f);
+}
+
+.stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient($white 1px, transparent 1px),
+        radial-gradient(rgba($white, 0.7) 1px, transparent 1px);
+    background-position:
+        0 0,
+        32px 48px;
+    background-size:
+        72px 72px,
+        96px 96px;
+    animation: driftStars 18s linear infinite;
+    opacity: 0.35;
+}
+
+.header,
+.panel,
+.heroPanel,
+.missionPanel {
+    position: relative;
+    z-index: 1;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.shellActions,
+.actionRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.iconButton {
+    min-height: 38px;
+    padding: 8px 14px;
+    border: 1px solid rgba($white, 0.24);
+    border-radius: 999px;
+    color: $white;
+    cursor: pointer;
+    background: rgba($white, 0.12);
+}
+
+.heroPanel,
+.panel,
+.missionPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 28px;
+    border: 1px solid rgba($white, 0.14);
+    border-radius: 8px;
+    background: rgba(8, 15, 34, 0.78);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.heroPanel {
+    min-height: 520px;
+    justify-content: center;
+}
+
+.rocket {
+    width: 74px;
+    height: 74px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #111833;
+    font-size: 36px;
+    background: #f7ef6a;
+    animation: rocketFloat 2.5s ease-in-out infinite;
+}
+
+.sectionHeader,
+.missionTopbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.scorePill,
+.timer {
+    padding: 10px 14px;
+    border-radius: 999px;
+    color: #111833;
+    font-weight: 700;
+    background: #f7ef6a;
+}
+
+.statsGrid,
+.reportGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 14px;
+        border: 1px solid rgba($white, 0.16);
+        border-radius: 8px;
+        background: rgba($white, 0.1);
+    }
+
+    span {
+        color: rgba($white, 0.72);
+        font-size: 12px;
+    }
+}
+
+.galaxyGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+}
+
+.planetCard {
+    display: flex;
+    min-height: 210px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px;
+    border: 1px solid rgba($white, 0.14);
+    border-radius: 8px;
+    color: $white;
+    text-align: left;
+    cursor: pointer;
+    background: rgba($white, 0.1);
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease;
+
+    &:hover:not(:disabled) {
+        transform: translateY(-3px);
+        border-color: rgba($white, 0.46);
+        background: rgba($white, 0.16);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}
+
+.planetActive {
+    outline: 2px solid #f7ef6a;
+}
+
+.planetLocked {
+    opacity: 0.48;
+}
+
+.planetOrb {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    box-shadow: 0 0 28px currentColor;
+    animation: rotatePlanet 7s linear infinite;
+}
+
+.challengeCard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.missionQuestion {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px;
+    border: 1px solid rgba($white, 0.14);
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(85, 199, 255, 0.16), rgba(247, 239, 106, 0.08));
+}
+
+.missionEyebrow {
+    color: #ffd166;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.balloonGalaxy {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 28px;
+    min-height: 430px;
+    overflow: hidden;
+    padding: 34px;
+    border: 1px solid rgba($white, 0.16);
+    border-radius: 8px;
+    background:
+        radial-gradient(circle at 22% 18%, rgba(255, 209, 102, 0.2), transparent 16%),
+        radial-gradient(circle at 82% 72%, rgba(88, 213, 255, 0.18), transparent 18%),
+        linear-gradient(145deg, rgba(2, 9, 30, 0.82), rgba(24, 18, 70, 0.7));
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(4, minmax(130px, 1fr));
+        align-items: center;
+    }
+}
+
+.orbitRing {
+    position: absolute;
+    inset: 42px;
+    border: 1px dashed rgba($white, 0.16);
+    border-radius: 50%;
+    animation: rotatePlanet 18s linear infinite;
+}
+
+.answerBalloon {
+    --balloon-color: #58d5ff;
+    --float-delay: 0s;
+
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(100%, 190px);
+    min-height: 210px;
+    margin: auto;
+    padding: 22px 18px 36px;
+    border: 3px solid rgba($white, 0.82);
+    border-radius: 48% 48% 44% 44%;
+    color: #081126;
+    cursor: pointer;
+    background:
+        radial-gradient(circle at 28% 22%, rgba($white, 0.9), transparent 13%),
+        linear-gradient(145deg, rgba($white, 0.45), transparent 36%),
+        var(--balloon-color);
+    box-shadow:
+        0 18px 34px rgba(0, 0, 0, 0.28),
+        inset -14px -20px 28px rgba(0, 0, 0, 0.12);
+    transform-origin: bottom center;
+    animation: balloonFloat 2.8s ease-in-out infinite;
+    animation-delay: var(--float-delay);
+    transition:
+        transform 180ms ease,
+        filter 180ms ease,
+        box-shadow 180ms ease;
+
+    &::after {
+        position: absolute;
+        bottom: -52px;
+        left: 50%;
+        width: 2px;
+        height: 52px;
+        content: '';
+        background: rgba($white, 0.6);
+        transform: translateX(-50%);
+    }
+
+    &:hover:not(:disabled),
+    &:focus-visible:not(:disabled) {
+        filter: saturate(1.18);
+        transform: translateY(-8px) scale(1.04);
+        box-shadow:
+            0 26px 42px rgba(0, 0, 0, 0.36),
+            0 0 32px var(--balloon-color);
+    }
+
+    &:focus-visible {
+        outline: 4px solid #ffd166;
+        outline-offset: 4px;
+    }
+
+    &:disabled {
+        cursor: default;
+    }
+}
+
+.balloonSelected {
+    box-shadow:
+        0 24px 46px rgba(0, 0, 0, 0.4),
+        0 0 36px var(--balloon-color);
+}
+
+.balloonBurst {
+    pointer-events: none;
+    animation: balloonPop 420ms ease-out forwards;
+}
+
+.balloonShine {
+    position: absolute;
+    top: 28px;
+    left: 34px;
+    width: 34px;
+    height: 54px;
+    border-radius: 999px;
+    background: rgba($white, 0.52);
+    transform: rotate(22deg);
+}
+
+.balloonText {
+    position: relative;
+    z-index: 1;
+    display: -webkit-box;
+    overflow: hidden;
+    color: #07111f;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.2;
+    text-align: center;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+}
+
+.balloonKnot {
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    width: 24px;
+    height: 22px;
+    border-radius: 4px 4px 12px 12px;
+    background: var(--balloon-color);
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.hint,
+.resultBanner {
+    padding: 12px 14px;
+    border-radius: 8px;
+}
+
+.hint {
+    background: rgba(247, 239, 106, 0.16);
+}
+
+.resultCorrect {
+    background: rgba(123, 228, 149, 0.18);
+}
+
+.resultWrong {
+    background: rgba(255, 111, 145, 0.18);
+}
+
+.pauseOverlay {
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.66);
+}
+
+.pausePanel {
+    display: flex;
+    width: min(360px, 92%);
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 8px;
+    background: #111833;
+}
+
+.confetti {
+    font-size: 34px;
+    letter-spacing: 14px;
+    color: #f7ef6a;
+    animation: rocketFloat 1.8s ease-in-out infinite;
+}
+
+.badgeList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    span {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(247, 239, 106, 0.16);
+    }
+}
+
+.loading {
+    position: relative;
+    z-index: 1;
+    height: 420px;
+}
+
+@keyframes driftStars {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(72px);
+    }
+}
+
+@keyframes rocketFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes rotatePlanet {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes balloonFloat {
+    0%,
+    100% {
+        transform: translateY(0) rotate(-1deg);
+    }
+
+    50% {
+        transform: translateY(-18px) rotate(2deg);
+    }
+}
+
+@keyframes balloonPop {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    52% {
+        opacity: 0.85;
+        transform: scale(1.18);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.18) rotate(18deg);
+    }
+}
