@@ -7,6 +7,7 @@ export interface QuestionOption {
     isCorrect: boolean;
     optionId?: number;
     imageUrl?: string | null;
+    imagePrompt?: string;
     rationale?: string;
 }
 
@@ -22,6 +23,7 @@ export interface QuestionRecord {
     questionText: string;
     status: QuestionStatus;
     imageUrl?: string;
+    imagePrompt?: string;
     options: QuestionOption[];
     answerExplanation?: string;
     createdAt: string;

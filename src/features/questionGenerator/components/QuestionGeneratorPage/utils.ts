@@ -32,17 +32,50 @@ export const getQuestionList = async (filters: QuestionListFilters) => {
         subject: filters.subject || null,
         competency: filters.competency || null,
         status: filters.status || null,
+        termId: filters.termId || null,
         page: String(filters.page),
         limit: String(filters.limit),
     };
 
     const response = await callApi<ApiResponse<QuestionListResponse>>({
-        url: ServerSideRoutes.ADMIN_QUESTIONS,
+        url: 'http://192.168.0.233:3001/api/v1/questions',
         method: HTTP_METHOD.GET,
         queryParams,
     });
 
     return assertSuccessfulResponse(response);
+};
+
+export const generateQuestionImage = async (payload: {
+    questionId: number;
+    prompt: string;
+    optionLetter?: string;
+}) =>
+    callApi<ApiResponse<{ imageUrl: string; fileName: string }>>({
+        url: 'http://192.168.0.233:3001/api/v1/questions/generate-image',
+        method: HTTP_METHOD.POST,
+        body: payload,
+    }).then(assertSuccessfulResponse);
+
+export const uploadQuestionImage = async (payload: {
+    questionId: number;
+    file: File;
+    optionLetter?: string;
+}) => {
+    const formData = new FormData();
+    formData.append('questionId', String(payload.questionId));
+    formData.append('file', payload.file);
+    if (payload.optionLetter) {
+        formData.append('optionLetter', payload.optionLetter);
+    }
+
+    const response = await fetch('http://192.168.0.233:3001/api/v1/questions/upload-image', {
+        method: 'POST',
+        body: formData,
+    });
+
+    const data: ApiResponse<{ imageUrl: string; fileName: string }> = await response.json();
+    return assertSuccessfulResponse(data);
 };
 
 export const createQuestion = async (payload: QuestionFormValues) =>

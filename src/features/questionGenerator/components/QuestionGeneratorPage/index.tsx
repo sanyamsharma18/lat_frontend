@@ -43,6 +43,10 @@ interface QuestionActionHandlers {
     onEdit: (question: QuestionRecord) => void;
     onDelete: (question: QuestionRecord) => void;
     onImageClick: (url: string) => void;
+    onGenerateImage?: (question: QuestionRecord, optionLetter?: string) => void;
+    isGeneratingImage?: (questionId: string, optionLetter?: string) => boolean;
+    onUploadImage?: (question: QuestionRecord, optionLetter: string | undefined, file: File) => void;
+    isUploadingImage?: (questionId: string, optionLetter?: string) => boolean;
 }
 
 const getOption = (options: QuestionOptionItem[], id?: string) =>
@@ -146,28 +150,98 @@ const getQuestionColumns = (handlers: QuestionActionHandlers): DataTableColumn<Q
         id: 'image',
         header: QUESTION_GENERATOR_TEXT.imageColumn,
         className: styles.imageColumn,
-        cell: (question) =>
-        (
-            <div className={styles.imageCell}>
-                {question.imageUrl ? (
-                    <div 
-                        className={styles.thumbnail}
-                        onClick={() => handlers.onImageClick(question.imageUrl!)}
-                        style={{ cursor: 'pointer' }}
-                        title="Click to preview image"
-                    >
-                        <Image
-                            src={question.imageUrl}
-                            alt={`Preview for ${question.questionId}`}
-                            width={72}
-                            height={44}
-                        />
-                    </div>
-                ) : (
-                    <span style={{ color: '#94a3b8', fontSize: '14px' }}>-</span>
-                )}
-            </div>
-        ),
+        cell: (question) => {
+            const hasUrl = !!question.imageUrl;
+            const hasPrompt = !!question.imagePrompt;
+            const isGenerating = handlers.isGeneratingImage ? handlers.isGeneratingImage(question.id) : false;
+            const isUploading = handlers.isUploadingImage ? handlers.isUploadingImage(question.id) : false;
+
+            return (
+                <div className={styles.imageCell}>
+                    {hasUrl && (
+                        <div 
+                            className={styles.thumbnail}
+                            onClick={() => handlers.onImageClick(question.imageUrl!)}
+                            style={{ cursor: 'pointer' }}
+                            title="Click to preview image"
+                        >
+                            <Image
+                                src={question.imageUrl!}
+                                alt={`Preview for ${question.questionId}`}
+                                width={72}
+                                height={44}
+                            />
+                        </div>
+                    )}
+                    
+                    {/* Upload button when image already exists */}
+                    {hasUrl && (
+                        <label
+                            className={styles.imageAction}
+                            style={{ cursor: isUploading ? 'not-allowed' : 'pointer', opacity: isUploading ? 0.6 : 1 }}
+                            title="Upload a new image"
+                        >
+                            {isUploading ? 'Uploading...' : 'Upload Image'}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                disabled={isUploading}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) handlers.onUploadImage?.(question, undefined, file);
+                                    e.target.value = '';
+                                }}
+                            />
+                        </label>
+                    )}
+
+                    {/* Generate with AI button when only prompt available and no image */}
+                    {!hasUrl && hasPrompt && (
+                        <button
+                            type="button"
+                            className={styles.imageAction}
+                            disabled={isGenerating}
+                            onClick={() => handlers.onGenerateImage?.(question)}
+                        >
+                            {isGenerating ? 'Generating...' : 'Generate Image'}
+                        </button>
+                    )}
+
+                    {/* Upload button when no image exists */}
+                    {!hasUrl && (
+                        <label
+                            className={styles.imageAction}
+                            style={{ 
+                                cursor: isUploading ? 'not-allowed' : 'pointer', 
+                                opacity: isUploading ? 0.6 : 1,
+                                background: '#f0fdf4',
+                                color: '#16a34a',
+                                border: '1px solid #bbf7d0'
+                            }}
+                            title="Upload an image"
+                        >
+                            {isUploading ? 'Uploading...' : 'Upload'}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                disabled={isUploading}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) handlers.onUploadImage?.(question, undefined, file);
+                                    e.target.value = '';
+                                }}
+                            />
+                        </label>
+                    )}
+
+                    {!hasUrl && !hasPrompt && (
+                        <span style={{ color: '#94a3b8', fontSize: '14px' }}>-</span>
+                    )}
+                </div>
+            );
+        },
     },
     {
         id: 'actions',
@@ -222,6 +296,9 @@ const QuestionGeneratorPage = () => {
         hasActiveFilters,
         isDeleteModalOpen,
         isDeleting,
+        isGeneratingImage: isGeneratingImagePending,
+        generateImageMutation,
+        uploadImageMutation,
         isFormModalOpen,
         isGenerating,
         isPreviewModalOpen,
@@ -259,6 +336,46 @@ const QuestionGeneratorPage = () => {
         handleTermFilterChange,
     } = useQuestionGenerator();
 
+    const isGeneratingImage = (questionId: string, optionLetter?: string) => {
+        return (
+            generateImageMutation.isPending &&
+            generateImageMutation.variables?.questionId === Number(questionId) &&
+            generateImageMutation.variables?.optionLetter === optionLetter
+        );
+    };
+
+    const isUploadingImage = (questionId: string, optionLetter?: string) => {
+        return (
+            uploadImageMutation.isPending &&
+            uploadImageMutation.variables?.questionId === Number(questionId) &&
+            uploadImageMutation.variables?.optionLetter === optionLetter
+        );
+    };
+
+    const handleGenerateImage = (question: QuestionRecord, optionLetter?: string) => {
+        const prompt = optionLetter 
+            ? question.options.find(o => o.id === optionLetter)?.imagePrompt
+            : question.imagePrompt;
+            
+        if (!prompt) {
+            return;
+        }
+
+        generateImageMutation.mutate({
+            questionId: Number(question.id),
+            prompt,
+            optionLetter,
+        });
+    };
+
+    const handleUploadImage = (question: QuestionRecord, optionLetter: string | undefined, file: File) => {
+        uploadImageMutation.mutate({
+            questionId: Number(question.id),
+            file,
+            optionLetter,
+        });
+    };
+
     const selectedGenerateGradeGroup = getOption(gradeGroupOptions, generateValues.gradeGroup);
     const selectedGenerateGrade = getOption(gradeOptions, generateValues.grade);
     const selectedGenerateSubject = getOption(subjectOptions, generateValues.subject);
@@ -271,8 +388,20 @@ const QuestionGeneratorPage = () => {
                 onEdit: handleOpenEditModal,
                 onDelete: handleOpenDeleteModal,
                 onImageClick: (url) => setActivePreviewImage(url),
+                onGenerateImage: handleGenerateImage,
+                isGeneratingImage,
+                onUploadImage: handleUploadImage,
+                isUploadingImage,
             }),
-        [handleOpenDeleteModal, handleOpenEditModal, handleOpenPreviewModal],
+        [
+            handleOpenDeleteModal, 
+            handleOpenEditModal, 
+            handleOpenPreviewModal, 
+            generateImageMutation.isPending, 
+            generateImageMutation.variables,
+            uploadImageMutation.isPending,
+            uploadImageMutation.variables,
+        ],
     );
 
     const renderMobileCard = useMemo(
@@ -282,8 +411,20 @@ const QuestionGeneratorPage = () => {
                 onEdit: handleOpenEditModal,
                 onDelete: handleOpenDeleteModal,
                 onImageClick: (url) => setActivePreviewImage(url),
+                onGenerateImage: handleGenerateImage,
+                isGeneratingImage,
+                onUploadImage: handleUploadImage,
+                isUploadingImage,
             }),
-        [handleOpenDeleteModal, handleOpenEditModal, handleOpenPreviewModal],
+        [
+            handleOpenDeleteModal, 
+            handleOpenEditModal, 
+            handleOpenPreviewModal, 
+            generateImageMutation.isPending, 
+            generateImageMutation.variables,
+            uploadImageMutation.isPending,
+            uploadImageMutation.variables,
+        ],
     );
 
     const handleCountChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -608,6 +749,10 @@ const QuestionGeneratorPage = () => {
                 onSave={handleSaveQuestionEditor}
                 isSubmitting={isSubmitting}
                 onImageClick={(url) => setActivePreviewImage(url)}
+                onGenerateImage={handleGenerateImage}
+                isGeneratingImage={isGeneratingImage}
+                onUploadImage={handleUploadImage}
+                isUploadingImage={isUploadingImage}
             />
             <DeleteQuestionModal
                 open={isDeleteModalOpen}
