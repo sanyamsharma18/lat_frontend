@@ -13,6 +13,10 @@ import useDebounce from '@/utils/useDebounce';
 
 import { REVIEWER_QUESTION_PAGE_SIZE } from '../components/ReviewerQuestionManagementPage/constant';
 import {
+    getCompetenciesList,
+    gradeGroupQueryOptions,
+    getGradesByGradeGroup,
+    getSubjectsByGrade,
     reviewerQuestionsQueryKey,
     reviewerQuestionsQueryOptions,
     reviewQuestion,
@@ -32,6 +36,104 @@ export const useReviewerQuestionManagement = () => {
     const [page, setPage] = useState(1);
 
     const debouncedSearch = useDebounce(searchValue, 400);
+
+    const gradeGroupsQuery = useQuery(gradeGroupQueryOptions());
+
+    const gradeGroupsQueryData = gradeGroupsQuery.data ?? [];
+    const gradeGroupOptions: QuestionOptionItem[] = useMemo(
+        () =>
+            (gradeGroupsQueryData as any[]).map((g: any) => ({
+                id: String(g.id),
+                name: String(g.name),
+            })),
+        [gradeGroupsQueryData],
+    );
+
+    const gradesQuery = useQuery({
+        queryKey: ['gradesByGradeGroup', selectedGradeGroup?.id],
+        queryFn: () => getGradesByGradeGroup(selectedGradeGroup!.id),
+        enabled: !!selectedGradeGroup,
+        staleTime: 5 * 60 * 1000,
+    });
+
+    const gradesQueryData = gradesQuery.data ?? [];
+    const gradeOptions: QuestionOptionItem[] = useMemo(
+        () =>
+            (gradesQueryData as any[]).map((g: any) => ({
+                id: String(g.id),
+                name: String(g.name),
+            })),
+        [gradesQueryData],
+    );
+
+    const subjectsQuery = useQuery({
+        queryKey: ['subjectsByGrade', selectedGrade?.id],
+        queryFn: () => getSubjectsByGrade(selectedGrade!.id),
+        enabled: !!selectedGrade,
+        staleTime: 5 * 60 * 1000,
+    });
+
+    const subjectsQueryData = subjectsQuery.data ?? [];
+    const subjectOptions: QuestionOptionItem[] = useMemo(
+        () =>
+            (subjectsQueryData as any[]).map((s: any) => ({
+                id: String(s.id),
+                name: String(s.name),
+            })),
+        [subjectsQueryData],
+    );
+
+    const competenciesQuery = useQuery({
+        queryKey: ['competencies', selectedGrade?.id, selectedSubject?.id, selectedTerm?.id],
+        queryFn: () =>
+            getCompetenciesList({
+                gradeId: Number(selectedGrade!.id),
+                subjectId: Number(selectedSubject!.id),
+                term: selectedTerm!.id,
+            }),
+        enabled: !!selectedGrade && !!selectedSubject && !!selectedTerm,
+        staleTime: 5 * 60 * 1000,
+    });
+
+    const competenciesQueryData = competenciesQuery.data ?? [];
+    const competencyOptions: QuestionOptionItem[] = useMemo(
+        () =>
+            (competenciesQueryData as any[]).map((c: any) => ({
+                id: String(c.id),
+                name: String(c.name),
+            })),
+        [competenciesQueryData],
+    );
+
+    const handleGradeGroupChange = (option: QuestionOptionItem | null) => {
+        setSelectedGradeGroup(option);
+        setSelectedGrade(null);
+        setSelectedSubject(null);
+        setSelectedTerm(null);
+        setSelectedCompetency(null);
+        setPage(1);
+    };
+
+    const handleGradeChange = (option: QuestionOptionItem | null) => {
+        setSelectedGrade(option);
+        setSelectedSubject(null);
+        setSelectedTerm(null);
+        setSelectedCompetency(null);
+        setPage(1);
+    };
+
+    const handleSubjectChange = (option: QuestionOptionItem | null) => {
+        setSelectedSubject(option);
+        setSelectedTerm(null);
+        setSelectedCompetency(null);
+        setPage(1);
+    };
+
+    const handleTermChange = (option: QuestionOptionItem | null) => {
+        setSelectedTerm(option);
+        setSelectedCompetency(null);
+        setPage(1);
+    };
 
     const filters = useMemo(
         () => ({
@@ -132,10 +234,21 @@ export const useReviewerQuestionManagement = () => {
     );
 
     return {
+        competencyOptions,
+        gradeGroupOptions,
+        gradeOptions,
+        gradeGroupLoading: gradeGroupsQuery.isLoading,
+        gradesLoading: gradesQuery.isLoading,
+        subjectsLoading: subjectsQuery.isLoading,
+        competenciesLoading: competenciesQuery.isLoading,
+        handleGradeChange,
+        handleGradeGroupChange,
         handleOpenPreview,
         handleResetFilters,
         handleReviewQuestion,
         handleSearchChange,
+        handleSubjectChange,
+        handleTermChange,
         hasActiveFilters,
         isPreviewOpen,
         isReviewing: reviewQuestionMutation.isPending,
@@ -152,11 +265,8 @@ export const useReviewerQuestionManagement = () => {
         setIsPreviewOpen,
         setPage,
         setSelectedCompetency,
-        setSelectedGrade,
-        setSelectedGradeGroup,
         setSelectedStatus,
-        setSelectedSubject,
-        setSelectedTerm,
+        subjectOptions,
         totalPages,
     };
 };

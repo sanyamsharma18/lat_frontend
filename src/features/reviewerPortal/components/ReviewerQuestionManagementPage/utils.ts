@@ -94,3 +94,66 @@ export const reviewerQuestionsQueryOptions = (filters: ReviewerQuestionFilters) 
     staleTime: StaleAndCacheTime.STALE_TIME,
     gcTime: StaleAndCacheTime.CACHE_TIME,
 });
+
+const extractDataArrayFromResponse = (res: any): any[] => {
+    if (res?.response?.data && Array.isArray(res.response.data)) {
+        return res.response.data;
+    }
+    if (res?.data && Array.isArray(res.data)) {
+        return res.data;
+    }
+    if (res?.response && Array.isArray(res.response)) {
+        return res.response;
+    }
+    if (Array.isArray(res)) {
+        return res;
+    }
+    return [];
+};
+
+export const getGradeGroups = async () =>
+    callApi<any>({
+        url: ServerSideRoutes.GRADE_GROUP,
+        method: HTTP_METHOD.GET,
+    }).then(extractDataArrayFromResponse);
+
+export const getGradesByGradeGroup = async (gradeGroupId: string) =>
+    callApi<any>({
+        url: `${ServerSideRoutes.GRADES_BY_GRADE_GROUP}/${gradeGroupId}`,
+        method: HTTP_METHOD.GET,
+    }).then(extractDataArrayFromResponse);
+
+export const getSubjectsByGrade = async (gradeId: string) =>
+    callApi<any>({
+        url: `${ServerSideRoutes.SUBJECTS_BY_GRADE}/${gradeId}`,
+        method: HTTP_METHOD.GET,
+    }).then(extractDataArrayFromResponse);
+
+export const gradeGroupQueryKey = () => ['gradeGroup'] as const;
+export const gradeGroupQueryOptions = () => ({
+    queryKey: gradeGroupQueryKey(),
+    queryFn: getGradeGroups,
+    staleTime: StaleAndCacheTime.STALE_TIME,
+    gcTime: StaleAndCacheTime.CACHE_TIME,
+});
+
+export const getCompetenciesList = async (payload: { gradeId: number; subjectId: number; term: string }) =>
+    callApi<any>({
+        url: ServerSideRoutes.COMPETENCIES_LIST,
+        method: HTTP_METHOD.POST,
+        body: payload,
+    }).then((res) => {
+        if (res?.response?.data && Array.isArray(res.response.data)) {
+            return res.response.data;
+        }
+        if (res?.data && Array.isArray(res.data)) {
+            return res.data;
+        }
+        if (res?.response && Array.isArray(res.response)) {
+            return res.response;
+        }
+        if (Array.isArray(res)) {
+            return res;
+        }
+        return [];
+    });

@@ -42,35 +42,9 @@ export const REVIEW_MODAL_TEXT = {
     optionsTitle: 'Options',
 };
 
-export const GRADE_GROUP_OPTIONS: QuestionOptionItem[] = [
-    { id: '', name: 'Select Grade Group' },
-    { id: 'Middle', name: 'Middle' },
-    { id: 'Secondary', name: 'Secondary' },
-];
-
-export const GRADE_OPTIONS: QuestionOptionItem[] = [
-    { id: '', name: 'Select Grade' },
-    { id: 'Grade 6', name: 'Grade 6' },
-    { id: 'Grade 9', name: 'Grade 9' },
-];
-
-export const SUBJECT_OPTIONS: QuestionOptionItem[] = [
-    { id: '', name: 'Select Subject' },
-    { id: 'Social Science', name: 'Social Science' },
-    { id: 'Environmental Education', name: 'Environmental Education' },
-];
-
 export const TERM_OPTIONS: QuestionOptionItem[] = [
-    { id: '', name: 'Select Term' },
     { id: 'Term 1', name: 'Term 1' },
     { id: 'Term 2', name: 'Term 2' },
-];
-
-export const COMPETENCY_OPTIONS: QuestionOptionItem[] = [
-    { id: '', name: 'Select Competency' },
-    { id: 'Geographic interpretation.', name: 'Geographic interpretation.' },
-    { id: 'Historical analysis.', name: 'Historical analysis.' },
-    { id: 'Sustainable decision-making.', name: 'Sustainable decision-making.' },
 ];
 
 export const STATUS_OPTIONS: QuestionOptionItem[] = [

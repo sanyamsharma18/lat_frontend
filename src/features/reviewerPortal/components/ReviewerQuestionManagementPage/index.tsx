@@ -19,12 +19,8 @@ import { useReviewerQuestionManagement } from '../../hooks/useReviewerQuestionMa
 
 import QuestionReviewModal from './components/QuestionReviewModal';
 import {
-    COMPETENCY_OPTIONS,
-    GRADE_GROUP_OPTIONS,
-    GRADE_OPTIONS,
     REVIEWER_QUESTION_TEXT,
     STATUS_OPTIONS,
-    SUBJECT_OPTIONS,
     TERM_OPTIONS,
 } from './constant';
 
@@ -170,10 +166,20 @@ const getRenderMobileCard =
 
 const ReviewerQuestionManagementPage = () => {
     const {
+        competenciesLoading,
+        competencyOptions,
+        gradeGroupOptions,
+        gradeGroupLoading,
+        gradeOptions,
+        gradesLoading,
+        handleGradeChange,
+        handleGradeGroupChange,
         handleOpenPreview,
         handleResetFilters,
         handleReviewQuestion,
         handleSearchChange,
+        handleSubjectChange,
+        handleTermChange,
         hasActiveFilters,
         isPreviewOpen,
         isReviewing,
@@ -190,11 +196,9 @@ const ReviewerQuestionManagementPage = () => {
         setIsPreviewOpen,
         setPage,
         setSelectedCompetency,
-        setSelectedGrade,
-        setSelectedGradeGroup,
         setSelectedStatus,
-        setSelectedSubject,
-        setSelectedTerm,
+        subjectOptions,
+        subjectsLoading,
         totalPages,
     } = useReviewerQuestionManagement();
 
@@ -276,29 +280,34 @@ const ReviewerQuestionManagementPage = () => {
                     <Dropdown
                         label='Select Grade Group'
                         dropDownTitle={REVIEWER_QUESTION_TEXT.gradeGroupLabel}
-                        options={GRADE_GROUP_OPTIONS}
+                        options={gradeGroupOptions}
                         selectValue='name'
                         value={selectedGradeGroup}
-                        onChange={setSelectedGradeGroup}
+                        onChange={handleGradeGroupChange}
                         isSearchable={false}
+                        loading={gradeGroupLoading}
                     />
                     <Dropdown
                         label='Select Grade'
                         dropDownTitle={REVIEWER_QUESTION_TEXT.gradeLabel}
-                        options={GRADE_OPTIONS}
+                        options={gradeOptions}
                         selectValue='name'
                         value={selectedGrade}
-                        onChange={setSelectedGrade}
+                        onChange={handleGradeChange}
                         isSearchable={false}
+                        loading={gradesLoading}
+                        disable={!selectedGradeGroup}
                     />
                     <Dropdown
                         label='Select Subject'
                         dropDownTitle={REVIEWER_QUESTION_TEXT.subjectLabel}
-                        options={SUBJECT_OPTIONS}
+                        options={subjectOptions}
                         selectValue='name'
                         value={selectedSubject}
-                        onChange={setSelectedSubject}
+                        onChange={handleSubjectChange}
                         isSearchable={false}
+                        loading={subjectsLoading}
+                        disable={!selectedGrade}
                     />
                     <Dropdown
                         label='Select Term'
@@ -306,17 +315,20 @@ const ReviewerQuestionManagementPage = () => {
                         options={TERM_OPTIONS}
                         selectValue='name'
                         value={selectedTerm}
-                        onChange={setSelectedTerm}
+                        onChange={handleTermChange}
                         isSearchable={false}
+                        disable={!selectedSubject}
                     />
                     <Dropdown
                         label='Select Competency'
                         dropDownTitle={REVIEWER_QUESTION_TEXT.competencyLabel}
-                        options={COMPETENCY_OPTIONS}
+                        options={competencyOptions}
                         selectValue='name'
                         value={selectedCompetency}
                         onChange={setSelectedCompetency}
                         isSearchable={false}
+                        loading={competenciesLoading}
+                        disable={!selectedTerm}
                     />
                 </div>
 
