@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         fatherName: payload.fatherName.trim(),
         motherName: payload.motherName.trim(),
         gender: payload.gender,
-        dob: payload.dateOfBirth,
+        dob: payload.dateOfBirth?.split('-').reverse().join('-'),
         address: payload.address.trim(),
     };
 

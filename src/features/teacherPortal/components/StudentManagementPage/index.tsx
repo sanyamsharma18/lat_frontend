@@ -21,7 +21,6 @@ import { allGradesQueryOptions } from '@/features/teacherManagement/components/T
 
 import { useStudentManagement } from '../../hooks/useStudentManagement';
 
-import DeleteStudentModal from './components/DeleteStudentModal';
 import StudentFormModal from './components/StudentFormModal';
 import UploadStudentsModal from './components/UploadStudentsModal';
 import {
@@ -34,21 +33,16 @@ import styles from './styles.module.scss';
 
 interface StudentActionHandlers {
     onEdit: (student: Student) => void;
-    onDelete: (student: Student) => void;
     onToggleStatus: (isActive: boolean, studentId: string) => void;
 }
 
 const StudentActions = ({
     student,
     onEdit,
-    onDelete,
-}: Pick<StudentActionHandlers, 'onEdit' | 'onDelete'> & { student: Student }) => (
+}: Pick<StudentActionHandlers, 'onEdit'> & { student: Student }) => (
     <div className={styles.rowActions}>
         <button type='button' className={styles.actionButton} onClick={() => onEdit(student)}>
             {STUDENT_MANAGEMENT_TEXT.editButton}
-        </button>
-        <button type='button' className={styles.deleteButton} onClick={() => onDelete(student)}>
-            {STUDENT_MANAGEMENT_TEXT.deleteButton}
         </button>
     </div>
 );
@@ -81,7 +75,6 @@ const StudentStatusCell = ({
 
 const getStudentColumns = ({
     onEdit,
-    onDelete,
     onToggleStatus,
 }: StudentActionHandlers): DataTableColumn<Student>[] => [
     {
@@ -142,18 +135,16 @@ const getStudentColumns = ({
     {
         id: 'actions',
         header: STUDENT_MANAGEMENT_TEXT.actionsColumn,
-        cell: (student) => <StudentActions student={student} onEdit={onEdit} onDelete={onDelete} />,
+        cell: (student) => <StudentActions student={student} onEdit={onEdit} />,
     },
 ];
 
 const StudentManagementPage = () => {
     const {
         handleClearFilters,
-        handleDeleteStudent,
         handleDownloadStudentTemplate,
         handleGradeChange,
         handleOpenAddModal,
-        handleOpenDeleteModal,
         handleOpenEditModal,
         handleSearchChange,
         handleSectionChange,
@@ -162,8 +153,6 @@ const StudentManagementPage = () => {
         handleToggleStatus,
         handleUploadStudents,
         hasActiveFilters,
-        isDeleteModalOpen,
-        isDeleting,
         isFormModalOpen,
         isSubmitting,
         isTemplateDownloading,
@@ -176,7 +165,6 @@ const StudentManagementPage = () => {
         selectedSection,
         selectedStatus,
         selectedStudent,
-        setIsDeleteModalOpen,
         setIsFormModalOpen,
         setIsUploadModalOpen,
         setPage,
@@ -190,10 +178,9 @@ const StudentManagementPage = () => {
         () =>
             getStudentColumns({
                 onEdit: handleOpenEditModal,
-                onDelete: handleOpenDeleteModal,
                 onToggleStatus: handleToggleStatus,
             }),
-        [handleOpenDeleteModal, handleOpenEditModal, handleToggleStatus],
+        [handleOpenEditModal, handleToggleStatus],
     );
 
     const renderTableContent = () => {
@@ -409,13 +396,6 @@ const StudentManagementPage = () => {
                 gradeOptions={gradeListQuery.data ?? []}
                 onClose={() => setIsFormModalOpen(false)}
                 onSubmit={handleSubmitStudent}
-            />
-            <DeleteStudentModal
-                open={isDeleteModalOpen}
-                student={selectedStudent}
-                isDeleting={isDeleting}
-                onClose={() => setIsDeleteModalOpen(false)}
-                onConfirm={handleDeleteStudent}
             />
             <UploadStudentsModal
                 open={isUploadModalOpen}

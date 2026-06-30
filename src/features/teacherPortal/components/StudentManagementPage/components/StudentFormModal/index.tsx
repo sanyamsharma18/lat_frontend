@@ -75,6 +75,7 @@ const REQUIRED_STUDENT_FORM_FIELDS: StudentFormField[] = [
     'gender',
     'dateOfBirth',
     'parentMobile',
+    'email',
     'udisecode',
 ];
 
@@ -137,19 +138,19 @@ const StudentFormModal = ({
         setFormValues(
             student
                 ? {
-                      studentName: student.studentName,
-                      grade: student.grade,
-                      section: student.section,
-                      fatherName: student.fatherName,
-                      motherName: student.motherName,
-                      gender: student.gender,
-                      dateOfBirth: student.dateOfBirth,
-                      status: (student.status === 'Active' ? '1' : '0') as any,
-                      parentMobile: student.parentMobile || '',
-                      email: student.email || '',
-                      rollNo: student.rollNo || '',
-                      udisecode: student.udisecode || '',
-                      address: student.address || '',
+                    studentName: student.studentName,
+                    grade: student.grade,
+                    section: student.section,
+                    fatherName: student.fatherName,
+                    motherName: student.motherName,
+                    gender: student.gender,
+                    dateOfBirth: student.dateOfBirth,
+                    status: (student.status === 'Active' ? '1' : '0') as any,
+                    parentMobile: student.parentMobile || '',
+                    email: student.email || '',
+                    rollNo: student.rollNo || '',
+                    udisecode: student.udisecode || '',
+                    address: student.address || '',
                   }
                 : EMPTY_FORM_VALUES,
         );
@@ -194,7 +195,7 @@ const StudentFormModal = ({
 
         const statusValue = String(formValues.status);
 
-        onSubmit({
+                    onSubmit({
             studentName: formValues.studentName.trim(),
             grade: formValues.grade,
             section: formValues.section,
@@ -340,6 +341,7 @@ const StudentFormModal = ({
                         helperText={errorMessages.email || ''}
                         error={!!errorMessages.email}
                         onChange={handleChange}
+                        required
                     />
                     <Input
                         id='rollNo'

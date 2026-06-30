@@ -7,9 +7,6 @@ import { HTTP_METHOD } from '@/types/common';
 import { ApiResponse } from '@/types/api';
 import { ErrorMessagesType, SignInFormKeys, SignInFormType } from '@/types/signInFormType';
 
-import { EMAIL_OR_STUDENT_ID_REGEX } from '@/utils/regex';
-
-
 interface LoginUserDetail {
     fullName?: string;
     firstName?: string;
@@ -38,18 +35,12 @@ interface CheckSignInValuesArgs {
 
 export const ERROR_MESSAGES = {
     passwordPattern: 'Please enter your password',
-    namePattern: 'Please enter a valid email address or student ID',
 };
 
 export const VALIDATION_RULES = {
     [SignInFormKeys.PASSWORD]: {
         required: true,
         errorMessage: ERROR_MESSAGES.passwordPattern,
-    },
-    [SignInFormKeys.NAME]: {
-        required: true,
-        regex: EMAIL_OR_STUDENT_ID_REGEX,
-        errorMessage: ERROR_MESSAGES.namePattern,
     },
 };
 

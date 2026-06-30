@@ -121,7 +121,7 @@ export const STUDENT_VALIDATION = {
     dateOfBirth: { requiredMessage: 'Date of birth is required' },
     status: { requiredMessage: 'Status is required' },
     parentMobile: { requiredMessage: 'Parent Mobile is required' },
-    email: { requiredMessage: '' },
+    email: { requiredMessage: 'Email is required' },
     rollNo: { requiredMessage: '' },
     udisecode: { requiredMessage: 'UDISE Code is required' },
     address: { requiredMessage: '' },

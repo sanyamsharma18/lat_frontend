@@ -61,14 +61,6 @@ export const studentQueryKey = (filters?: StudentListFilters) =>
 
 export const singleStudentQueryKey = (studentId: string) => [QueryKeys.STUDENT, studentId] as const;
 
-const getNextStudentId = () =>
-    String(
-        fallbackStudents.reduce(
-            (highestId, student) => Math.max(highestId, Number(student.id) || 0),
-            0,
-        ) + 1,
-    );
-
 const assertSuccessfulResponse = (response: ApiResponse<unknown>) => {
     if (response.status === false) {
         throw new Error(response.message || response.error || 'Request failed');
@@ -185,29 +177,6 @@ const normalizeGradeFilter = (grade: string) => {
 const normalizeSectionFilter = (section: string) =>
     section.replace(/^Section\s+/i, '').trim().toLowerCase() || null;
 
-const buildFallbackStudent = (payload: StudentFormValues): Student => {
-    const id = getNextStudentId();
-
-    return {
-        id,
-        studentId: `STU-${id.padStart(3, '0')}`,
-        studentName: payload.studentName,
-        grade: payload.grade,
-        section: payload.section,
-        fatherName: payload.fatherName,
-        motherName: payload.motherName,
-        gender: payload.gender || 'Other',
-        dateOfBirth: payload.dateOfBirth,
-        status: payload.status,
-        createdDate: new Date().toISOString().slice(0, 10),
-        parentMobile: payload.parentMobile,
-        email: payload.email,
-        rollNo: payload.rollNo,
-        udisecode: payload.udisecode,
-        address: payload.address,
-    };
-};
-
 export const getStudentList = async (filters: StudentListFilters) => {
     const queryParams: QueryParamType = {
         search: filters.name || null,
@@ -238,32 +207,14 @@ export const createStudent = async (payload: StudentFormValues) =>
         url: ServerSideRoutes.TEACHER_STUDENTS,
         method: HTTP_METHOD.POST,
         body: { ...payload },
-    })
-        .then(assertSuccessfulResponse)
-        .catch((error) => {
-            console.warn('Create student API failed. Using mock success fallback.', error);
-            fallbackStudents = [buildFallbackStudent(payload), ...fallbackStudents];
-
-            return { status: true, message: 'Student created successfully' };
-        });
+    }).then(assertSuccessfulResponse);
 
 export const updateStudent = async (studentId: string, payload: StudentFormValues) =>
     callApi<ApiResponse<unknown>>({
         url: `${ServerSideRoutes.TEACHER_STUDENTS}/${studentId}`,
         method: HTTP_METHOD.PATCH,
         body: { ...payload },
-    })
-        .then(assertSuccessfulResponse)
-        .catch((error) => {
-            console.warn('Update student API failed. Using mock success fallback.', error);
-            fallbackStudents = fallbackStudents.map((student) =>
-                student.id === studentId
-                    ? { ...student, ...payload, gender: payload.gender || 'Other' }
-                    : student,
-            );
-
-            return { status: true, message: 'Student updated successfully' };
-        });
+    }).then(assertSuccessfulResponse);
 
 export const deleteStudent = async (studentId: string) =>
     callApi<ApiResponse<unknown>>({

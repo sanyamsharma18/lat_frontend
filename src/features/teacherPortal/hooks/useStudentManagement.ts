@@ -18,7 +18,6 @@ import useDebounce from '@/utils/useDebounce';
 import { STUDENT_PAGE_SIZE } from '../components/StudentManagementPage/constant';
 import {
     createStudent,
-    deleteStudent,
     downloadStudentUploadTemplate,
     studentListQueryOptions,
     studentQueryKey,
@@ -35,7 +34,6 @@ export const useStudentManagement = () => {
     const [page, setPage] = useState(1);
     const [modalMode, setModalMode] = useState<StudentModalMode>('add');
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
     const [selectedGrade, setSelectedGrade] = useState<StudentOption | null>(null);
@@ -99,22 +97,6 @@ export const useStudentManagement = () => {
         onError: (error) => {
             showToast({
                 message: error instanceof Error ? error.message : 'Unable to update student',
-                type: 'error',
-            });
-        },
-        onSettled: invalidateStudentList,
-    });
-
-    const deleteStudentMutation = useMutation({
-        mutationFn: deleteStudent,
-        onSuccess: () => {
-            showToast({ message: 'Student deleted successfully', type: 'success' });
-            setIsDeleteModalOpen(false);
-            setSelectedStudent(null);
-        },
-        onError: (error) => {
-            showToast({
-                message: error instanceof Error ? error.message : 'Unable to delete student',
                 type: 'error',
             });
         },
@@ -214,11 +196,6 @@ export const useStudentManagement = () => {
         setIsFormModalOpen(true);
     };
 
-    const handleOpenDeleteModal = (student: Student) => {
-        setSelectedStudent(student);
-        setIsDeleteModalOpen(true);
-    };
-
     const handleSubmitStudent = (payload: StudentFormValues) => {
         if (modalMode === 'edit' && selectedStudent) {
             updateStudentMutation.mutate({ studentId: selectedStudent.id, payload });
@@ -226,12 +203,6 @@ export const useStudentManagement = () => {
         }
 
         createStudentMutation.mutate(payload);
-    };
-
-    const handleDeleteStudent = () => {
-        if (selectedStudent) {
-            deleteStudentMutation.mutate(selectedStudent.id);
-        }
     };
 
     const handleToggleStatus = (isActive: boolean, studentId: string) => {
@@ -258,11 +229,9 @@ export const useStudentManagement = () => {
     return {
         filters,
         handleClearFilters,
-        handleDeleteStudent,
         handleDownloadStudentTemplate,
         handleGradeChange,
         handleOpenAddModal,
-        handleOpenDeleteModal,
         handleOpenEditModal,
         handleSearchChange,
         handleSectionChange,
@@ -271,8 +240,6 @@ export const useStudentManagement = () => {
         handleToggleStatus,
         handleUploadStudents,
         hasActiveFilters,
-        isDeleteModalOpen,
-        isDeleting: deleteStudentMutation.isPending,
         isFormModalOpen,
         isSubmitting: createStudentMutation.isPending || updateStudentMutation.isPending,
         isUploadModalOpen,
@@ -285,7 +252,6 @@ export const useStudentManagement = () => {
         selectedSection,
         selectedStatus,
         selectedStudent,
-        setIsDeleteModalOpen,
         setIsFormModalOpen,
         setIsUploadModalOpen,
         setPage,

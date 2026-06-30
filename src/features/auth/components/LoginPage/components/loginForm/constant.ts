@@ -10,12 +10,12 @@ export const LOGIN_PAGE_DATA = {
     subtitle: 'Sign in to continue to Assessment Journey',
 
     userName: {
-        label: 'Email or Student ID',
+        label: 'Username',
         name: 'phoneNumber',
         type: 'text',
-        placeholder: 'Enter your Email / Student ID',
+        placeholder: 'Enter your username',
         autoComplete: 'username',
-        ariaLabel: 'Email or StudentId',
+        ariaLabel: 'Username',
     },
 
     password: {
