@@ -11,9 +11,8 @@ import {
     Legend,
     LinearScale,
     Tooltip,
-    ArcElement,
 } from 'chart.js';
-import { Bar, Doughnut } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 import { DashboardStatCard, DashboardTone } from '@/components/ui/DashboardWidgets';
 import ShimmerUiContainer from '@/components/ui/ShimmerUiContainer';
@@ -27,7 +26,7 @@ import { DASHBOARD_METRICS, DASHBOARD_TEXT, DEFAULT_SUMMARY } from './constant';
 
 import styles from './styles.module.scss';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const formatMetricValue = (value: number) => new Intl.NumberFormat('en-US').format(value);
 
@@ -49,7 +48,7 @@ const DashboardPage = () => {
 
     const barChartData = useMemo<ChartData<'bar'>>(
         () => ({
-            labels: ['Teachers', 'Students', 'Generated', 'Attempted'],
+            labels: ['Teachers', 'Students', 'Generated'],
             datasets: [
                 {
                     label: 'Count',
@@ -57,34 +56,20 @@ const DashboardPage = () => {
                         summary.totalTeachers,
                         summary.totalStudents,
                         summary.totalQuestionsGenerated,
-                        summary.totalQuestionsAttemptedLastYear,
                     ],
-                    backgroundColor: ['#2563eb', '#16a34a', '#f97316', '#7c3aed'],
-                    borderRadius: 8,
-                    barThickness: 34,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.22)',
+                        'rgba(75, 192, 192, 0.24)',
+                        'rgba(255, 205, 86, 0.24)',
+                    ],
+                    borderColor: ['#ff6384', '#4bc0c0', '#ffcd56'],
+                    borderWidth: 1.5,
+                    borderRadius: 0,
+                    barThickness: 58,
                 },
             ],
         }),
         [summary],
-    );
-
-    const questionChartData = useMemo<ChartData<'doughnut'>>(
-        () => ({
-            labels: ['Questions Generated', 'Attempted Last Year'],
-            datasets: [
-                {
-                    data: [
-                        summary.totalQuestionsGenerated,
-                        summary.totalQuestionsAttemptedLastYear,
-                    ],
-                    backgroundColor: ['#f97316', '#7c3aed'],
-                    borderColor: '#ffffff',
-                    borderWidth: 4,
-                    hoverOffset: 8,
-                },
-            ],
-        }),
-        [summary.totalQuestionsAttemptedLastYear, summary.totalQuestionsGenerated],
     );
 
     const barChartOptions = useMemo<ChartOptions<'bar'>>(
@@ -104,20 +89,19 @@ const DashboardPage = () => {
             scales: {
                 x: {
                     grid: {
-                        display: false,
+                        color: 'rgba(148, 163, 184, 0.22)',
                     },
                     ticks: {
-                        color: '#475569',
+                        color: '#64748b',
                         font: {
                             size: 12,
-                            weight: 600,
                         },
                     },
                 },
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: '#e2e8f0',
+                        color: 'rgba(148, 163, 184, 0.22)',
                     },
                     ticks: {
                         color: '#64748b',
@@ -129,38 +113,9 @@ const DashboardPage = () => {
         [],
     );
 
-    const doughnutChartOptions = useMemo<ChartOptions<'doughnut'>>(
-        () => ({
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '66%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        boxWidth: 10,
-                        boxHeight: 10,
-                        color: '#475569',
-                        font: {
-                            size: 12,
-                            weight: 600,
-                        },
-                    },
-                },
-                tooltip: {
-                    callbacks: {
-                        label: (context) =>
-                            `${context.label}: ${formatMetricValue(Number(context.raw ?? 0))}`,
-                    },
-                },
-            },
-        }),
-        [],
-    );
-
     const renderSummaryCards = () => {
         if (dashboardSummaryQuery.isLoading) {
-            return Array.from({ length: 4 }).map((_, index) => (
+            return Array.from({ length: DASHBOARD_METRICS.length }).map((_, index) => (
                 <ShimmerUiContainer
                     key={`dashboard-summary-loading-${index + 1}`}
                     className={styles.shimmerCard}
@@ -237,27 +192,6 @@ const DashboardPage = () => {
                     </div>
                     <div className={styles.barChartCanvas}>
                         <Bar data={barChartData} options={barChartOptions} />
-                    </div>
-                </article>
-
-                <article className={styles.chartPanel}>
-                    <div className={styles.chartHeader}>
-                        <Text
-                            tagType='h2'
-                            font={[FontType.text_lg_semibold, FontType.text_lg_semibold]}
-                            color='black'
-                        >
-                            {DASHBOARD_TEXT.questionChartTitle}
-                        </Text>
-                        <Text
-                            font={[FontType.text_sm_regular, FontType.text_sm_regular]}
-                            color='gray-500'
-                        >
-                            {DASHBOARD_TEXT.questionChartSubtitle}
-                        </Text>
-                    </div>
-                    <div className={styles.doughnutChartCanvas}>
-                        <Doughnut data={questionChartData} options={doughnutChartOptions} />
                     </div>
                 </article>
             </section>

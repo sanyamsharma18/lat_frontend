@@ -1,5 +1,374 @@
 # Change Log
 
+## Student Exam Check Payload Fix
+
+### Feature Name
+
+Student Dashboard Exam Availability Check
+
+### What Was Changed
+
+* Added `subjectId: 1` to the student exam check request payload.
+* Updated the `StudentExamCheckPayload` TypeScript interface so `subjectId` is required.
+
+### Why It Was Changed
+
+* The backend exam check API expects `studentId`, `termId`, and `subjectId`.
+* The frontend was only sending `studentId` and `termId`, so the request did not match the backend contract.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/types/studentPortal.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard.
+* Start Examination availability check.
+
+### APIs Affected
+
+* Backend route: `POST /api/v1/students/exam/check`
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Open the Student Dashboard and confirm the exam check request body includes `studentId`, `termId`, and `subjectId`.
+* Confirm the Start Examination button enables only when backend status is `NOT_STARTED`.
+
+### Future Improvements
+
+* Replace the static `termId` and `subjectId` values with backend-provided exam context when available.
+
+## Proxy Role Resolution From JWT
+
+### Feature Name
+
+Role-Based Route Protection
+
+### What Was Changed
+
+* Updated the proxy role check to read the role from the JWT token first.
+* Kept the existing user-detail cookie role check as a fallback.
+* Added safe JWT payload decoding for route-protection role resolution.
+
+### Why It Was Changed
+
+* Redirects could be wrong when `x_det` was stale, missing, or had a different role than the current login token.
+* The token already contains the authenticated role and should drive route access when available.
+
+### Files Modified
+
+* `src/proxy.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Login redirect flow.
+* Middleware/proxy route protection for admin, teacher, student, and reviewer areas.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as teacher and confirm `/teacher/dashboard` is allowed.
+* Confirm stale `x_det` data does not force redirect to the wrong portal when `x_tok` contains the correct role.
+* Confirm admin, student, and reviewer route protection still redirects correctly.
+
+### Future Improvements
+
+* Add server-side token verification in proxy if signed verification support is added there.
+
+## Dashboard Category Chart Alignment
+
+### Feature Name
+
+Teacher and Reviewer Dashboard Category Charts
+
+### What Was Changed
+
+* Removed month-based chart labels from the teacher dashboard chart.
+* Removed month-based chart labels from the reviewer dashboard chart.
+* Updated teacher chart to show Total, Active, and Inactive students.
+* Updated reviewer chart to show Total, Approved, Rejected, and Draft questions.
+
+### Why It Was Changed
+
+* Teacher and reviewer charts should follow the same category-based pattern as the admin dashboard.
+
+### Files Modified
+
+* `src/features/teacherPortal/components/TeacherDashboardPage/constant.tsx`
+* `src/features/teacherPortal/components/TeacherDashboardPage/index.tsx`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/constant.tsx`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Teacher dashboard.
+* Reviewer dashboard.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Confirm teacher chart no longer shows months.
+* Confirm reviewer chart no longer shows months.
+* Confirm chart values match the dashboard summary cards.
+
+### Future Improvements
+
+* Add backend-provided time-series charts only when the API supports monthly report data.
+
+## Dashboard Pastel Activity Charts
+
+### Feature Name
+
+Teacher, Reviewer, and Admin Dashboard Charts
+
+### What Was Changed
+
+* Removed the `Questions Attempted` summary card from the teacher dashboard.
+* Added a pastel monthly activity bar chart to the teacher dashboard.
+* Added a pastel monthly activity bar chart to the reviewer dashboard.
+* Updated the admin dashboard chart colors to use light shaded bars with colored borders.
+* Updated teacher loading placeholders and wide-screen card layout to match the remaining card count.
+
+### Why It Was Changed
+
+* The dashboards needed a cleaner visual report style and the teacher dashboard should not show the question attempt total as a card.
+
+### Files Modified
+
+* `src/features/dashboardManagement/components/DashboardPage/index.tsx`
+* `src/features/teacherPortal/components/TeacherDashboardPage/constant.tsx`
+* `src/features/teacherPortal/components/TeacherDashboardPage/index.tsx`
+* `src/features/teacherPortal/components/TeacherDashboardPage/styles.module.scss`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/constant.tsx`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/index.tsx`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Reports & Analytics dashboard.
+* Teacher dashboard.
+* Reviewer dashboard.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Confirm the teacher dashboard no longer shows the `Questions Attempted` card.
+* Confirm teacher, reviewer, and admin charts render with light pastel bar colors.
+* Confirm dashboard cards and charts remain responsive on desktop and smaller screens.
+
+### Future Improvements
+
+* Replace derived monthly chart values with backend-provided monthly report series when available.
+
+## Teacher Login Redirect Fix
+
+### Feature Name
+
+Role-Based Login Redirect
+
+### What Was Changed
+
+* Updated login redirect logic to read the user role from either `roleName` or `role.name`.
+* Normalized the role value before deciding the dashboard route.
+* Stored the resolved role consistently in the user detail cookie data.
+
+### Why It Was Changed
+
+* Teacher login could fail to redirect to the teacher dashboard when the backend returned the role in a nested `role.name` object instead of only `roleName`.
+
+### Files Modified
+
+* `src/features/auth/hooks/useLoginForm.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Login page.
+* Role-based dashboard redirection after successful login.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as a teacher and confirm successful redirect to `/teacher/dashboard`.
+* Login as admin, student, and reviewer to confirm their redirects still work.
+* Confirm middleware allows the redirected route after cookies are stored.
+
+### Future Improvements
+
+* Move shared role-to-dashboard mapping into one common utility if more role redirects are added.
+
+## Admin Dashboard Question Activity Chart Removal
+
+### Feature Name
+
+Admin Dashboard Reports Chart
+
+### What Was Changed
+
+* Removed the `Question Activity` doughnut chart from the admin dashboard.
+* Removed the `Attempted` bar from the Platform Volume chart.
+* Updated the chart subtitle so it only mentions teachers, students, and generated questions.
+* Removed unused doughnut chart styles and imports.
+
+### Why It Was Changed
+
+* The admin dashboard should no longer show yearly attempt information in chart form.
+
+### Files Modified
+
+* `src/features/dashboardManagement/components/DashboardPage/constant.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/index.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Reports & Analytics dashboard.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Confirm the admin dashboard shows only one chart panel.
+* Confirm the Platform Volume chart has Teachers, Students, and Generated bars only.
+* Confirm no `Question Activity` heading appears in the dashboard UI.
+
+### Future Improvements
+
+* Add a different second chart when final reporting requirements are confirmed.
+
+## Admin Dashboard Attempt Card Removal
+
+### Feature Name
+
+Admin Dashboard Summary Metrics
+
+### What Was Changed
+
+* Removed the `Attempted Last Year` summary card from the admin dashboard.
+* Updated the loading placeholders to match the remaining dashboard metric count.
+* Adjusted the wide-screen summary grid from four columns to three columns.
+
+### Why It Was Changed
+
+* The admin dashboard should no longer show the yearly attempt summary card.
+
+### Files Modified
+
+* `src/features/dashboardManagement/components/DashboardPage/constant.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/index.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Reports & Analytics dashboard.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Confirm the admin dashboard shows only Total Teachers, Total Students, and Questions Generated cards.
+* Confirm loading skeletons display as three cards.
+* Confirm the reports charts still render correctly.
+
+### Future Improvements
+
+* Revisit chart labels if backend report requirements change.
+
+## Student Exam Client Submit
+
+### Feature Name
+
+Client-Side Exam Submit API
+
+### What Was Changed
+
+* Updated student exam submit to call the backend directly from the client.
+* Submit now sends the JWT token from cookies in the `Authorization` header.
+* Submit payload remains `{ studentExamId, answers: [{ questionId, optionId }] }`.
+* Added a clear error when the student JWT token is missing.
+
+### Why It Was Changed
+
+* The submit API needs to write entries directly to the backend from the student examination page.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentExaminationPage/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Examination submit flow.
+
+### APIs Affected
+
+* Backend route: `POST /api/v1/students/exam/submit`
+
+### Any Breaking Changes
+
+* Submit no longer uses the internal Next.js submit route from the client utility.
+
+### Testing Considerations
+
+* Submit an exam and confirm the browser sends the request to the backend URL.
+* Confirm the request includes `Authorization: Bearer <token>`.
+* Confirm the payload includes `studentExamId` and all selected answers.
+
+### Future Improvements
+
+* Move this back behind the internal API route if the auth cookie becomes HttpOnly-only.
+
 ## Student Exam Start And Batch Submit
 
 ### Feature Name

@@ -38,9 +38,7 @@ export const useStudentDashboard = (
     const [isInstructionsAccepted, setIsInstructionsAccepted] = useState(false);
     const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
 
-    const studentProfileQuery = useQuery(
-        queryOptions(studentProfileQueryOptions(initialProfile)),
-    );
+    const studentProfileQuery = useQuery(queryOptions(studentProfileQueryOptions(initialProfile)));
     const examInstructionsQuery = useQuery(
         queryOptions(examInstructionsQueryOptions(initialInstructions)),
     );

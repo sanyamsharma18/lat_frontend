@@ -1,4 +1,3 @@
-import ActivityIcon from '@/assets/svg/activity-board.svg';
 import AnalyticsIcon from '@/assets/svg/sidebar-icon/analytics-icon.svg';
 import CategoryIcon from '@/assets/svg/sidebar-icon/category-icon.svg';
 import DashboardIcon from '@/assets/svg/sidebar-icon/dashboard-icon.svg';
@@ -9,9 +8,7 @@ export const DASHBOARD_TEXT = {
     title: 'Reports & Analytics',
     subtitle: 'Summary view of teachers, students, and question activity.',
     volumeChartTitle: 'Platform Volume',
-    volumeChartSubtitle: 'Teachers, students, generated questions, and yearly attempts.',
-    questionChartTitle: 'Question Activity',
-    questionChartSubtitle: 'Generated questions compared with last year attempts.',
+    volumeChartSubtitle: 'Teachers, students, and generated questions.',
     errorTitle: 'Dashboard data is temporarily unavailable',
     errorDescription: 'Showing temporary summary data so reporting remains usable.',
     mockAlert: 'Backend dashboard data is unavailable. Showing temporary summary data.',
@@ -41,14 +38,6 @@ export const DASHBOARD_METRICS = [
         tone: 'orange',
         Icon: CategoryIcon,
         getValue: (summary: DashboardSummary) => summary.totalQuestionsGenerated,
-    },
-    {
-        id: 'totalQuestionsAttemptedLastYear',
-        title: 'Attempted Last Year',
-        description: 'Attempts during last 12 months',
-        tone: 'purple',
-        Icon: ActivityIcon,
-        getValue: (summary: DashboardSummary) => summary.totalQuestionsAttemptedLastYear,
     },
 ] as const;
 
