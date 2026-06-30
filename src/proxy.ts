@@ -19,6 +19,7 @@ const ROLE_HOME_ROUTES: Record<ProtectedRoleSegment, string> = {
     admin: AUTH_ROUTES.adminDashboard,
     teacher: AUTH_ROUTES.teacherDashboard,
     student: AUTH_ROUTES.studentDashboard,
+    reviewer: AUTH_ROUTES.reviewerDashboard,
 };
 
 const PUBLIC_API_ROUTES = [
@@ -51,6 +52,10 @@ const normalizeRole = (roleName?: string): ProtectedRoleSegment | null => {
 
     if (normalizedRole === 'student') {
         return 'student';
+    }
+
+    if (normalizedRole === 'reviewer') {
+        return 'reviewer';
     }
 
     return null;

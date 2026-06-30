@@ -174,12 +174,16 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
         });
     };
 
+    const modalTitle = mode === 'edit' ? TEACHER_FORM_TEXT.editTitle : TEACHER_FORM_TEXT.addTitle;
+    const submitLabel =
+        mode === 'edit' ? TEACHER_FORM_TEXT.editSubmitButton : TEACHER_FORM_TEXT.addSubmitButton;
+
     return (
         <Modal open={open} setOpen={onClose} sx={{ '& .MuiPaper-root': { borderRadius: '12px', minWidth: '600px' } }}>
             <form className={styles.form} onSubmit={handleSubmit} noValidate>
                 <div className={styles.header}>
                     <Text tagType='h2' font={[FontType.text_xl_semibold, FontType.text_xl_semibold]} color='black'>
-                        {mode === 'edit' ? TEACHER_FORM_TEXT.editTitle : TEACHER_FORM_TEXT.addTitle}
+                        {modalTitle}
                     </Text>
                 </div>
 
@@ -199,7 +203,7 @@ const TeacherFormModal = ({ open, mode, teacher, isSubmitting, onClose, onSubmit
 
                 <div className={styles.actions}>
                     <Button type='button' label={TEACHER_FORM_TEXT.cancelButton} variant={ButtonVariant.OUTLINED} color='black' onClick={onClose} disabled={isSubmitting} />
-                    <Button type='submit' label={mode === 'edit' ? TEACHER_FORM_TEXT.editSubmitButton : TEACHER_FORM_TEXT.addSubmitButton} variant={ButtonVariant.SOLID} color='white' disabled={!isFormValid || isSubmitting} loader={isSubmitting} />
+                    <Button type='submit' label={submitLabel} variant={ButtonVariant.SOLID} color='white' disabled={!isFormValid || isSubmitting} loader={isSubmitting} />
                 </div>
             </form>
         </Modal>

@@ -1,0 +1,119 @@
+@use '@styles/theme' as *;
+
+.preview {
+    width: min(860px, 92vw);
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 22px;
+    background: $white;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $gray-200;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.metaGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    background: $gray-100;
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.richText,
+.questionText {
+    color: $black;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+
+    p {
+        margin: 0;
+    }
+}
+
+.questionText {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.optionList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.optionCard {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+}
+
+.optionLabel {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: $blue-50;
+    color: $blue-600;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.remarkGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.remarkInput {
+    min-height: 82px;
+    resize: vertical;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+
+    &:focus {
+        outline: 2px solid $orange-500;
+        outline-offset: 1px;
+    }
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+}

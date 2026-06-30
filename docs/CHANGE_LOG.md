@@ -1,5 +1,376 @@
 # Change Log
 
+## Admin Dashboard Hover Polish
+
+### Feature Name
+
+Reports & Analytics Hover States
+
+### What Was Changed
+
+* Added light hover shade effects to the Admin Dashboard metric cards.
+* Added light hover shade effects to chart panels.
+* Added subtle lift and shadow on hover for a more polished visual preview.
+
+### Why It Was Changed
+
+* Dashboard cards and charts should feel more interactive and visually attractive when users hover over them.
+
+### Files Modified
+
+* `src/features/dashboardManagement/components/DashboardPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Reports & Analytics dashboard.
+
+### APIs Affected
+
+* No API changes.
+
+### Any Breaking Changes
+
+* No breaking changes expected.
+
+### Testing Considerations
+
+* Open `/admin/dashboard`.
+* Hover metric cards and chart panels.
+* Confirm hover states are smooth and do not shift layout unexpectedly.
+
+### Future Improvements
+
+* Add click-through dashboard drilldowns if detailed reports become available.
+
+## Admin Dashboard Analytics Charts
+
+### Feature Name
+
+Reports & Analytics Charts
+
+### What Was Changed
+
+* Added a bar chart to the Admin Reports & Analytics dashboard.
+* Added a doughnut chart for question activity.
+* Charts are generated from the existing dashboard summary data.
+* Added responsive chart panels below the existing metric cards.
+
+### Why It Was Changed
+
+* The dashboard needed stronger visual reporting for quick admin understanding.
+* Existing summary numbers are easier to compare when shown as charts.
+
+### Files Modified
+
+* `src/features/dashboardManagement/components/DashboardPage/index.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/constant.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Dashboard Reports & Analytics page.
+* Existing dashboard summary cards remain unchanged.
+
+### APIs Affected
+
+* No API changes.
+* Charts use the existing admin dashboard summary response.
+
+### Any Breaking Changes
+
+* No breaking changes expected.
+
+### Testing Considerations
+
+* Open `/admin/dashboard`.
+* Confirm summary cards still render.
+* Confirm the Platform Volume bar chart renders.
+* Confirm the Question Activity doughnut chart renders.
+* Confirm the charts resize correctly on desktop and mobile widths.
+
+### Future Improvements
+
+* Replace derived chart data with backend-provided monthly trends when available.
+
+## Reviewer Question Management
+
+### Feature Name
+
+Reviewer Question Management
+
+### What Was Changed
+
+* Added a new reviewer Question Management page at `/reviewer/questions`.
+* Added reviewer sidebar navigation for Question Management.
+* Added a mock question list API with search and filter support.
+* Added a mock review action API for approving and rejecting questions.
+* Added a search/filter panel matching the shared reference layout.
+* Added a question list table with question ID, grade, subject, competency, question text, status, image, and actions.
+* Added a preview modal with question details, three options, remark input, Approve button, and Reject button.
+
+### Why It Was Changed
+
+* Reviewers need a dedicated workflow to inspect generated questions and approve or reject them.
+* The page is API-driven with mock data now so it can be connected to backend review APIs later without redesigning the UI.
+
+### Files Modified
+
+* `src/app/reviewer/questions/page.tsx`
+* `src/app/api/reviewer/questions/route.ts`
+* `src/app/api/reviewer/questions/[questionId]/review/route.ts`
+* `src/components/shared/Sidebar/constant.tsx`
+* `src/constants/serverSideRoutes.ts`
+* `src/features/reviewerPortal/index.ts`
+* `src/features/reviewerPortal/hooks/useReviewerQuestionManagement.ts`
+* `src/features/reviewerPortal/components/ReviewerQuestionManagementPage/index.tsx`
+* `src/features/reviewerPortal/components/ReviewerQuestionManagementPage/constant.ts`
+* `src/features/reviewerPortal/components/ReviewerQuestionManagementPage/styles.module.scss`
+* `src/features/reviewerPortal/components/ReviewerQuestionManagementPage/utils.ts`
+* `src/features/reviewerPortal/components/ReviewerQuestionManagementPage/components/QuestionReviewModal/index.tsx`
+* `src/features/reviewerPortal/components/ReviewerQuestionManagementPage/components/QuestionReviewModal/styles.module.scss`
+* `src/types/reviewerQuestion.ts`
+* `src/utils/queryKeys.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Reviewer sidebar.
+* Reviewer Question Management page.
+* Question review preview modal.
+* Shared DataTable, Input, Dropdown, Button, Modal, Toaster, and loading shimmer components are reused.
+
+### APIs Affected
+
+* Browser route: `GET /api/reviewer/questions`
+* Browser route: `PATCH /api/reviewer/questions/:questionId/review`
+* Current implementation returns mock data and mock review success.
+
+### Any Breaking Changes
+
+* No breaking changes expected.
+
+### Testing Considerations
+
+* Open `/reviewer/questions` as a reviewer user.
+* Confirm search and filters update the question list.
+* Click View and confirm the preview modal shows question details and three options.
+* Add a remark and click Approve or Reject.
+* Confirm success toast appears and the modal closes.
+
+### Future Improvements
+
+* Connect the list and review action routes to real backend reviewer question APIs.
+* Add image preview support when backend image URLs are available.
+
+## Reviewer Dashboard
+
+### Feature Name
+
+Reviewer Dashboard
+
+### What Was Changed
+
+* Added a new Reviewer Dashboard page at `/reviewer/dashboard`.
+* Added a reviewer protected role segment so reviewer users can access reviewer pages only.
+* Added reviewer login redirection to `/reviewer/dashboard`.
+* Added a reviewer sidebar menu with Dashboard navigation.
+* Added a mock dashboard API route for reviewer summary metrics.
+* Added dashboard cards for total questions, approved questions, rejected questions, and pending questions.
+
+### Why It Was Changed
+
+* Reviewer users need their own dashboard after login.
+* The dashboard should be API-driven, even while backend metrics are not ready.
+* Reviewer pages should follow the same protected route and dashboard architecture as admin and teacher pages.
+
+### Files Modified
+
+* `src/app/reviewer/layout.tsx`
+* `src/app/reviewer/dashboard/page.tsx`
+* `src/app/api/reviewer/dashboard/route.ts`
+* `src/components/shared/Sidebar/constant.tsx`
+* `src/constants/authSession.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/features/auth/hooks/useLoginForm.ts`
+* `src/features/reviewerPortal/index.ts`
+* `src/features/reviewerPortal/hooks/useReviewerDashboard.ts`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/index.tsx`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/constant.tsx`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/styles.module.scss`
+* `src/features/reviewerPortal/components/ReviewerDashboardPage/utils.ts`
+* `src/proxy.ts`
+* `src/types/reviewerDashboard.ts`
+* `src/utils/queryKeys.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Login redirect flow.
+* Protected route proxy.
+* Shared admin shell and sidebar.
+* Reviewer Dashboard page.
+* Shared dashboard statistic cards.
+
+### APIs Affected
+
+* Browser route: `GET /api/reviewer/dashboard`
+* Current implementation returns mock data for dashboard metrics.
+
+### Any Breaking Changes
+
+* No breaking changes expected.
+
+### Testing Considerations
+
+* Login with a user whose role is `Reviewer` and confirm redirect to `/reviewer/dashboard`.
+* Confirm reviewer cannot access admin, teacher, or student protected pages.
+* Confirm dashboard cards show total, approved, rejected, and pending question counts.
+* Confirm loading and error states render correctly when the dashboard query changes state.
+
+### Future Improvements
+
+* Replace the mock dashboard route with the real reviewer dashboard backend endpoint when available.
+* Add reviewer task lists or links to question review workflows.
+
+## Reviewer API Integration Update
+
+### Feature Name
+
+Reviewer List, Edit, and Status Integration
+
+### What Was Changed
+
+* Updated Reviewer Management to use the real reviewer backend contract.
+* Reviewer create and update now send only `firstName`, `lastName`, `email`, and `mobileNo`.
+* Added edit reviewer support through `PATCH /api/v1/reviewers/:id`.
+* Added active/inactive reviewer status updates through `PATCH /api/v1/reviewers/:id/status`.
+* Removed duplicate Add Reviewer buttons so only one primary Add Reviewer button appears.
+* Removed placeholder reviewer fields that are not part of the supplied backend payload.
+
+### Why It Was Changed
+
+* The reviewer screen needed to match the confirmed backend APIs exactly.
+* Duplicate Add Reviewer buttons created confusing UI.
+* Reviewer status should be controlled through the backend instead of static frontend display.
+
+### Files Modified
+
+* `src/types/reviewer.ts`
+* `src/services/reviewer/reviewer.service.ts`
+* `src/app/api/admin/reviewers/[reviewerId]/route.ts`
+* `src/app/api/admin/reviewers/[reviewerId]/status/route.ts`
+* `src/features/reviewerManagement/hooks/useReviewerManagement.ts`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/index.tsx`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/constant.ts`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/styles.module.scss`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/utils.ts`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/components/ReviewerFormModal/index.tsx`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Reviewer Management page.
+* Reviewer add/edit modal.
+* Reviewer table actions and status badge.
+
+### APIs Affected
+
+* Browser route: `GET /api/admin/reviewers`
+* Browser route: `POST /api/admin/reviewers`
+* Browser route: `PATCH /api/admin/reviewers/:reviewerId`
+* Browser route: `PATCH /api/admin/reviewers/:reviewerId/status`
+* Backend route: `GET /api/v1/reviewers`
+* Backend route: `POST /api/v1/reviewers`
+* Backend route: `PATCH /api/v1/reviewers/:reviewerId`
+* Backend route: `PATCH /api/v1/reviewers/:reviewerId/status`
+
+### Any Breaking Changes
+
+* Reviewer create/edit no longer sends placeholder fields such as employee code, gender, or address.
+
+### Testing Considerations
+
+* Open `/admin/reviewers` and confirm reviewers load from the backend.
+* Add a reviewer and confirm the list refreshes.
+* Edit a reviewer and confirm the updated values are saved.
+* Toggle reviewer status and confirm Active/Inactive updates after the API succeeds.
+
+### Future Improvements
+
+* Add delete reviewer support if the backend exposes a delete endpoint.
+
+## Admin Reviewer Management
+
+### Feature Name
+
+Reviewer Management
+
+### What Was Changed
+
+* Added a new Admin Reviewer Management page.
+* Added reviewer list fetching with search and pagination.
+* Added an Add Reviewer modal with required field validation.
+* Added an internal Next.js API route for reviewer list and create requests.
+* Added Reviewer Management to the admin sidebar.
+
+### Why It Was Changed
+
+* Admin users need a dedicated place to add reviewers and view existing reviewers.
+* Reviewer APIs should follow the same authenticated server forwarding pattern as the rest of the admin portal.
+
+### Files Modified
+
+* `src/app/admin/reviewers/page.tsx`
+* `src/app/api/admin/reviewers/route.ts`
+* `src/components/shared/Sidebar/constant.tsx`
+* `src/config/apiRoutes.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/features/reviewerManagement/index.ts`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/index.tsx`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/constant.ts`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/styles.module.scss`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/utils.ts`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/components/ReviewerFormModal/index.tsx`
+* `src/features/reviewerManagement/components/ReviewerManagementPage/components/ReviewerFormModal/styles.module.scss`
+* `src/features/reviewerManagement/hooks/useReviewerManagement.ts`
+* `src/services/reviewer/reviewer.service.ts`
+* `src/types/reviewer.ts`
+* `src/utils/queryKeys.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin sidebar navigation.
+* Admin Reviewer Management page.
+* Reviewer add modal.
+* Shared DataTable, Input, Button, Dropdown, Modal, Toaster, and loading shimmer components are reused.
+
+### APIs Affected
+
+* Browser route: `GET /api/admin/reviewers`
+* Browser route: `POST /api/admin/reviewers`
+* Backend route assumed: `GET /api/v1/reviewers`
+* Backend route assumed: `POST /api/v1/reviewers`
+
+### Any Breaking Changes
+
+* No breaking changes expected.
+
+### Testing Considerations
+
+* Open `/admin/reviewers` from the admin sidebar.
+* Confirm the reviewer list loads through the internal API route.
+* Confirm search and pagination update the request query params.
+* Confirm Add Reviewer stays disabled until required fields are valid.
+* Confirm creating a reviewer refreshes the reviewer list.
+
+### Future Improvements
+
+* Add edit/delete reviewers when backend contracts are available.
+* Replace the assumed reviewer backend path if the backend exposes a different endpoint.
+
 ## Dynamic Student Upload Flow
 
 ### Feature Name

@@ -13,6 +13,7 @@ export const API_ROUTES = {
     adminReject: `${API_URL}/admin/reject`,
     adminSetDealAmount: `${API_URL}/admin/set-deal-amount`,
     adminSiteVisitors: `${API_URL}/admin/site-visitors`,
+    adminReviewers: `${API_URL}/reviewers`,
     adminTeachers: `${API_URL}/teachers`,
     uploadTeachers: `${API_URL}/teachers/bulk`,
     dashboardSummary: `${API_URL}/admin/dashboard/summary`,

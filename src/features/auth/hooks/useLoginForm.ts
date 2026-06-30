@@ -131,6 +131,8 @@ export const useLoginForm = () => {
                     router.replace('/teacher/dashboard');
                 } else if (roleName === 'student') {
                     router.replace('/student/dashboard');
+                } else if (roleName === 'reviewer') {
+                    router.replace('/reviewer/dashboard');
                 } else {
                     router.replace('/dashboard');
                 }
