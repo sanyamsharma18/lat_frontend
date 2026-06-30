@@ -32,7 +32,7 @@ export const getQuestionList = async (filters: QuestionListFilters) => {
         subject: filters.subject || null,
         competency: filters.competency || null,
         status: filters.status || null,
-        termId: filters.termId || null,
+        termId: (filters as any).termId || null,
         page: String(filters.page),
         limit: String(filters.limit),
     };

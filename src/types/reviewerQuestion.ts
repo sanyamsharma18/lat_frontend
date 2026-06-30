@@ -2,8 +2,12 @@ export type ReviewerQuestionStatus = 'Draft' | 'Approved' | 'Rejected';
 
 export interface ReviewerQuestionOption {
     id: string;
-    label: string;
+    label?: string;
     text: string;
+    isCorrect?: boolean;
+    imageUrl?: string | null;
+    imagePrompt?: string;
+    rationale?: string;
 }
 
 export interface ReviewerQuestion {
@@ -20,6 +24,7 @@ export interface ReviewerQuestion {
     status: ReviewerQuestionStatus;
     imageUrl: string | null;
     options: ReviewerQuestionOption[];
+    answerExplanation?: string;
 }
 
 export interface ReviewerQuestionFilters {

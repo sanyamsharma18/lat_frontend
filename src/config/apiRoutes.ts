@@ -36,4 +36,5 @@ export const API_ROUTES = {
     login: `${API_URL}/login`,
     reviewerDashboard: `${API_URL}/reviewer/dashboard`,
     reviewQuestion: (id: string) => `${API_URL}/questions/${id}/review`,
+    reports: (type: string) => `${API_URL}/reports/${type}`,
 };

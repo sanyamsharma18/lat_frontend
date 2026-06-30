@@ -37,7 +37,13 @@ export const ERROR_MESSAGES = {
     passwordPattern: 'Please enter your password',
 };
 
-export const VALIDATION_RULES = {
+interface ValidationRule {
+    required: boolean;
+    errorMessage: string;
+    regex?: RegExp;
+}
+
+export const VALIDATION_RULES: Partial<Record<SignInFormKeys, ValidationRule>> = {
     [SignInFormKeys.PASSWORD]: {
         required: true,
         errorMessage: ERROR_MESSAGES.passwordPattern,

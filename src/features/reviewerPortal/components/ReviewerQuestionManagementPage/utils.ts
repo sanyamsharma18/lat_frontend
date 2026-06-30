@@ -60,7 +60,9 @@ export const getReviewerQuestions = async (
     if (filters.gradeGroup) queryParams.gradeGroup = filters.gradeGroup;
     if (filters.grade) queryParams.grade = filters.grade;
     if (filters.subject) queryParams.subject = filters.subject;
-    if (filters.term) queryParams.term = filters.term;
+    if (filters.term) {
+        queryParams.term = filters.term === 'Term 1' ? '1' : filters.term === 'Term 2' ? '2' : filters.term;
+    }
     if (filters.competency) queryParams.competency = filters.competency;
     if (filters.status) queryParams.status = filters.status;
 

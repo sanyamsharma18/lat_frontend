@@ -57,7 +57,7 @@
     align-items: end;
 
     @include breakpoints('md') {
-        grid-template-columns: minmax(220px, 1fr) minmax(160px, max-content);
+        grid-template-columns: 240px minmax(160px, max-content);
     }
 }
 

@@ -1,5 +1,53 @@
 # Change Log
 
+## Reports Section Type Fix
+
+### Feature Name
+
+Reports Build Error Fix
+
+### What Was Changed
+
+* Fixed the Reports page dependency on removed dashboard constants.
+* Added local report filter options for region, grade, and subject filters.
+* Removed an unused mock database reference from the Reports page.
+* Fixed login validation rule typing so username fields without regex validation do not break TypeScript.
+* Cleaned Reports page lint formatting around the report data memoization.
+
+### Why It Was Changed
+
+* The Reports section was failing TypeScript because it imported constants that no longer existed.
+* The project build was also blocked by a login validation typing error.
+
+### Files Modified
+
+* `src/features/reportManagement/components/ReportPage/index.tsx`
+* `src/features/auth/components/LoginPage/components/loginForm/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Reports page.
+* Login form validation utility.
+
+### APIs Affected
+
+* No API changes.
+
+### Any Breaking Changes
+
+* No breaking changes expected.
+
+### Testing Considerations
+
+* Open the Reports section and confirm filter dropdowns render.
+* Confirm the Reports page can load report data using the existing API hook.
+* Confirm login form validation behavior remains unchanged.
+
+### Future Improvements
+
+* Replace static report filter options with backend-driven filter metadata when available.
+
 ## Admin Dashboard Hover Polish
 
 ### Feature Name
