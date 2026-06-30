@@ -8,6 +8,10 @@ import { DashboardSummary } from '@/types/dashboard';
 export const DASHBOARD_TEXT = {
     title: 'Reports & Analytics',
     subtitle: 'Summary view of teachers, students, and question activity.',
+    volumeChartTitle: 'Platform Volume',
+    volumeChartSubtitle: 'Teachers, students, generated questions, and yearly attempts.',
+    questionChartTitle: 'Question Activity',
+    questionChartSubtitle: 'Generated questions compared with last year attempts.',
     errorTitle: 'Dashboard data is temporarily unavailable',
     errorDescription: 'Showing temporary summary data so reporting remains usable.',
     mockAlert: 'Backend dashboard data is unavailable. Showing temporary summary data.',

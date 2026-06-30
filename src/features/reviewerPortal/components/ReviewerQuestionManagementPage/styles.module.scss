@@ -1,0 +1,218 @@
+@use '@styles/theme' as *;
+
+.page {
+    min-height: 100%;
+    padding: 20px;
+    background: $gray-100;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @include breakpoints('lg') {
+        padding: 24px;
+    }
+}
+
+.panel,
+.tablePanel {
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $white;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.panel {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panelTitle,
+.tableHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.searchGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    align-items: end;
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include breakpoints('xl') {
+        grid-template-columns: minmax(220px, 1.3fr) repeat(5, minmax(140px, 1fr));
+    }
+}
+
+.statusRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    align-items: end;
+
+    @include breakpoints('md') {
+        grid-template-columns: minmax(220px, 1fr) minmax(160px, max-content);
+    }
+}
+
+.resetButton {
+    height: 40px;
+    align-self: end;
+}
+
+.tablePanel {
+    overflow: hidden;
+}
+
+.tableHeader,
+.tableFooter {
+    padding: 16px 18px;
+}
+
+.tableFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.questionTextColumn {
+    min-width: 360px;
+}
+
+.htmlQuestionText {
+    color: $black;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+
+    p {
+        margin: 0;
+    }
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.statusApproved {
+    color: $green-600;
+    background: $green-50;
+}
+
+.statusDraft {
+    color: $orange-700;
+    background: $orange-50;
+}
+
+.statusRejected {
+    color: $red-600;
+    background: $red-0;
+}
+
+.imageAction {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 4px 10px;
+    border: 1px solid $green-400;
+    border-radius: 6px;
+    color: $green-600;
+    background: $green-50;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.imageEmpty {
+    display: block;
+    margin-top: 4px;
+    color: $gray-500;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+}
+
+.viewButton {
+    min-width: 54px;
+    min-height: 32px;
+    padding: 6px 10px;
+    border: 1px solid $gray-200;
+    border-radius: 6px;
+    background: $white;
+    color: $blue-600;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover {
+        background: $blue-50;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $orange-500;
+        outline-offset: 2px;
+    }
+}
+
+.mobileCardContent {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mobileMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+}
+
+.shimmerRow {
+    height: 48px;
+    border-radius: 8px;
+}
+
+.errorState,
+.emptyState {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 28px;
+    text-align: center;
+}
+
+.errorState {
+    background: $red-0;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}

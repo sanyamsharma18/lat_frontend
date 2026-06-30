@@ -24,6 +24,21 @@
     grid-template-columns: 1fr;
     gap: 14px;
 
+    :global([data-dashboard-card]) {
+        transition:
+            border-color 180ms ease,
+            box-shadow 180ms ease,
+            transform 180ms ease,
+            background-color 180ms ease;
+
+        &:hover {
+            border-color: $orange-200;
+            background-color: $orange-50;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+            transform: translateY(-2px);
+        }
+    }
+
     @include breakpoints('md') {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -36,6 +51,58 @@
 .shimmerCard {
     height: 132px;
     border-radius: 8px;
+}
+
+.chartGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+
+    @include breakpoints('xl') {
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+    }
+}
+
+.chartPanel {
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 18px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background-color: $white;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease,
+        background-color 180ms ease;
+
+    &:hover {
+        border-color: $blue-200;
+        background-color: $blue-50;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+        transform: translateY(-2px);
+    }
+}
+
+.chartHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.barChartCanvas,
+.doughnutChartCanvas {
+    position: relative;
+    width: 100%;
+    min-height: 280px;
+}
+
+.doughnutChartCanvas {
+    max-width: 360px;
+    align-self: center;
 }
 
 .warningAlert,

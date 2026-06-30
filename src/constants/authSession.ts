@@ -10,8 +10,9 @@ export const AUTH_ROUTES = {
     adminDashboard: '/admin/dashboard',
     teacherDashboard: '/teacher/dashboard',
     studentDashboard: '/student/dashboard',
+    reviewerDashboard: '/reviewer/dashboard',
 } as const;
 
-export const PROTECTED_ROLE_SEGMENTS = ['admin', 'teacher', 'student'] as const;
+export const PROTECTED_ROLE_SEGMENTS = ['admin', 'teacher', 'student', 'reviewer'] as const;
 
 export type ProtectedRoleSegment = (typeof PROTECTED_ROLE_SEGMENTS)[number];

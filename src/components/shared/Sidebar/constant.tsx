@@ -1,7 +1,7 @@
 import AnalyticsIcon from '@/assets/svg/sidebar-icon/analytics-icon.svg';
 import DashboardIcon from '@/assets/svg/sidebar-icon/dashboard-icon.svg';
 
-export type UserRole = 'ADMIN' | 'TEACHER' | 'STUDENT';
+export type UserRole = 'ADMIN' | 'TEACHER' | 'STUDENT' | 'REVIEWER';
 
 export interface MenuItem {
     menuId: number;
@@ -29,6 +29,12 @@ export const ADMIN_MENU: MenuItem[] = [
         path: '/admin/questions',
         icon: <AnalyticsIcon />,
     },
+    {
+        menuId: 5,
+        menuName: 'Reviewer Management',
+        path: '/admin/reviewers',
+        icon: <AnalyticsIcon />,
+    },
 ];
 
 export const TEACHER_MENU: MenuItem[] = [
@@ -46,12 +52,29 @@ export const TEACHER_MENU: MenuItem[] = [
     },
 ];
 
+export const REVIEWER_MENU: MenuItem[] = [
+    {
+        menuId: 1,
+        menuName: 'Dashboard',
+        path: '/reviewer/dashboard',
+        icon: <DashboardIcon />,
+    },
+    {
+        menuId: 2,
+        menuName: 'Question Management',
+        path: '/reviewer/questions',
+        icon: <AnalyticsIcon />,
+    },
+];
+
 export const getSidebarMenuByRole = (userRole?: UserRole | '') => {
     switch (userRole) {
         case 'ADMIN':
             return ADMIN_MENU;
         case 'TEACHER':
             return TEACHER_MENU;
+        case 'REVIEWER':
+            return REVIEWER_MENU;
         default:
             return [];
     }

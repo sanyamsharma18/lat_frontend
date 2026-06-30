@@ -42,8 +42,10 @@
     .check-icon {
         position: absolute;
         cursor: pointer;
-        left: 2px;
-        top: 5px;
+        width: 18px;
+        height: 18px;
+        left: -1px;
+        top: 2px;
 
         .checkbox-input:checked + & {
             display: block;
