@@ -2,6 +2,6 @@ export interface ReviewerDashboardSummary {
     totalQuestions: number;
     approvedQuestions: number;
     rejectedQuestions: number;
-    pendingQuestions: number;
+    draftQuestions: number;
     isMock?: boolean;
 }

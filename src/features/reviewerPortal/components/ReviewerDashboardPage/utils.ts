@@ -53,7 +53,7 @@ const normalizeReviewerDashboard = (response: unknown): ReviewerDashboardSummary
         totalQuestions: getNumberValue(source, ['totalQuestions', 'totalQuestionCount']),
         approvedQuestions: getNumberValue(source, ['approvedQuestions', 'approvedQuestionCount']),
         rejectedQuestions: getNumberValue(source, ['rejectedQuestions', 'rejectedQuestionCount']),
-        pendingQuestions: getNumberValue(source, ['pendingQuestions', 'pendingQuestionCount']),
+        draftQuestions: getNumberValue(source, ['draftQuestions', 'draftQuestionCount']),
         isMock: source.isMock === true,
     };
 };

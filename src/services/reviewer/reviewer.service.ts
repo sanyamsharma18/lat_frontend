@@ -23,6 +23,11 @@ export const updateReviewer = async (reviewerId: string, payload: ReviewerFormVa
         body: payload,
     });
 
+export const getReviewerDashboard = async () =>
+    serverApi({
+        url: API_ROUTES.reviewerDashboard,
+    });
+
 export const updateReviewerStatus = async (
     reviewerId: string,
     payload: ReviewerStatusPayload,

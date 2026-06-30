@@ -15,7 +15,7 @@ export const DEFAULT_REVIEWER_SUMMARY: ReviewerDashboardSummary = {
     totalQuestions: 0,
     approvedQuestions: 0,
     rejectedQuestions: 0,
-    pendingQuestions: 0,
+    draftQuestions: 0,
     isMock: false,
 };
 
@@ -45,11 +45,11 @@ export const REVIEWER_DASHBOARD_METRICS = [
         getValue: (summary: ReviewerDashboardSummary) => summary.rejectedQuestions,
     },
     {
-        id: 'pendingQuestions',
-        title: 'Pending Questions',
+        id: 'draftQuestions',
+        title: 'Draft Questions',
         description: 'Questions waiting for review',
         tone: 'purple',
         Icon: AnalyticsIcon,
-        getValue: (summary: ReviewerDashboardSummary) => summary.pendingQuestions,
+        getValue: (summary: ReviewerDashboardSummary) => summary.draftQuestions,
     },
 ] as const;
