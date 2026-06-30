@@ -44,7 +44,7 @@
     }
 
     @include breakpoints('xl') {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
@@ -59,7 +59,7 @@
     gap: 14px;
 
     @include breakpoints('xl') {
-        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+        grid-template-columns: 1fr;
     }
 }
 
@@ -93,16 +93,10 @@
     gap: 4px;
 }
 
-.barChartCanvas,
-.doughnutChartCanvas {
+.barChartCanvas {
     position: relative;
     width: 100%;
     min-height: 280px;
-}
-
-.doughnutChartCanvas {
-    max-width: 360px;
-    align-self: center;
 }
 
 .warningAlert,

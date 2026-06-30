@@ -36,6 +36,30 @@ interface LoginInputRefs {
     [SignInFormKeys.NAME]: RefObject<HTMLInputElement | null>;
 }
 
+const getNormalizedRoleName = (roleName?: string) => roleName?.trim().toLowerCase() || '';
+
+const getDashboardPathByRole = (roleName?: string) => {
+    const normalizedRoleName = getNormalizedRoleName(roleName);
+
+    if (normalizedRoleName === 'admin' || normalizedRoleName === 'superadmin') {
+        return '/admin/dashboard';
+    }
+
+    if (normalizedRoleName === 'teacher') {
+        return '/teacher/dashboard';
+    }
+
+    if (normalizedRoleName === 'student') {
+        return '/student/dashboard';
+    }
+
+    if (normalizedRoleName === 'reviewer') {
+        return '/reviewer/dashboard';
+    }
+
+    return '/dashboard';
+};
+
 export const useLoginForm = () => {
     const [formValues, setFormValues] = useState<SignInFormType>(initialState);
     const [errorMessages, setErrorMessages] = useState<ErrorMessagesType>({});
@@ -99,13 +123,16 @@ export const useLoginForm = () => {
                 throw new Error('Invalid login response');
             }
 
+            const resolvedRoleName = rawUser.roleName || rawUser.role?.name || '';
             const userDetail = {
                 ...rawUser,
                 fullName: `${rawUser.firstName || ''} ${rawUser.lastName || ''}`.trim(),
                 phone: rawUser.mobileNo,
+                roleName: resolvedRoleName,
                 role: {
-                    name: rawUser.roleName
-                }
+                    ...rawUser.role,
+                    name: resolvedRoleName,
+                },
             };
 
             await Promise.all([
@@ -124,18 +151,7 @@ export const useLoginForm = () => {
             // Add Redirection
 
             setTimeout(() => {
-                const roleName = userDetail.role.name?.toLowerCase() || '';
-                if (roleName === 'admin' || roleName === 'superadmin') {
-                    router.replace('/admin/dashboard');
-                } else if (roleName === 'teacher') {
-                    router.replace('/teacher/dashboard');
-                } else if (roleName === 'student') {
-                    router.replace('/student/dashboard');
-                } else if (roleName === 'reviewer') {
-                    router.replace('/reviewer/dashboard');
-                } else {
-                    router.replace('/dashboard');
-                }
+                router.replace(getDashboardPathByRole(userDetail.role.name));
             }, 2000);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);

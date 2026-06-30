@@ -15,6 +15,10 @@ interface SessionUserDetail {
     };
 }
 
+interface SessionTokenPayload {
+    roleName?: string;
+}
+
 const ROLE_HOME_ROUTES: Record<ProtectedRoleSegment, string> = {
     admin: AUTH_ROUTES.adminDashboard,
     teacher: AUTH_ROUTES.teacherDashboard,
@@ -61,7 +65,37 @@ const normalizeRole = (roleName?: string): ProtectedRoleSegment | null => {
     return null;
 };
 
-const getUserRole = (request: NextRequest) => {
+const decodeBase64Url = (value: string) => {
+    const normalizedValue = value.replace(/-/g, '+').replace(/_/g, '/');
+    const paddedValue = normalizedValue.padEnd(
+        normalizedValue.length + ((4 - (normalizedValue.length % 4)) % 4),
+        '=',
+    );
+
+    return atob(paddedValue);
+};
+
+const getTokenRole = (authToken?: string) => {
+    if (!authToken) {
+        return null;
+    }
+
+    const [, payload] = authToken.split('.');
+
+    if (!payload) {
+        return null;
+    }
+
+    try {
+        const tokenPayload = JSON.parse(decodeBase64Url(payload)) as SessionTokenPayload;
+
+        return normalizeRole(tokenPayload.roleName);
+    } catch {
+        return null;
+    }
+};
+
+const getCookieUserRole = (request: NextRequest) => {
     const userDetailCookie = request.cookies.get(USER_DETAIL)?.value;
 
     if (!userDetailCookie) {
@@ -76,6 +110,9 @@ const getUserRole = (request: NextRequest) => {
         return null;
     }
 };
+
+const getUserRole = (request: NextRequest, authToken?: string) =>
+    getTokenRole(authToken) || getCookieUserRole(request);
 
 const getRequestedRoleSegment = (pathname: string) => {
     const [, firstSegment, secondSegment] = pathname.split('/');
@@ -105,7 +142,7 @@ export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const isLoginPage = pathname === AUTH_ROUTES.login;
     const authToken = request.cookies.get(JWT_TOKEN)?.value;
-    const userRole = getUserRole(request);
+    const userRole = getUserRole(request, authToken);
     const requestedRoleSegment = getRequestedRoleSegment(pathname);
     const hasValidSession = Boolean(authToken && userRole);
 

@@ -1,7 +1,11 @@
 import { ServerSideRoutes } from '@/constants/serverSideRoutes';
 import callApi from '@/lib/clientApi';
 
+import Cookies from 'js-cookie';
+
 import { StaleAndCacheTime } from '@/constants/appConstants';
+import { API_ROUTES } from '@/config/apiRoutes';
+import { JWT_TOKEN } from '@/constants/authSession';
 
 import { ApiResponse } from '@/types/api';
 import { HTTP_METHOD } from '@/types/common';
@@ -113,10 +117,20 @@ export const saveExamAnswer = async (payload: SaveAnswerPayload) =>
         body: payload,
     }).then(assertSuccessfulResponse);
 
-export const submitExam = async (payload: SubmitExamPayload) =>
-    callApi<ApiResponse<unknown>>({
-        url: ServerSideRoutes.STUDENT_EXAM_SUBMIT,
+export const submitExam = async (payload: SubmitExamPayload) => {
+    const token = Cookies.get(JWT_TOKEN);
+
+    if (!token) {
+        throw new Error('Unable to verify student session. Please login again.');
+    }
+
+    return callApi<ApiResponse<unknown>>({
+        url: API_ROUTES.studentExamSubmit,
         method: HTTP_METHOD.POST,
+        headers: {
+            accept: '*/*',
+            Authorization: `Bearer ${token}`,
+        },
         body: payload,
     }).then((response) => {
         if (response.status === false) {
@@ -125,6 +139,7 @@ export const submitExam = async (payload: SubmitExamPayload) =>
 
         return response;
     });
+};
 
 export const examQuestionsQueryOptions = () => ({
     queryKey: examQuestionsQueryKey(),
