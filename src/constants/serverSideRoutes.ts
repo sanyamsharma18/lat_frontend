@@ -31,5 +31,6 @@ export enum ServerSideRoutes {
     SUBJECTS_BY_GRADE_GROUP = `${ServerSideRoutes.APP}/subjects/grade-group`,
     SUBJECTS_BY_GRADE = `${ServerSideRoutes.APP}/subjects/grade`,
     COMPETENCIES_LIST = `${ServerSideRoutes.APP}/competencies-list`,
+    ADMIN_REPORTS = `${ServerSideRoutes.APP}/admin/reports`,
     //
 }
