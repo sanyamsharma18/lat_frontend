@@ -4,8 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
 
 import { showToast } from '@/components/ui/Toaster/constant';
+
+import { STUDENT_EXAM_ID } from '@/constants/authSession';
 
 import { QuestionPaletteState } from '@/types/studentPortal';
 
@@ -14,7 +17,6 @@ import {
     examQuestionsQueryKey,
     examQuestionsQueryOptions,
     formatTime,
-    saveExamAnswer,
     submitExam,
 } from '../components/StudentExaminationPage/utils';
 
@@ -46,6 +48,26 @@ const isRestorableExamProgress = (
         typeof storedProgress.remainingSeconds === 'number' &&
         storedProgress.remainingSeconds > 0,
     );
+
+const getStoredStudentExamId = () => {
+    const studentExamId = Number(Cookies.get(STUDENT_EXAM_ID));
+
+    return Number.isFinite(studentExamId) && studentExamId > 0 ? studentExamId : null;
+};
+
+const buildSubmitAnswers = (answers: Record<number, string>) =>
+    Object.entries(answers)
+        .map(([questionId, optionId]) => ({
+            questionId: Number(questionId),
+            optionId: Number(optionId),
+        }))
+        .filter(
+            ({ optionId, questionId }) =>
+                Number.isFinite(questionId) &&
+                questionId > 0 &&
+                Number.isFinite(optionId) &&
+                optionId > 0,
+        );
 
 export const useStudentExamination = () => {
     const router = useRouter();
@@ -110,6 +132,7 @@ export const useStudentExamination = () => {
         onSuccess: () => {
             window.localStorage.removeItem(EXAM_PROGRESS_STORAGE_KEY);
             window.sessionStorage.removeItem(EXAM_REFRESH_WARNING_KEY);
+            Cookies.remove(STUDENT_EXAM_ID, { path: '/' });
             setIsExamSubmitted(true);
             showToast({ message: 'Examination submitted successfully', type: 'success' });
             queryClient.invalidateQueries({ queryKey: examQuestionsQueryKey() });
@@ -126,17 +149,6 @@ export const useStudentExamination = () => {
         },
     });
 
-    const saveAnswerMutation = useMutation({
-        mutationKey: ['save-answer'],
-        mutationFn: saveExamAnswer,
-        onError: (error) => {
-            showToast({
-                message: error instanceof Error ? error.message : 'Unable to save answer',
-                type: 'error',
-            });
-        },
-    });
-
     const formattedRemainingTime = useMemo(() => formatTime(remainingSeconds), [remainingSeconds]);
 
     const handleSubmitExam = useCallback(() => {
@@ -144,10 +156,20 @@ export const useStudentExamination = () => {
             return;
         }
 
+        const studentExamId = getStoredStudentExamId();
+
+        if (!studentExamId) {
+            showToast({
+                type: 'error',
+                message: 'Exam session is unavailable. Please start the exam again.',
+            });
+            return;
+        }
+
         hasSubmittedRef.current = true;
         submitExamMutation.mutate({
-            examId: exam.examId,
-            answers,
+            studentExamId,
+            answers: buildSubmitAnswers(answers),
         });
     }, [answers, exam, submitExamMutation]);
 
@@ -178,14 +200,8 @@ export const useStudentExamination = () => {
                 ...previous,
                 [currentQuestion.id]: selectedAnswer,
             }));
-
-            saveAnswerMutation.mutate({
-                examId: exam.examId,
-                questionId: currentQuestion.id,
-                selectedAnswer,
-            });
         },
-        [currentQuestion, exam, isExamSubmitted, saveAnswerMutation],
+        [currentQuestion, exam, isExamSubmitted],
     );
 
     const handleNextQuestion = useCallback(() => {
@@ -291,7 +307,7 @@ export const useStudentExamination = () => {
         isFirstQuestion: currentQuestionIndex === 0,
         isExamSubmitted,
         isLastQuestion: currentQuestionIndex === questions.length - 1,
-        isSavingAnswer: saveAnswerMutation.isPending,
+        isSavingAnswer: false,
         isSubmitting: submitExamMutation.isPending,
         questions,
         remainingSeconds,

@@ -1,5 +1,118 @@
 # Change Log
 
+## Student Exam Start And Batch Submit
+
+### Feature Name
+
+Backend-Driven Exam Session Submission
+
+### What Was Changed
+
+* Added a student exam start API call before redirecting to the examination page.
+* Added an internal route for `POST /api/student/exam/start`.
+* The start route forwards to backend `POST /api/v1/students/exam/start`.
+* The returned `studentExamId` is saved in a cookie.
+* Student answers are now stored in local state and localStorage during the exam.
+* Removed per-answer save API calls from answer selection.
+* Submit now sends one batch payload with `studentExamId` and all selected answers.
+* Submit now forwards to backend `POST /api/v1/students/exam/submit`.
+* Starting a new exam clears stale local exam progress before redirecting.
+
+### Why It Was Changed
+
+* The backend now creates a student exam session before the exam begins.
+* The submit API expects one batch payload containing the student exam session ID and all answers.
+
+### Files Modified
+
+* `src/app/api/student/exam/start/route.ts`
+* `src/config/apiRoutes.ts`
+* `src/constants/authSession.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/index.tsx`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/features/studentPortal/hooks/useStudentDashboard.ts`
+* `src/features/studentPortal/hooks/useStudentExamination.ts`
+* `src/services/studentPortal/studentPortal.service.ts`
+* `src/types/studentPortal.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Dashboard start exam button.
+* Student Examination answer selection and submit flow.
+
+### APIs Affected
+
+* Browser route: `POST /api/student/exam/start`
+* Backend route: `POST /api/v1/students/exam/start`
+* Browser route: `POST /api/student/exam/submit`
+* Backend route: `POST /api/v1/students/exam/submit`
+
+### Any Breaking Changes
+
+* Student exam submit no longer sends `{ examId, answers: Record }`.
+* Student exam submit now sends `{ studentExamId, answers: [{ questionId, optionId }] }`.
+
+### Testing Considerations
+
+* Click Start Examination and confirm the start API is called before redirect.
+* Confirm `student_exam_id` cookie is created after start success.
+* Select multiple answers and confirm no per-answer save request is made.
+* Submit the exam and confirm one submit request contains `studentExamId` and all selected answers.
+* Confirm successful submit redirects back to the student dashboard.
+
+### Future Improvements
+
+* Move `termId` into backend-driven exam configuration when multiple terms are supported.
+
+## Student Exam Option Label Removal
+
+### Feature Name
+
+Student Examination Option Display
+
+### What Was Changed
+
+* Removed the visible A/B/C/D option badges from student examination answer rows.
+* Updated option image preview labels so option letters are not shown there either.
+* Removed leftover mobile spacing that was reserved for the old option badge.
+
+### Why It Was Changed
+
+* The student question UI should show answer content without A/B/C/D labels.
+* The answer selection behavior should remain unchanged.
+
+### Files Modified
+
+* `src/features/studentPortal/components/StudentExaminationPage/index.tsx`
+* `src/features/studentPortal/components/StudentExaminationPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Student Examination page.
+* Standard single-choice option rows.
+
+### APIs Affected
+
+* No API changes.
+
+### Any Breaking Changes
+
+* No breaking changes expected.
+
+### Testing Considerations
+
+* Open the student examination page.
+* Confirm answer rows no longer show A/B/C/D badges.
+* Confirm clicking the full option row still selects the answer.
+* Confirm option image preview still works when an option image exists.
+
+### Future Improvements
+
+* Add a setting if different exams need numbered or lettered options in the future.
+
 ## Reports Section Type Fix
 
 ### Feature Name

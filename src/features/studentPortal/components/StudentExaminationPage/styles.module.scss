@@ -643,24 +643,6 @@
     }
 }
 
-.optionIndex {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    flex: 0 0 32px;
-    width: 32px;
-    height: 32px;
-
-    border-radius: 50%;
-
-    background: $gray-100;
-    color: $slate-600;
-
-    font-size: 13px;
-    font-weight: 400;
-}
-
 .optionText {
     flex: 1;
     min-width: 0;
@@ -943,6 +925,5 @@
         flex-basis: 100%;
         width: 100%;
         height: 180px;
-        margin-left: 46px;
     }
 }

@@ -84,6 +84,16 @@ export interface StudentExamQuestionsPayload {
     termId: number;
 }
 
+export interface StudentExamStartPayload {
+    studentId: number;
+    termId: number;
+}
+
+export interface StudentExamStartResponse {
+    message: string;
+    studentExamId: number;
+}
+
 export interface StudentExamCheckPayload {
     studentId: number;
     termId: number;
@@ -101,9 +111,14 @@ export interface SaveAnswerPayload {
     selectedAnswer: string;
 }
 
+export interface SubmitExamAnswer {
+    questionId: number;
+    optionId: number;
+}
+
 export interface SubmitExamPayload {
-    examId: number;
-    answers: Record<number, string>;
+    studentExamId: number;
+    answers: SubmitExamAnswer[];
 }
 
 export type QuestionPaletteState = 'notVisited' | 'visited' | 'answered' | 'current';

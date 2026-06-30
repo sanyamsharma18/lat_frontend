@@ -25,6 +25,7 @@ const StudentDashboardPage = () => {
         isError,
         isInstructionsModalOpen,
         isLoading,
+        isStartingExam,
         setIsInstructionsModalOpen,
         studentProfileQuery,
     } = useStudentDashboard();
@@ -170,6 +171,8 @@ const StudentDashboardPage = () => {
                         size='large'
                         className={styles.startButton}
                         onClick={handleStartExamination}
+                        disabled={isStartingExam}
+                        loader={isStartingExam}
                     />
                 ) : (
                     <Button

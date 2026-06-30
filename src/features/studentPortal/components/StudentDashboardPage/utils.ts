@@ -11,6 +11,8 @@ import {
     ExamInstructionsResponse,
     StudentExamCheckPayload,
     StudentExamCheckResponse,
+    StudentExamStartPayload,
+    StudentExamStartResponse,
     StudentProfile,
 } from '@/types/studentPortal';
 
@@ -80,6 +82,27 @@ export const getStudentExamStatus = async (studentId: string) => {
         headers: {
             Authorization: `Bearer ${token}`,
         },
+    });
+
+    return assertSuccessfulResponse(response);
+};
+
+export const startStudentExam = async (studentId: string) => {
+    const numericStudentId = Number(studentId);
+
+    if (!Number.isFinite(numericStudentId) || numericStudentId <= 0) {
+        throw new Error('Unable to identify logged-in student');
+    }
+
+    const payload: StudentExamStartPayload = {
+        studentId: numericStudentId,
+        ...DEFAULT_EXAM_CONTEXT,
+    };
+
+    const response = await callApi<ApiResponse<StudentExamStartResponse>>({
+        url: ServerSideRoutes.STUDENT_EXAM_START,
+        method: HTTP_METHOD.POST,
+        body: payload,
     });
 
     return assertSuccessfulResponse(response);
