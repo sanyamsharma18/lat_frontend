@@ -1,31 +1,55 @@
-/* eslint-disable no-console, jsx-a11y/label-has-associated-control, max-len */
 'use client';
+
+/* eslint-disable jsx-a11y/label-has-associated-control */
 
 import React, { useState, useMemo, memo } from 'react';
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
     BarElement,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
     Title,
     Tooltip,
-    Legend
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
-// Import local styling
 import styles from './styles.module.scss';
 
-// Import constants/filters from Dashboard to maintain alignment
-import {
-    FILTER_OPTIONS,
-    MOCK_DATABASE_STATE
-} from '../../../dashboardManagement/components/DashboardPage/constant';
 import { useReportQuery } from './utils';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 type ReportType = 'competency' | 'school' | 'region' | 'subject' | 'grade';
+
+interface FilterOption {
+    label: string;
+    value: string;
+}
+
+const FILTER_OPTIONS: Record<'regions' | 'grades' | 'subjects', FilterOption[]> = {
+    regions: [
+        { label: 'All Regions', value: 'all' },
+        { label: 'North', value: 'north' },
+        { label: 'South', value: 'south' },
+        { label: 'East', value: 'east' },
+        { label: 'West', value: 'west' },
+    ],
+    grades: [
+        { label: 'All Grades', value: 'all' },
+        { label: 'Grade 6', value: '6' },
+        { label: 'Grade 7', value: '7' },
+        { label: 'Grade 8', value: '8' },
+        { label: 'Grade 9', value: '9' },
+    ],
+    subjects: [
+        { label: 'All Subjects', value: 'all' },
+        { label: 'English', value: 'english' },
+        { label: 'Mathematics', value: 'mathematics' },
+        { label: 'Science', value: 'science' },
+        { label: 'Social Science', value: 'social-science' },
+    ],
+};
 
 const ReportPage = () => {
     // Report UI state
@@ -40,8 +64,6 @@ const ReportPage = () => {
     const [regionFilter, setRegionFilter] = useState('all');
     const [gradeFilter, setGradeFilter] = useState('all');
     const [subjectFilter, setSubjectFilter] = useState('all');
-
-    const db = MOCK_DATABASE_STATE.base;
 
     // Helper: Reset page when filters change
     const resetTableState = () => {
@@ -65,8 +87,9 @@ const ReportPage = () => {
         subjectId: subjectFilter === 'all' ? undefined : subjectFilter,
     });
 
-    const reportData = useMemo(() => {
-        return rawReportData.map((item: any) => {
+    const reportData = useMemo(
+        () =>
+            rawReportData.map((item: any) => {
             if (activeReport === 'competency') {
                 return {
                     id: String(item.id),
@@ -127,8 +150,9 @@ const ReportPage = () => {
                 };
             }
             return item;
-        });
-    }, [rawReportData, activeReport]);
+            }),
+        [rawReportData, activeReport],
+    );
 
     // Sorting & Searching Filtering
     const processedReportData = useMemo(() => reportData

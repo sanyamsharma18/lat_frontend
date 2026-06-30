@@ -34,9 +34,6 @@ export const API_ROUTES = {
     adminQuestions: `${API_URL}/questions`,
     generateQuestions: `${API_URL}/generate-batch`,
     login: `${API_URL}/login`,
-<<<<<<< HEAD
     reviewerDashboard: `${API_URL}/reviewer/dashboard`,
-=======
     reports: (type: string) => `${API_URL}/reports/${type}`,
->>>>>>> 69adb50 (changes)
 };
