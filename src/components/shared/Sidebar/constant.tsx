@@ -35,6 +35,12 @@ export const ADMIN_MENU: MenuItem[] = [
         path: '/admin/reviewers',
         icon: <AnalyticsIcon />,
     },
+    {
+        menuId: 6,
+        menuName: 'Reports',
+        path: '/admin/reports',
+        icon: <AnalyticsIcon />,
+    },
 ];
 
 export const TEACHER_MENU: MenuItem[] = [
