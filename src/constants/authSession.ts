@@ -2,6 +2,7 @@ export const JWT_TOKEN = 'x_tok';
 export const USER_DETAIL = 'x_det';
 export const CLIENT_USER_DETAIL = 'c_x_det';
 export const USER_MENU_LIST = 'x_m_li';
+export const STUDENT_EXAM_ID = 'student_exam_id';
 
 export const USER_EMAIL = 'x-m';
 

@@ -245,13 +245,10 @@ const StudentExaminationPage = () => {
                         role='radiogroup'
                         aria-label={htmlToPlainText(currentQuestion.question)}
                     >
-                        {currentQuestion.options.map((option, optionIndex) => {
+                        {currentQuestion.options.map((option) => {
                             const isSelected = answers[currentQuestion.id] === option;
                             const optionLabel =
                                 currentQuestion.optionLabels?.[option] ?? option;
-                            const optionLetter =
-                                currentQuestion.optionLetters?.[option] ??
-                                String.fromCharCode(65 + optionIndex);
                             const optionImageUrl = currentQuestion.optionImageUrls?.[option];
                             const isOptionImageUnavailable = optionImageUrl
                                 ? failedImageUrls.has(optionImageUrl)
@@ -275,9 +272,6 @@ const StudentExaminationPage = () => {
                                     tabIndex={0}
                                     aria-checked={isSelected}
                                 >
-                                    <Text className={styles.optionIndex}>
-                                        {optionLetter}
-                                    </Text>
                                     <Radio
                                         name={`question-${currentQuestion.id}`}
                                         value={option}
@@ -300,7 +294,7 @@ const StudentExaminationPage = () => {
                                             onClick={(event) =>
                                                 handlePreviewImage(event, optionImageUrl)
                                             }
-                                            aria-label={`Preview option ${optionLetter} image`}
+                                            aria-label='Preview option image'
                                             disabled={isOptionImageUnavailable}
                                         >
                                             {isOptionImageUnavailable ? (
@@ -310,7 +304,7 @@ const StudentExaminationPage = () => {
                                             ) : (
                                                 <img
                                                     src={optionImageUrl}
-                                                    alt={`Option ${optionLetter} visual`}
+                                                    alt='Option visual'
                                                     className={styles.optionImage}
                                                     loading='lazy'
                                                     onError={() =>

@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { queryOptions, useMutation, useQuery } from '@tanstack/react-query';
+
+import { showToast } from '@/components/ui/Toaster/constant';
 
 import {
     ExamInstructionsResponse,
@@ -16,11 +18,14 @@ import {
 } from '../components/StudentDashboardPage/constant';
 import {
     examInstructionsQueryOptions,
+    startStudentExam,
     studentExamStatusQueryOptions,
     studentProfileQueryOptions,
 } from '../components/StudentDashboardPage/utils';
 
 const AVAILABLE_EXAM_STATUS = 'NOT_STARTED';
+const EXAM_PROGRESS_STORAGE_KEY = 'lat_student_exam_progress';
+const EXAM_REFRESH_WARNING_KEY = 'lat_student_exam_refresh_warning';
 
 const normalizeExamStatus = (status?: string) => status?.trim().toUpperCase();
 
@@ -46,6 +51,21 @@ export const useStudentDashboard = (
     );
     const examStatus = studentExamStatusQuery.data;
     const normalizedExamStatus = normalizeExamStatus(examStatus?.status);
+
+    const startStudentExamMutation = useMutation({
+        mutationFn: startStudentExam,
+        onSuccess: () => {
+            window.localStorage.removeItem(EXAM_PROGRESS_STORAGE_KEY);
+            window.sessionStorage.removeItem(EXAM_REFRESH_WARNING_KEY);
+            router.push('/student/examination');
+        },
+        onError: (error) => {
+            showToast({
+                type: 'error',
+                message: error instanceof Error ? error.message : 'Unable to start examination',
+            });
+        },
+    });
 
     useEffect(() => {
         const accepted = window.localStorage.getItem(EXAM_INSTRUCTIONS_ACCEPTED_KEY) === 'true';
@@ -76,7 +96,15 @@ export const useStudentDashboard = (
             return;
         }
 
-        router.push('/student/examination');
+        if (!studentProfileQuery.data?.id) {
+            showToast({
+                type: 'error',
+                message: 'Student details are unavailable. Please login again.',
+            });
+            return;
+        }
+
+        startStudentExamMutation.mutate(studentProfileQuery.data.id);
     };
 
     const handlePlaySpaceMission = () => {
@@ -104,6 +132,7 @@ export const useStudentDashboard = (
         isInstructionsAccepted,
         isInstructionsModalOpen,
         isLoading,
+        isStartingExam: startStudentExamMutation.isPending,
         setIsInstructionsModalOpen,
         studentExamStatusQuery,
         studentProfileQuery,

@@ -8,6 +8,7 @@ import {
     ExamQuestionsResponse,
     SaveAnswerPayload,
     StudentExamCheckPayload,
+    StudentExamStartPayload,
     StudentExamQuestionsPayload,
     StudentProfile,
     SubmitExamPayload,
@@ -467,15 +468,25 @@ export const checkStudentExamStatus = async (payload: StudentExamCheckPayload) =
         body: payload,
     });
 
+export const startStudentExam = async (payload: StudentExamStartPayload) =>
+    serverApi({
+        url: API_ROUTES.studentExamStart,
+        method: 'POST',
+        headers: {
+            accept: '*/*',
+        },
+        body: payload,
+    });
+
 export const saveExamAnswer = async (payload: SaveAnswerPayload) =>
     buildMockResult(payload, 'Answer saved successfully');
 
 export const submitExam = async (payload: SubmitExamPayload) =>
-    buildMockResult(
-        {
-            examId: payload.examId,
-            submittedAnswers: Object.keys(payload.answers).length,
-            submittedAt: new Date().toISOString(),
+    serverApi({
+        url: API_ROUTES.studentExamSubmit,
+        method: 'POST',
+        headers: {
+            accept: '*/*',
         },
-        'Examination submitted successfully',
-    );
+        body: payload,
+    });
