@@ -6,23 +6,100 @@
     background-color: $gray-100;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
+    font-family: inherit;
 
     @include breakpoints('lg') {
-        padding: 24px;
+        padding: 32px;
     }
 }
 
 .header {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid $gray-200;
+    padding-bottom: 20px;
+
+    @include breakpoints('md') {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.headerTitle {
+    display: flex;
+    flex-direction: column;
     gap: 4px;
 }
 
-.summaryGrid {
+.actionsHeader {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.exportBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid $gray-200;
+    background: $white;
+    color: $slate-600;
+
+    &:hover {
+        background: $gray-100;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    &.primary {
+        background: $blue-600;
+        color: $white;
+        border-color: $blue-600;
+
+        &:hover {
+            background: #0346d8;
+            box-shadow: 0 4px 12px rgba(21, 93, 252, 0.2);
+        }
+    }
+}
+
+// Global Filters Panel
+.filtersPanel {
+    background: $white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    border: 1px solid $gray-200;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.filterHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $gray-100;
+    padding-bottom: 12px;
+}
+
+.filterGrid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 16px;
+
+    @include breakpoints('sm') {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
     :global([data-dashboard-card]) {
         transition:
@@ -40,7 +117,7 @@
     }
 
     @include breakpoints('md') {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     @include breakpoints('xl') {
@@ -48,75 +125,799 @@
     }
 }
 
-.shimmerCard {
-    height: 132px;
-    border-radius: 8px;
-}
-
-.chartGrid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-
-    @include breakpoints('xl') {
-        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
-    }
-}
-
-.chartPanel {
-    min-height: 360px;
+.filterField {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    padding: 18px;
-    border: 1px solid $gray-200;
-    border-radius: 8px;
-    background-color: $white;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-    transition:
-        border-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease,
-        background-color 180ms ease;
+    gap: 6px;
 
-    &:hover {
-        border-color: $blue-200;
-        background-color: $blue-50;
-        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
-        transform: translateY(-2px);
+    label {
+        font-size: 12px;
+        font-weight: 600;
+        color: $slate-600;
+    }
+
+    select, input {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid $gray-200;
+        font-size: 13px;
+        color: $black;
+        background-color: $white;
+        outline: none;
+        transition: border-color 0.2s;
+
+        &:focus {
+            border-color: $blue-600;
+        }
     }
 }
 
-.chartHeader {
+.resetBtn {
+    align-self: flex-end;
+    font-size: 13px;
+    color: $blue-600;
+    font-weight: 500;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+
+    &:hover {
+        background: $blue-50;
+    }
+}
+
+// Executive KPIs Grid
+.kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 16px;
+
+    @include breakpoints('sm') {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @include breakpoints('xl') {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.kpiCard {
+    background: $white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid $gray-200;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.01);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 140px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border-color: $slate-400;
+    }
+
+    // Glassmorphism accent highlight lines at the top
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: $blue-600;
+    }
+
+    &.blue::before { background: $blue-600; }
+    &.green::before { background: $green-600; }
+    &.orange::before { background: $orange-600; }
+    &.purple::before { background: $purple-700; }
+    &.cyan::before { background: $cyan-600; }
+    &.amber::before { background: $amber-500; }
+}
+
+.kpiHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.kpiTitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: $slate-500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpiIconWrapper {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $gray-100;
+    color: $slate-600;
+
+    &.blue { background: $blue-50; color: $blue-600; }
+    &.green { background: $green-50; color: $green-600; }
+    &.orange { background: $orange-50; color: $orange-600; }
+    &.purple { background: $purple-50; color: $purple-700; }
+    &.cyan { background: $cyan-50; color: $cyan-600; }
+    &.amber { background: $amber-50; color: $amber-700; }
+}
+
+.kpiContent {
+    margin-top: 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.kpiValue {
+    font-size: 28px;
+    font-weight: 700;
+    color: $black;
+}
+
+.kpiTrendIndicator {
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 6px;
+    border-radius: 12px;
+
+    &.up {
+        background: $green-50;
+        color: $green-600;
+    }
+
+    &.down {
+        background: $red-0;
+        color: $red-500;
+    }
+}
+
+.kpiFooter {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: $gray-500;
+}
+
+.sparklineWrapper {
+    width: 60px;
+    height: 24px;
+}
+
+// 2-Column Section Layouts
+.dashboardRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+
+    @include breakpoints('lg') {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+}
+
+.col8 {
+    @include breakpoints('lg') {
+        grid-column: span 8;
+    }
+}
+
+.col4 {
+    @include breakpoints('lg') {
+        grid-column: span 4;
+    }
+}
+
+.col6 {
+    @include breakpoints('lg') {
+        grid-column: span 6;
+    }
+}
+
+.col12 {
+    @include breakpoints('lg') {
+        grid-column: span 12;
+    }
+}
+
+// Premium Card/Panel
+.card {
+    background: $white;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid $gray-200;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+
+    &.fullscreen {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        z-index: 1000;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $gray-100;
+    padding-bottom: 14px;
+}
+
+.cardTitleWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cardTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: $black;
+}
+
+.cardSubtitle {
+    font-size: 12px;
+    color: $slate-500;
+}
+
+.cardControls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.controlBtn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: $slate-500;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &:hover {
+        background: $gray-100;
+        color: $black;
+    }
+}
+
+.chartContainer {
+    position: relative;
+    width: 100%;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+// Sub components within Section 2: Assessment Statuses
+.assessmentStatusGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    @include breakpoints('sm') {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.statusMiniCard {
+    background: $gray-100;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid transparent;
+
+    &:hover {
+        border-color: $gray-200;
+    }
+
+    .statusVal {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .statusLbl {
+        font-size: 11px;
+        color: $slate-500;
+    }
+}
+
+// Question Bank Specific layout
+.questionsListGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    @include breakpoints('sm') {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.questionMiniCard {
+    background: $gray-100;
+    border-radius: 8px;
+    padding: 14px;
+    border-left: 3px solid $blue-600;
+
+    &.approved { border-left-color: $green-600; }
+    &.pending { border-left-color: $orange-600; }
+    &.rejected { border-left-color: $red-600; }
+
+    .qValue {
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .qLabel {
+        font-size: 11px;
+        color: $slate-500;
+        font-weight: 600;
+    }
+}
+
+// Competency Tables & Heatmap
+.heatMapGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+
+.heatMapCell {
+    padding: 14px 4px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-height: 70px;
+    justify-content: center;
+    color: $white;
+
+    &.level-low { background: $red-500; }
+    &.level-med { background: $orange-500; }
+    &.level-high { background: $green-600; }
+    &.level-elite { background: $primary-navy; }
 }
 
-.barChartCanvas,
-.doughnutChartCanvas {
-    position: relative;
+.leaderboardTable {
     width: 100%;
-    min-height: 280px;
+    border-collapse: collapse;
+    font-size: 13px;
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid $gray-200;
+    }
+
+    th {
+        font-weight: 600;
+        color: $slate-600;
+        background: $gray-100;
+    }
+
+    tr:hover {
+        background: $grey-50;
+    }
 }
 
-.doughnutChartCanvas {
-    max-width: 360px;
-    align-self: center;
+// Region and School rank cards
+.rankBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 12px;
+
+    &.top1 { background: #ffd700; color: #5c3a00; }
+    &.top2 { background: #c0c0c0; color: #333333; }
+    &.top3 { background: #cd7f32; color: #5c3a00; }
+    &.other { background: $gray-200; color: $slate-600; }
 }
 
+// Search and pagination block
+.tableToolbar {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.searchInput {
+    padding: 8px 12px;
+    border: 1px solid $gray-200;
+    border-radius: 6px;
+    font-size: 13px;
+    width: 240px;
+    outline: none;
+
+    &:focus {
+        border-color: $blue-600;
+    }
+}
+
+.pagination {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+
+    button {
+        padding: 6px 12px;
+        border: 1px solid $gray-200;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        background: $white;
+        color: $slate-600;
+
+        &:hover:not(:disabled) {
+            background: $gray-100;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        &.active {
+            background: $blue-600;
+            color: $white;
+            border-color: $blue-600;
+        }
+    }
+}
+
+// Live monitor section
+.liveMonitorGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.liveCard {
+    background: $navy-900;
+    color: $white;
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        background: $green-400;
+        border-radius: 50%;
+        box-shadow: 0 0 10px $green-400;
+        animation: pulse 1.5s infinite;
+    }
+}
+
+// Recent Activities timeline
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 15px;
+        width: 2px;
+        background: $gray-200;
+    }
+}
+
+.timelineItem {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    position: relative;
+}
+
+.timelineDot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: $gray-100;
+    border: 2px solid $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    font-size: 14px;
+    flex-shrink: 0;
+
+    &.question { background: $blue-50; color: $blue-600; }
+    &.assessment { background: $green-50; color: $green-600; }
+    &.student { background: $purple-50; color: $purple-700; }
+    &.teacher { background: $cyan-50; color: $cyan-600; }
+    &.report { background: $orange-50; color: $orange-600; }
+    &.login { background: $red-0; color: $red-500; }
+}
+
+.timelineContent {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .timeText {
+        font-size: 10px;
+        color: $slate-500;
+        font-weight: 500;
+    }
+
+    .descText {
+        font-size: 13px;
+        color: $black;
+        font-weight: 500;
+    }
+
+    .userText {
+        font-size: 11px;
+        color: $slate-500;
+    }
+}
+
+// Gemini AI Insights
+.aiInsightsPanel {
+    background: linear-gradient(135deg, $blue-50 0%, $purple-50 100%);
+    border: 1px solid rgba($blue-600, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.aiHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $purple-700;
+    font-weight: 700;
+    font-size: 15px;
+
+    .aiSparkIcon {
+        font-size: 18px;
+        animation: spin 3s linear infinite;
+    }
+}
+
+.insightCard {
+    background: rgba($white, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 14px;
+    border-left: 4px solid $purple-700;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+
+    h4 {
+        font-size: 13px;
+        color: $purple-700;
+        font-weight: 700;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    p {
+        font-size: 12px;
+        color: $slate-600;
+        line-height: 1.5;
+    }
+}
+
+// Quick Actions
+.quickActionGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+
+    @include breakpoints('sm') {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.quickActionCard {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: $gray-100;
+        border-color: $slate-400;
+        transform: translateY(-2px);
+    }
+
+    .actionIcon {
+        font-size: 20px;
+    }
+
+    .actionLabel {
+        font-size: 12px;
+        font-weight: 600;
+        color: $slate-600;
+    }
+}
+
+// System Health Grid
+.healthGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    @include breakpoints('sm') {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.healthItem {
+    background: $gray-100;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .healthVal {
+        font-size: 13px;
+        font-weight: 700;
+        color: $black;
+    }
+
+    .healthLabel {
+        font-size: 11px;
+        color: $slate-500;
+        font-weight: 600;
+    }
+}
+
+// Subject and Grade Cards layout
+.subjectCardsGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+
+    @include breakpoints('md') {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.subjectMetricCard {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+
+    .subjectTitle {
+        font-size: 14px;
+        font-weight: 700;
+        color: $blue-900;
+        border-bottom: 1px solid $gray-100;
+        padding-bottom: 6px;
+    }
+
+    .subjectGrid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        font-size: 11px;
+
+        .gridItem {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            span:first-child {
+                color: $slate-500;
+            }
+
+            span:last-child {
+                font-weight: 700;
+                color: $black;
+            }
+        }
+    }
+}
+
+// Animations
+@keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+// warningAlert / errorState
 .warningAlert,
 .errorState {
-    padding: 12px 14px;
+    padding: 12px 16px;
     border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .warningAlert {
     border: 1px solid $yellow-300;
     background-color: $yellow-50;
+    color: $amber-700;
 }
 
 .errorState {
     border: 1px solid $red-100;
     background-color: $red-0;
+    color: $red-700;
 }

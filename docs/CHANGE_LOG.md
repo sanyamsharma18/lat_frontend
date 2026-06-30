@@ -1,5 +1,56 @@
 # Change Log
 
+## Admin Dashboard Conflict Resolution
+
+### Feature Name
+
+Enterprise Dashboard Restore
+
+### What Was Changed
+
+* Resolved merge conflict markers in the Admin Dashboard page.
+* Resolved merge conflict markers in Admin Dashboard constants.
+* Resolved merge conflict markers in Admin Dashboard styles.
+* Kept the pulled enterprise analytics dashboard implementation with report datasets, filters, quick actions, system health, and analytics sections.
+* Removed stale chart code from the previous dashboard version that was left after the merge.
+* Fixed file encoding and irregular whitespace issues caused by the conflicted files.
+
+### Why It Was Changed
+
+* The admin dashboard was broken after pulling a teammate's code because both versions were mixed together.
+* The Reports and Analytics dashboard needed to compile with the teammate's full report-oriented implementation.
+
+### Files Modified
+
+* `src/features/dashboardManagement/components/DashboardPage/index.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/constant.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Dashboard.
+* Admin Reports navigation and report data constants used by the dashboard/reporting flow.
+
+### APIs Affected
+
+* No API changes.
+
+### Any Breaking Changes
+
+* The Admin Dashboard now uses the pulled enterprise analytics implementation instead of the previous compact card/chart dashboard.
+
+### Testing Considerations
+
+* Open `/admin/dashboard`.
+* Confirm all enterprise analytics sections render.
+* Confirm filters, charts, quick actions, and system health sections render without crashes.
+* Confirm `/admin/reports` remains accessible from the sidebar.
+
+### Future Improvements
+
+* Gradually replace offline mock dashboard analytics with backend-driven report endpoints.
+
 ## Reports Section Type Fix
 
 ### Feature Name
