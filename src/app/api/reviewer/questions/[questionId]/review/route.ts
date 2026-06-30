@@ -1,5 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
+import { serverApi, serverApiResponse } from '@/lib/serverApi';
+import { API_ROUTES } from '@/config/apiRoutes';
 import { ReviewQuestionPayload } from '@/types/reviewerQuestion';
 
 interface RouteParams {
@@ -12,13 +14,17 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { questionId } = await params;
     const payload = (await request.json()) as ReviewQuestionPayload;
 
-    return NextResponse.json({
-        status: true,
-        statusCode: 200,
-        message: `Question ${payload.status.toLowerCase()} successfully`,
-        response: {
-            questionId,
-            ...payload,
-        },
+    const body = {
+        questionId: Number(questionId),
+        status: payload.status === 'Approved' ? 1 : 0,
+        remark: payload.remark || undefined,
+    };
+
+    const result = await serverApi({
+        url: API_ROUTES.reviewQuestion(questionId),
+        method: 'PATCH',
+        body,
     });
+
+    return serverApiResponse(result);
 }

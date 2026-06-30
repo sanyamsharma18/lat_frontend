@@ -35,4 +35,5 @@ export const API_ROUTES = {
     generateQuestions: `${API_URL}/generate-batch`,
     login: `${API_URL}/login`,
     reviewerDashboard: `${API_URL}/reviewer/dashboard`,
+    reviewQuestion: (id: string) => `${API_URL}/questions/${id}/review`,
 };

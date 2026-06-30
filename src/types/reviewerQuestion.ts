@@ -24,7 +24,7 @@ export interface ReviewerQuestion {
 
 export interface ReviewerQuestionFilters {
     search: string;
-    gradeGroup: string;
+    gradeGroup?: string;
     grade: string;
     subject: string;
     term: string;
