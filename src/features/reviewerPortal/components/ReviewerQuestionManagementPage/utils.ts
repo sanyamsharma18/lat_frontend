@@ -34,6 +34,7 @@ const assertSuccessfulResponse = <T>(response: T) => {
 const extractDataArray = (response: any): ReviewerQuestion[] => {
     if (Array.isArray(response)) return response;
     if (Array.isArray(response?.response)) return response.response;
+    if (Array.isArray(response?.response?.questions)) return response.response.questions;
     if (Array.isArray(response?.response?.data)) return response.response.data;
     if (Array.isArray(response?.data)) return response.data;
 

@@ -138,7 +138,6 @@ export const useReviewerQuestionManagement = () => {
     const filters = useMemo(
         () => ({
             search: debouncedSearch.trim(),
-            gradeGroup: selectedGradeGroup?.id ?? '',
             grade: selectedGrade?.id ?? '',
             subject: selectedSubject?.id ?? '',
             term: selectedTerm?.id ?? '',
@@ -152,7 +151,6 @@ export const useReviewerQuestionManagement = () => {
             page,
             selectedCompetency?.id,
             selectedGrade?.id,
-            selectedGradeGroup?.id,
             selectedStatus?.id,
             selectedSubject?.id,
             selectedTerm?.id,

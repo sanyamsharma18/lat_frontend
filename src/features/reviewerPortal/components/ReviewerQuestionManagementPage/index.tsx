@@ -40,18 +40,27 @@ const HtmlQuestionText = ({ value }: { value: string }) => (
     />
 );
 
-const StatusBadge = ({ status }: { status: ReviewerQuestionStatus }) => (
-    <span
-        className={cx(
-            styles.statusBadge,
-            status === 'Approved' && styles.statusApproved,
-            status === 'Draft' && styles.statusDraft,
-            status === 'Rejected' && styles.statusRejected,
-        )}
-    >
-        {status}
-    </span>
-);
+const mapReviewStatus = (status: string): ReviewerQuestionStatus => {
+    if (status === 'Active' || status === '1') return 'Approved';
+    if (status === 'Inactive' || status === '0') return 'Rejected';
+    return 'Draft';
+};
+
+const StatusBadge = ({ status }: { status: string }) => {
+    const displayStatus = mapReviewStatus(status);
+    return (
+        <span
+            className={cx(
+                styles.statusBadge,
+                displayStatus === 'Approved' && styles.statusApproved,
+                displayStatus === 'Draft' && styles.statusDraft,
+                displayStatus === 'Rejected' && styles.statusRejected,
+            )}
+        >
+            {displayStatus}
+        </span>
+    );
+};
 
 const getQuestionColumns = (
     onPreview: (question: ReviewerQuestion) => void,
@@ -102,16 +111,6 @@ const getQuestionColumns = (
         id: 'status',
         header: REVIEWER_QUESTION_TEXT.statusColumn,
         cell: (question) => <StatusBadge status={question.status} />,
-    },
-    {
-        id: 'image',
-        header: REVIEWER_QUESTION_TEXT.imageColumn,
-        cell: () => (
-            <div>
-                <span className={styles.imageAction}>{REVIEWER_QUESTION_TEXT.uploadText}</span>
-                <span className={styles.imageEmpty}>-</span>
-            </div>
-        ),
     },
     {
         id: 'actions',

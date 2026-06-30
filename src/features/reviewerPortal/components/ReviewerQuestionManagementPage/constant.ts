@@ -49,7 +49,7 @@ export const TERM_OPTIONS: QuestionOptionItem[] = [
 
 export const STATUS_OPTIONS: QuestionOptionItem[] = [
     { id: '', name: 'All' },
-    { id: 'Draft', name: 'Draft' },
-    { id: 'Approved', name: 'Approved' },
-    { id: 'Rejected', name: 'Rejected' },
+    { id: '2', name: 'Draft' },
+    { id: '1', name: 'Approved' },
+    { id: '0', name: 'Rejected' },
 ];
