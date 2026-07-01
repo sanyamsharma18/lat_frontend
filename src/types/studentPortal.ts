@@ -97,6 +97,7 @@ export interface StudentExamStartResponse {
 export interface StudentExamCheckPayload {
     studentId: number;
     termId: number;
+    subjectId: number;
 }
 
 export interface StudentExamCheckResponse {

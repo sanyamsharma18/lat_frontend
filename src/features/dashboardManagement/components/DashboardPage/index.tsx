@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 
+import { useMutation } from '@tanstack/react-query';
 import {
     BarElement,
     CategoryScale,
@@ -15,20 +16,32 @@ import {
 import { Bar } from 'react-chartjs-2';
 
 import { DashboardStatCard, DashboardTone } from '@/components/ui/DashboardWidgets';
+import Button from '@/components/ui/Button';
 import ShimmerUiContainer from '@/components/ui/ShimmerUiContainer';
 import Text from '@/components/ui/Text';
+import { showToast } from '@/components/ui/Toaster/constant';
 
-import { FontType } from '@/types/typographyCommon';
+import { ButtonVariant, FontType } from '@/types/typographyCommon';
 
 import { useDashboardManagement } from '../../hooks/useDashboardManagement';
 
 import { DASHBOARD_METRICS, DASHBOARD_TEXT, DEFAULT_SUMMARY } from './constant';
+import { downloadAdminReport } from './utils';
 
 import styles from './styles.module.scss';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const formatMetricValue = (value: number) => new Intl.NumberFormat('en-US').format(value);
+
+const downloadFile = (blob: Blob, fileName: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
+};
 
 const DashboardPage = () => {
     const { dashboardSummaryQuery } = useDashboardManagement();
@@ -45,6 +58,24 @@ const DashboardPage = () => {
             })),
         [summary],
     );
+
+    const downloadReportMutation = useMutation({
+        mutationFn: downloadAdminReport,
+        onSuccess: (blob) => {
+            downloadFile(
+                blob,
+                `LAT_Admin_Report_${new Date().toISOString().split('T')[0]}.pdf`,
+            );
+            showToast({ message: 'Admin report downloaded successfully', type: 'success' });
+        },
+        onError: (error) => {
+            showToast({
+                message:
+                    error instanceof Error ? error.message : 'Unable to download admin report',
+                type: 'error',
+            });
+        },
+    });
 
     const barChartData = useMemo<ChartData<'bar'>>(
         () => ({
@@ -129,16 +160,32 @@ const DashboardPage = () => {
     return (
         <main className={styles.page}>
             <section className={styles.header}>
-                <Text
-                    tagType='h1'
-                    font={[FontType.text_xxl_semibold, FontType.text_xxl_semibold]}
-                    color='black'
-                >
-                    {DASHBOARD_TEXT.title}
-                </Text>
-                <Text font={[FontType.text_sm_regular, FontType.text_sm_regular]} color='gray-500'>
-                    {DASHBOARD_TEXT.subtitle}
-                </Text>
+                <div className={styles.headerText}>
+                    <Text
+                        tagType='h1'
+                        font={[FontType.text_xxl_semibold, FontType.text_xxl_semibold]}
+                        color='black'
+                    >
+                        {DASHBOARD_TEXT.title}
+                    </Text>
+                    <Text
+                        font={[FontType.text_sm_regular, FontType.text_sm_regular]}
+                        color='gray-500'
+                    >
+                        {DASHBOARD_TEXT.subtitle}
+                    </Text>
+                </div>
+
+                <Button
+                    type='button'
+                    label={DASHBOARD_TEXT.downloadReportButton}
+                    variant={ButtonVariant.SOLID}
+                    color='white'
+                    className={styles.downloadButton}
+                    onClick={() => downloadReportMutation.mutate()}
+                    disabled={downloadReportMutation.isPending}
+                    loader={downloadReportMutation.isPending}
+                />
             </section>
 
             {dashboardSummaryQuery.isError ? (

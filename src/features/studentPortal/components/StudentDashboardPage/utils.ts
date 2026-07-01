@@ -29,6 +29,7 @@ export const studentExamStatusQueryKey = (studentId?: string) =>
 
 const DEFAULT_EXAM_CONTEXT = {
     termId: 1,
+    subjectId: 1,
 };
 
 const assertSuccessfulResponse = <TResponse>(response: ApiResponse<TResponse>) => {

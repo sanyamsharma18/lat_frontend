@@ -17,6 +17,7 @@ export const API_ROUTES = {
     adminTeachers: `${API_URL}/teachers`,
     uploadTeachers: `${API_URL}/teachers/bulk`,
     dashboardSummary: `${API_URL}/admin/dashboard/summary`,
+    downloadPdf: `${API_URL}/download-pdf`,
     teacherDashboard: `${API_URL}/teacher/dashboard`,
     teacherStudents: `${API_URL}/students`,
     teacherStudentsBulk: `${API_URL}/students/bulk`,

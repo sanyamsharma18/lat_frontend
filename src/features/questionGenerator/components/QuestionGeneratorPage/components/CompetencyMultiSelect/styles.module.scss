@@ -30,6 +30,12 @@
     box-shadow: 0 0 0 1px $orange-500;
 }
 
+.triggerDisabled {
+    background-color: $gray-100;
+    color: $gray-500;
+    cursor: not-allowed;
+}
+
 .menu {
     position: absolute;
     z-index: 20;

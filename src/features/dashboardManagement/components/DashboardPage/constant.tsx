@@ -7,6 +7,7 @@ import { DashboardSummary } from '@/types/dashboard';
 export const DASHBOARD_TEXT = {
     title: 'Reports & Analytics',
     subtitle: 'Summary view of teachers, students, and question activity.',
+    downloadReportButton: 'Download Report',
     volumeChartTitle: 'Platform Volume',
     volumeChartSubtitle: 'Teachers, students, and generated questions.',
     errorTitle: 'Dashboard data is temporarily unavailable',

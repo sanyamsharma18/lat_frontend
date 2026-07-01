@@ -72,7 +72,11 @@ const CompetencyMultiSelect = ({
             </Text>
             <button
                 type='button'
-                className={cx(styles.trigger, isOpen && styles.triggerOpen)}
+                className={cx(
+                    styles.trigger,
+                    isOpen && styles.triggerOpen,
+                    disable && styles.triggerDisabled,
+                )}
                 onClick={() => { if (!disable) setIsOpen((previous) => !previous); }}
                 aria-haspopup='listbox'
                 aria-expanded={isOpen}

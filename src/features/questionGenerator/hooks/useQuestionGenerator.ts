@@ -84,7 +84,7 @@ export const useQuestionGenerator = () => {
         subject: '',
         term: '',
         competencyIds: [],
-        count: 10,
+        count: 2,
     });
     const [modalMode, setModalMode] = useState<QuestionModalMode>('add');
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);

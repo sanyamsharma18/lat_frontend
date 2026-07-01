@@ -578,7 +578,7 @@ const QuestionGeneratorPage = () => {
                         name='questionCount'
                         type='number'
                         min={1}
-                        max={50}
+                        max={2}
                         label={QUESTION_GENERATOR_TEXT.numberOfQuestionsLabel}
                         value={generateValues.count}
                         onChange={handleCountChange}
