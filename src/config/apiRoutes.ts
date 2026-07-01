@@ -1,5 +1,8 @@
 export const API_URL = `${process.env.NEXT_PUBLIC_APP_URL?.trim() ?? ''}api/v1`;
 
+const REPORT_EXPORT_PDF_QUERY =
+    'regionId=reg-01&gradeId=3&subjectId=math&academicYear=2023-2024&assessmentCycle=mid-term&schoolId=sch-01';
+
 export const API_ROUTES = {
     adminActionRequired: `${API_URL}/admin/action-required`,
     adminApprove: `${API_URL}/admin/approve`,
@@ -17,7 +20,7 @@ export const API_ROUTES = {
     adminTeachers: `${API_URL}/teachers`,
     uploadTeachers: `${API_URL}/teachers/bulk`,
     dashboardSummary: `${API_URL}/admin/dashboard/summary`,
-    downloadPdf: `${API_URL}/download-pdf`,
+    downloadPdf: `${API_URL}/reports/export/pdf?${REPORT_EXPORT_PDF_QUERY}`,
     teacherDashboard: `${API_URL}/teacher/dashboard`,
     teacherStudents: `${API_URL}/students`,
     teacherStudentsBulk: `${API_URL}/students/bulk`,

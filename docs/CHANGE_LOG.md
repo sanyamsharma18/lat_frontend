@@ -1,5 +1,52 @@
 # Change Log
 
+## Admin Download Report Export Endpoint
+
+### Feature Name
+
+Admin Dashboard Download Report
+
+### What Was Changed
+
+* Updated the admin report download backend endpoint to use the reports PDF export API.
+* Kept the existing internal frontend route and dashboard button unchanged.
+* Restored `subjectId` on the student exam check payload type and dashboard request context so the existing route matches its backend request contract during typecheck.
+
+### Why It Was Changed
+
+* The backend report PDF is now served from the reports export endpoint with report filter query parameters.
+
+### Files Modified
+
+* `src/config/apiRoutes.ts`
+* `src/features/studentPortal/components/StudentDashboardPage/utils.ts`
+* `src/types/studentPortal.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Dashboard Download Report button.
+* Student Exam Check route typing.
+
+### APIs Affected
+
+* Internal route unchanged: `GET /api/admin/download-report`
+* Backend route updated to: `GET /api/v1/reports/export/pdf?regionId=reg-01&gradeId=3&subjectId=math&academicYear=2023-2024&assessmentCycle=mid-term&schoolId=sch-01`
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Click `Download Report` from Admin Dashboard.
+* Confirm the request still goes through `/api/admin/download-report`.
+* Confirm the downloaded file comes from the backend reports export PDF API.
+
+### Future Improvements
+
+* Make report filters dynamic when backend-driven filter controls are added.
+
 ## Teacher Student Template Download Removal
 
 ### Feature Name
@@ -159,7 +206,7 @@ Admin Dashboard PDF Report Download
 ### What Was Changed
 
 * Added a right-aligned `Download Report` button to the admin dashboard header.
-* Added an internal admin API route that forwards the request to backend `GET /api/v1/download-pdf`.
+* Added an internal admin API route that forwards the request to the backend report PDF endpoint.
 * Forwarded the logged-in user's JWT token from cookies to the backend download API.
 * Added a dashboard utility that downloads the PDF as a browser file.
 * Added success and error toast messages for the download action.
@@ -186,7 +233,7 @@ Admin Dashboard PDF Report Download
 ### APIs Affected
 
 * Internal route: `GET /api/admin/download-report`
-* Backend route: `GET /api/v1/download-pdf`
+* Backend route: `GET /api/v1/reports/export/pdf`
 
 ### Any Breaking Changes
 
