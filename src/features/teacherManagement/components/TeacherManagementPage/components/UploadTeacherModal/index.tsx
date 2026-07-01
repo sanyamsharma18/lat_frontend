@@ -17,19 +17,15 @@ import styles from './styles.module.scss';
 interface UploadTeacherModalProps {
     open: boolean;
     isUploading: boolean;
-    isTemplateDownloading: boolean;
     onClose: () => void;
     onSubmit: (values: UploadTeachersPayload) => void;
-    onDownloadTemplate: () => void;
 }
 
 const UploadTeacherModal = ({
     open,
     isUploading,
-    isTemplateDownloading,
     onClose,
     onSubmit,
-    onDownloadTemplate,
 }: UploadTeacherModalProps) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [sheetUrl, setSheetUrl] = useState('');
@@ -92,24 +88,6 @@ const UploadTeacherModal = ({
                 </div>
 
                 <div className={styles.fields}>
-                    <div className={styles.templateAction}>
-                        <Text
-                            font={[FontType.text_xs_regular, FontType.text_xs_regular]}
-                            color='gray-500'
-                        >
-                            Download the backend template to use the correct upload headers.
-                        </Text>
-                        <Button
-                            type='button'
-                            label={UPLOAD_TEACHER_TEXT.templateButton}
-                            variant={ButtonVariant.OUTLINED}
-                            color='black'
-                            onClick={onDownloadTemplate}
-                            disabled={isUploading || isTemplateDownloading}
-                            loader={isTemplateDownloading}
-                        />
-                    </div>
-
                     <label className={styles.fileField} htmlFor='teacherUploadFile'>
                         <span className={styles.fileLabel}>{UPLOAD_TEACHER_TEXT.fileLabel}</span>
                         <input

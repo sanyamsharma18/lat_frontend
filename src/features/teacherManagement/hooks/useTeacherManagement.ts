@@ -20,7 +20,6 @@ import { TEACHER_PAGE_SIZE } from '../components/TeacherManagementPage/constant'
 import {
     createTeacher,
     deleteTeacher,
-    downloadTeacherUploadTemplate,
     regionQueryOptions,
     schoolQueryOptions,
     teacherListQueryOptions,
@@ -64,15 +63,6 @@ export const useTeacherManagement = () => {
         queryClient.invalidateQueries({
             queryKey: teacherQueryKey(),
         });
-
-    const downloadTemplateFile = (blob: Blob, fileName: string) => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        link.click();
-        URL.revokeObjectURL(url);
-    };
 
     const createTeacherMutation = useMutation({
         mutationFn: createTeacher,
@@ -139,21 +129,6 @@ export const useTeacherManagement = () => {
         onSettled: invalidateTeacherList,
     });
 
-    const downloadTemplateMutation = useMutation({
-        mutationFn: downloadTeacherUploadTemplate,
-        onSuccess: (blob) => {
-            downloadTemplateFile(blob, 'teacher-upload-template.csv');
-            showToast({ message: 'Teacher template downloaded successfully', type: 'success' });
-        },
-        onError: (error) => {
-            showToast({
-                message:
-                    error instanceof Error ? error.message : 'Unable to download teacher template',
-                type: 'error',
-            });
-        },
-    });
-
     const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value);
         setPage(1);
@@ -217,10 +192,6 @@ export const useTeacherManagement = () => {
         uploadTeachersMutation.mutate(payload);
     };
 
-    const handleDownloadTeacherTemplate = () => {
-        downloadTemplateMutation.mutate();
-    };
-
     const total = teacherListQuery.data?.total ?? 0;
     const totalPages = Math.max(Math.ceil(total / TEACHER_PAGE_SIZE), 1);
     const hasActiveFilters = Boolean(searchValue.trim() || selectedRegion || selectedSchool);
@@ -229,7 +200,6 @@ export const useTeacherManagement = () => {
         filters,
         handleClearFilters,
         handleDeleteTeacher,
-        handleDownloadTeacherTemplate,
         handleOpenAddModal,
         handleOpenDeleteModal,
         handleOpenEditModal,
@@ -246,7 +216,6 @@ export const useTeacherManagement = () => {
         isSubmitting: createTeacherMutation.isPending || updateTeacherMutation.isPending,
         isUploadModalOpen,
         isUploading: uploadTeachersMutation.isPending,
-        isTemplateDownloading: downloadTemplateMutation.isPending,
         modalMode,
         page,
         regionListQuery,

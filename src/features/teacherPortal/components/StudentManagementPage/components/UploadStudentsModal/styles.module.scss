@@ -25,17 +25,6 @@
     gap: 12px;
 }
 
-.templateAction {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 12px;
-    border: 1px solid $gray-200;
-    border-radius: 8px;
-    background-color: $gray-100;
-}
-
 .fileField {
     display: flex;
     flex-direction: column;

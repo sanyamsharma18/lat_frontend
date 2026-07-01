@@ -159,7 +159,7 @@ const getQuestionColumns = (handlers: QuestionActionHandlers): DataTableColumn<Q
             return (
                 <div className={styles.imageCell}>
                     {hasUrl && (
-                        <div 
+                        <div
                             className={styles.thumbnail}
                             onClick={() => handlers.onImageClick(question.imageUrl!)}
                             style={{ cursor: 'pointer' }}
@@ -173,7 +173,7 @@ const getQuestionColumns = (handlers: QuestionActionHandlers): DataTableColumn<Q
                             />
                         </div>
                     )}
-                    
+
                     {/* Upload button when image already exists */}
                     {hasUrl && (
                         <label
@@ -212,8 +212,8 @@ const getQuestionColumns = (handlers: QuestionActionHandlers): DataTableColumn<Q
                     {!hasUrl && (
                         <label
                             className={styles.imageAction}
-                            style={{ 
-                                cursor: isUploading ? 'not-allowed' : 'pointer', 
+                            style={{
+                                cursor: isUploading ? 'not-allowed' : 'pointer',
                                 opacity: isUploading ? 0.6 : 1,
                                 background: '#f0fdf4',
                                 color: '#16a34a',
@@ -353,10 +353,10 @@ const QuestionGeneratorPage = () => {
     };
 
     const handleGenerateImage = (question: QuestionRecord, optionLetter?: string) => {
-        const prompt = optionLetter 
+        const prompt = optionLetter
             ? question.options.find(o => o.id === optionLetter)?.imagePrompt
             : question.imagePrompt;
-            
+
         if (!prompt) {
             return;
         }
@@ -394,10 +394,10 @@ const QuestionGeneratorPage = () => {
                 isUploadingImage,
             }),
         [
-            handleOpenDeleteModal, 
-            handleOpenEditModal, 
-            handleOpenPreviewModal, 
-            generateImageMutation.isPending, 
+            handleOpenDeleteModal,
+            handleOpenEditModal,
+            handleOpenPreviewModal,
+            generateImageMutation.isPending,
             generateImageMutation.variables,
             uploadImageMutation.isPending,
             uploadImageMutation.variables,
@@ -417,10 +417,10 @@ const QuestionGeneratorPage = () => {
                 isUploadingImage,
             }),
         [
-            handleOpenDeleteModal, 
-            handleOpenEditModal, 
-            handleOpenPreviewModal, 
-            generateImageMutation.isPending, 
+            handleOpenDeleteModal,
+            handleOpenEditModal,
+            handleOpenPreviewModal,
+            generateImageMutation.isPending,
             generateImageMutation.variables,
             uploadImageMutation.isPending,
             uploadImageMutation.variables,
@@ -767,10 +767,10 @@ const QuestionGeneratorPage = () => {
                         <Text tagType="h3" font={[FontType.text_lg_semibold, FontType.text_lg_semibold]} color="black">
                             Image Preview
                         </Text>
-                        <img 
-                            src={activePreviewImage} 
-                            alt="Preview" 
-                            style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: '8px', border: '1px solid #e2e8f0' }} 
+                        <img
+                            src={activePreviewImage}
+                            alt="Preview"
+                            style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: '8px', border: '1px solid #e2e8f0' }}
                         />
                         <Button
                             type="button"

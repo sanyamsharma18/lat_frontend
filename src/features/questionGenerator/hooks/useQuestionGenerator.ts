@@ -370,7 +370,7 @@ export const useQuestionGenerator = () => {
             subject: '',
             term: '',
             competencyIds: [],
-            count: 10,
+            count: 2,
         });
     };
 

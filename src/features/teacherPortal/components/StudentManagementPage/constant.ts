@@ -71,7 +71,6 @@ export const UPLOAD_STUDENT_TEXT = {
     fileHint: 'Accepted formats: .xlsx, .csv',
     cancelButton: 'Cancel',
     submitButton: 'Import Students',
-    templateButton: 'Download Template',
     validationMessage: 'Select a CSV or Excel file before import.',
     previewTitle: 'Upload Preview',
 };

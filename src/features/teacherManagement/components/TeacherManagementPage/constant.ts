@@ -62,7 +62,6 @@ export const UPLOAD_TEACHER_TEXT = {
         placeholder: 'Paste Google Sheet link',
     },
     validationMessage: 'Upload a file or enter a Google Sheet URL',
-    templateButton: 'Download Template',
     cancelButton: 'Cancel',
     submitButton: 'Upload Teachers',
 };

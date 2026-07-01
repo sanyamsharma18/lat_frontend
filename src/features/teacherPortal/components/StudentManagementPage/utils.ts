@@ -274,13 +274,6 @@ export const uploadStudents = async ({ file }: UploadStudentsPayload) => {
     });
 };
 
-export const downloadStudentUploadTemplate = async () =>
-    callApi<Blob>({
-        url: ServerSideRoutes.TEACHER_STUDENTS_TEMPLATE,
-        method: HTTP_METHOD.GET,
-        downloadFile: true,
-    });
-
 export const studentListQueryOptions = (filters: StudentListFilters) => ({
     queryKey: studentQueryKey(filters),
     queryFn: () => getStudentList(filters),

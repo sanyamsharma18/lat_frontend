@@ -164,7 +164,6 @@ const TeacherManagementPage = () => {
     const {
         handleClearFilters,
         // handleDeleteTeacher,
-        handleDownloadTeacherTemplate,
         handleOpenAddModal,
         // handleOpenDeleteModal,
         handleOpenEditModal,
@@ -179,7 +178,6 @@ const TeacherManagementPage = () => {
         // isDeleting,
         isFormModalOpen,
         isSubmitting,
-        isTemplateDownloading,
         isUploadModalOpen,
         isUploading,
         modalMode,
@@ -459,10 +457,8 @@ const TeacherManagementPage = () => {
             <UploadTeacherModal
                 open={isUploadModalOpen}
                 isUploading={isUploading}
-                isTemplateDownloading={isTemplateDownloading}
                 onClose={() => setIsUploadModalOpen(false)}
                 onSubmit={handleUploadTeachers}
-                onDownloadTemplate={handleDownloadTeacherTemplate}
             />
 
             <Toaster />

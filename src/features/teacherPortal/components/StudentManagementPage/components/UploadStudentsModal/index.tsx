@@ -16,10 +16,8 @@ import styles from './styles.module.scss';
 interface UploadStudentsModalProps {
     open: boolean;
     isUploading: boolean;
-    isTemplateDownloading: boolean;
     onClose: () => void;
     onSubmit: (values: UploadStudentsPayload) => void;
-    onDownloadTemplate: () => void;
 }
 
 const EMPTY_PREVIEW: StudentUploadPreview = {
@@ -53,10 +51,8 @@ const buildPreview = async (file: File): Promise<StudentUploadPreview> => {
 const UploadStudentsModal = ({
     open,
     isUploading,
-    isTemplateDownloading,
     onClose,
     onSubmit,
-    onDownloadTemplate,
 }: UploadStudentsModalProps) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<StudentUploadPreview>(EMPTY_PREVIEW);
@@ -108,24 +104,6 @@ const UploadStudentsModal = ({
                 </div>
 
                 <div className={styles.fields}>
-                    <div className={styles.templateAction}>
-                        <Text
-                            font={[FontType.text_xs_regular, FontType.text_xs_regular]}
-                            color='gray-500'
-                        >
-                            Download the backend template to use the correct upload headers.
-                        </Text>
-                        <Button
-                            type='button'
-                            label={UPLOAD_STUDENT_TEXT.templateButton}
-                            variant={ButtonVariant.OUTLINED}
-                            color='black'
-                            onClick={onDownloadTemplate}
-                            disabled={isUploading || isTemplateDownloading}
-                            loader={isTemplateDownloading}
-                        />
-                    </div>
-
                     <label className={styles.fileField} htmlFor='studentUploadFile'>
                         <span className={styles.fileLabel}>{UPLOAD_STUDENT_TEXT.fileLabel}</span>
                         <input
@@ -152,9 +130,6 @@ const UploadStudentsModal = ({
                             <div className={styles.previewGrid}>
                                 <Text font={[FontType.text_xs_regular, FontType.text_xs_regular]}>
                                     Total Records: {preview.totalRecords}
-                                </Text>
-                                <Text font={[FontType.text_xs_regular, FontType.text_xs_regular]}>
-                                    Success Count: {preview.successCount}
                                 </Text>
                                 <Text font={[FontType.text_xs_regular, FontType.text_xs_regular]}>
                                     Backend will validate file content during upload.

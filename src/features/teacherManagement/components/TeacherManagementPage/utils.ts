@@ -150,13 +150,6 @@ export const uploadTeachers = async ({ file, sheetUrl }: UploadTeachersPayload) 
     return response;
 };
 
-export const downloadTeacherUploadTemplate = async () =>
-    callApi<Blob>({
-        url: ServerSideRoutes.ADMIN_TEACHERS_TEMPLATE,
-        method: HTTP_METHOD.GET,
-        downloadFile: true,
-    });
-
 export const teacherListQueryOptions = (filters: TeacherListFilters) => ({
     queryKey: teacherQueryKey(filters),
     queryFn: () => getTeacherList(filters),

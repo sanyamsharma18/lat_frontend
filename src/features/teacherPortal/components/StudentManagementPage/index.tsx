@@ -142,7 +142,6 @@ const getStudentColumns = ({
 const StudentManagementPage = () => {
     const {
         handleClearFilters,
-        handleDownloadStudentTemplate,
         handleGradeChange,
         handleOpenAddModal,
         handleOpenEditModal,
@@ -155,7 +154,6 @@ const StudentManagementPage = () => {
         hasActiveFilters,
         isFormModalOpen,
         isSubmitting,
-        isTemplateDownloading,
         isUploadModalOpen,
         isUploading,
         modalMode,
@@ -400,10 +398,8 @@ const StudentManagementPage = () => {
             <UploadStudentsModal
                 open={isUploadModalOpen}
                 isUploading={isUploading}
-                isTemplateDownloading={isTemplateDownloading}
                 onClose={() => setIsUploadModalOpen(false)}
                 onSubmit={handleUploadStudents}
-                onDownloadTemplate={handleDownloadStudentTemplate}
             />
             <Toaster />
         </main>

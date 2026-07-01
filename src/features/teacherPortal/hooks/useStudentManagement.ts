@@ -18,7 +18,6 @@ import useDebounce from '@/utils/useDebounce';
 import { STUDENT_PAGE_SIZE } from '../components/StudentManagementPage/constant';
 import {
     createStudent,
-    downloadStudentUploadTemplate,
     studentListQueryOptions,
     studentQueryKey,
     updateStudent,
@@ -60,15 +59,6 @@ export const useStudentManagement = () => {
         queryClient.invalidateQueries({
             queryKey: studentQueryKey(),
         });
-
-    const downloadTemplateFile = (blob: Blob, fileName: string) => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        link.click();
-        URL.revokeObjectURL(url);
-    };
 
     const createStudentMutation = useMutation({
         mutationFn: createStudent,
@@ -119,16 +109,7 @@ export const useStudentManagement = () => {
 
     const uploadStudentsMutation = useMutation({
         mutationFn: uploadStudents,
-        onSuccess: (response) => {
-            const successCount = response.response?.successCount;
-            const message =
-                response.response?.message ||
-                response.message ||
-                (typeof successCount === 'number'
-                    ? `${successCount} students uploaded successfully`
-                    : 'Students uploaded successfully');
-
-            showToast({ message, type: 'success' });
+        onSuccess: () => {
             setIsUploadModalOpen(false);
             setPage(1);
         },
@@ -139,21 +120,6 @@ export const useStudentManagement = () => {
             });
         },
         onSettled: invalidateStudentList,
-    });
-
-    const downloadTemplateMutation = useMutation({
-        mutationFn: downloadStudentUploadTemplate,
-        onSuccess: (blob) => {
-            downloadTemplateFile(blob, 'student-upload-template.csv');
-            showToast({ message: 'Student template downloaded successfully', type: 'success' });
-        },
-        onError: (error) => {
-            showToast({
-                message:
-                    error instanceof Error ? error.message : 'Unable to download student template',
-                type: 'error',
-            });
-        },
     });
 
     const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -216,10 +182,6 @@ export const useStudentManagement = () => {
         uploadStudentsMutation.mutate(payload);
     };
 
-    const handleDownloadStudentTemplate = () => {
-        downloadTemplateMutation.mutate();
-    };
-
     const total = studentListQuery.data?.total ?? 0;
     const totalPages = Math.max(Math.ceil(total / STUDENT_PAGE_SIZE), 1);
     const hasActiveFilters = Boolean(
@@ -229,7 +191,6 @@ export const useStudentManagement = () => {
     return {
         filters,
         handleClearFilters,
-        handleDownloadStudentTemplate,
         handleGradeChange,
         handleOpenAddModal,
         handleOpenEditModal,
@@ -244,7 +205,6 @@ export const useStudentManagement = () => {
         isSubmitting: createStudentMutation.isPending || updateStudentMutation.isPending,
         isUploadModalOpen,
         isUploading: uploadStudentsMutation.isPending,
-        isTemplateDownloading: downloadTemplateMutation.isPending,
         modalMode,
         page,
         searchValue,

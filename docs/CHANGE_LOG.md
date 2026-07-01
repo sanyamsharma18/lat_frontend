@@ -1,5 +1,114 @@
 # Change Log
 
+## Teacher Student Template Download Removal
+
+### Feature Name
+
+Teacher Student Management Upload Flow
+
+### What Was Changed
+
+* Removed the `Download Template` button from the Upload Students modal.
+* Removed the student template download mutation, handler, utility, route constant, and internal API route.
+* Removed the upload preview success count from the modal.
+* Removed the upload success toast while keeping upload errors visible and refreshing the student list after upload.
+
+### Why It Was Changed
+
+* Teacher Student Management should no longer provide a student template download option.
+* Upload completion should not show the previous success functionality in the teacher portal.
+
+### Files Modified
+
+* `src/app/api/teacher/students/template/route.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/features/teacherPortal/components/StudentManagementPage/index.tsx`
+* `src/features/teacherPortal/components/StudentManagementPage/constant.ts`
+* `src/features/teacherPortal/components/StudentManagementPage/utils.ts`
+* `src/features/teacherPortal/components/StudentManagementPage/components/UploadStudentsModal/index.tsx`
+* `src/features/teacherPortal/components/StudentManagementPage/components/UploadStudentsModal/styles.module.scss`
+* `src/features/teacherPortal/hooks/useStudentManagement.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Teacher Student Management.
+* Upload Students modal.
+
+### APIs Affected
+
+* Removed internal route: `GET /api/teacher/students/template`
+* Existing upload API remains unchanged.
+
+### Any Breaking Changes
+
+* The student upload template download option is no longer available from Teacher Student Management.
+
+### Testing Considerations
+
+* Open Teacher Student Management.
+* Open Upload Students.
+* Confirm no template download option is visible.
+* Confirm selecting and uploading a file still works.
+* Confirm upload errors still show to the user.
+
+### Future Improvements
+
+* Provide upload file format guidance outside the modal if teams still need a reference template.
+
+## Admin Teacher Template Download Removal
+
+### Feature Name
+
+Admin Teacher Management Upload Flow
+
+### What Was Changed
+
+* Removed the `Download Template` button from the Upload Teachers modal.
+* Removed the teacher template download mutation and handler from teacher management.
+* Removed unused teacher template download text and utility.
+* Removed the unused internal teacher template API route and route constant.
+
+### Why It Was Changed
+
+* Admin Teacher Management should no longer provide a teacher template download option.
+
+### Files Modified
+
+* `src/app/api/admin/teachers/template/route.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/features/teacherManagement/components/TeacherManagementPage/index.tsx`
+* `src/features/teacherManagement/components/TeacherManagementPage/constant.ts`
+* `src/features/teacherManagement/components/TeacherManagementPage/utils.ts`
+* `src/features/teacherManagement/components/TeacherManagementPage/components/UploadTeacherModal/index.tsx`
+* `src/features/teacherManagement/components/TeacherManagementPage/components/UploadTeacherModal/styles.module.scss`
+* `src/features/teacherManagement/hooks/useTeacherManagement.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Teacher Management.
+* Upload Teachers modal.
+
+### APIs Affected
+
+* Removed internal route: `GET /api/admin/teachers/template`
+
+### Any Breaking Changes
+
+* The teacher upload template download option is no longer available from Admin Teacher Management.
+
+### Testing Considerations
+
+* Open Admin Teacher Management.
+* Open Upload Teachers.
+* Confirm only file upload and upload actions remain.
+* Confirm teacher upload still works.
+
+### Future Improvements
+
+* Add template guidance in documentation if stakeholders still need a sample CSV outside the app.
+
 ## Question Generator Disabled Competency Style
 
 ### Feature Name
