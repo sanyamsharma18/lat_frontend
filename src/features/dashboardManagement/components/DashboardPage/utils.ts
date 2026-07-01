@@ -92,6 +92,20 @@ export const getDashboardSummary = async () => {
     }
 };
 
+export const downloadAdminReport = async () => {
+    const response = await fetch(ServerSideRoutes.ADMIN_DOWNLOAD_REPORT, {
+        method: HTTP_METHOD.GET,
+    });
+
+    if (!response.ok) {
+        const errorMessage = await response.text();
+
+        throw new Error(errorMessage || 'Unable to download admin report');
+    }
+
+    return response.blob();
+};
+
 export const dashboardSummaryQueryOptions = () => ({
     queryKey: dashboardSummaryQueryKey(),
     queryFn: getDashboardSummary,

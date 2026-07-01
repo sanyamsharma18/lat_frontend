@@ -1,5 +1,99 @@
 # Change Log
 
+## Question Generator Disabled Competency Style
+
+### Feature Name
+
+Question Generator Competency Selector
+
+### What Was Changed
+
+* Added a disabled visual state to the custom competency multi-select trigger.
+* Matched the disabled competency background and text color with the existing disabled dropdown style.
+
+### Why It Was Changed
+
+* The competency field was disabled functionally, but it still looked active compared with Grade, Subject, and Term.
+
+### Files Modified
+
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/CompetencyMultiSelect/index.tsx`
+* `src/features/questionGenerator/components/QuestionGeneratorPage/components/CompetencyMultiSelect/styles.module.scss`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Question Generator competency selector.
+
+### APIs Affected
+
+* None.
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Open Admin Question Generator and confirm disabled Competency matches the disabled Grade, Subject, and Term controls.
+
+### Future Improvements
+
+* Consider reusing the shared dropdown disabled styling if the custom multi-select is generalized.
+
+## Admin Dashboard Download Report
+
+### Feature Name
+
+Admin Dashboard PDF Report Download
+
+### What Was Changed
+
+* Added a right-aligned `Download Report` button to the admin dashboard header.
+* Added an internal admin API route that forwards the request to backend `GET /api/v1/download-pdf`.
+* Forwarded the logged-in user's JWT token from cookies to the backend download API.
+* Added a dashboard utility that downloads the PDF as a browser file.
+* Added success and error toast messages for the download action.
+
+### Why It Was Changed
+
+* Admin users need to download the dashboard report PDF directly from the dashboard.
+
+### Files Modified
+
+* `src/app/api/admin/download-report/route.ts`
+* `src/config/apiRoutes.ts`
+* `src/constants/serverSideRoutes.ts`
+* `src/features/dashboardManagement/components/DashboardPage/constant.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/index.tsx`
+* `src/features/dashboardManagement/components/DashboardPage/styles.module.scss`
+* `src/features/dashboardManagement/components/DashboardPage/utils.ts`
+* `docs/CHANGE_LOG.md`
+
+### Components Affected
+
+* Admin Reports & Analytics dashboard.
+
+### APIs Affected
+
+* Internal route: `GET /api/admin/download-report`
+* Backend route: `GET /api/v1/download-pdf`
+
+### Any Breaking Changes
+
+* None.
+
+### Testing Considerations
+
+* Login as admin and open the dashboard.
+* Click `Download Report` and confirm a PDF file downloads.
+* Confirm the backend receives the JWT bearer token.
+* Confirm failed downloads show an error toast.
+
+### Future Improvements
+
+* Use the backend-provided file name from `Content-Disposition` in the client if custom report names are needed.
+
 ## Student Exam Check Payload Fix
 
 ### Feature Name
